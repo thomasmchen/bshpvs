@@ -22,5 +22,5 @@ mvn clean test
 Please refer to the [Git Flow](https://github.com/thomasmchen/bshpvs/wiki/Git-Flow) document in the Wiki for guidance on contributing.
 
 ## Versioning
-Meter adheres to Semantic Versioning 2.0.0. Learn more [here](https://semver.org/). <br>
+bshpvs adheres to Semantic Versioning 2.0.0. Learn more [here](https://semver.org/). <br>
 The current version of bshpvs is `0.0.1`.
