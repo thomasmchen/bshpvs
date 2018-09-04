@@ -1,4 +1,4 @@
-# bshpvs [![Build Status](https://travis-ci.com/thomasmchen/battleship-arena.svg?token=3EVMzaEnmkJ6Sm4cbJ4T&branch=master)](https://travis-ci.com/thomasmchen/battleship-arena) [![codecov](https://codecov.io/gh/thomasmchen/bshpvs/branch/master/graph/badge.svg?token=BVLIUv0Yps)](https://codecov.io/gh/thomasmchen/bshpvs)
+# bshpvs [![Build Status](https://travis-ci.com/thomasmchen/bshpvs.svg?token=3EVMzaEnmkJ6Sm4cbJ4T&branch=master)](https://travis-ci.com/thomasmchen/bshpvs) [![codecov](https://codecov.io/gh/thomasmchen/bshpvs/branch/master/graph/badge.svg?token=BVLIUv0Yps)](https://codecov.io/gh/thomasmchen/bshpvs)
 Competitive Arena for Battleship AIs
 
 ## Testing
