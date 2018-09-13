@@ -6,6 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 // Angular Material Modules
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 
 import { NgModule } from '@angular/core';
 
@@ -23,6 +24,7 @@ import { MainMenuComponent } from './main-menu/main-menu.component';
     BrowserAnimationsModule,
     MatToolbarModule,
     MatCardModule,
+    MatButtonModule,
     RouterModule.forRoot([
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: MainMenuComponent } ,
