@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { RouterModule, Routes } from '@angular/router';
+
 
 // Angular Material Modules
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -20,7 +22,11 @@ import { MainMenuComponent } from './main-menu/main-menu.component';
     BrowserModule,
     BrowserAnimationsModule,
     MatToolbarModule,
-    MatCardModule
+    MatCardModule,
+    RouterModule.forRoot([
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: 'home', component: MainMenuComponent } ,
+    ])
   ],
   providers: [],
   bootstrap: [AppComponent]
