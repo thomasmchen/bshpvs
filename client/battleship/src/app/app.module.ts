@@ -13,11 +13,14 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
+import { GridComponent } from './grid/grid.component';
+import { CellComponent } from './cell/cell.component';
+import { GameControlsComponent } from './game-controls/game-controls.component';
 
 @NgModule({
   declarations: [
     AppComponent, 
-    NavigationComponent, MainMenuComponent
+    NavigationComponent, MainMenuComponent, GridComponent, CellComponent, GameControlsComponent
   ],
   imports: [
     BrowserModule,
