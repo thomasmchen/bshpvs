@@ -2,11 +2,11 @@
   <h1 class="mat-h1">Main Menu</h1>
   <div class="container">
     <div class="option-btns-box">
-      <button type="button" onclick="alert('NEW GAME')">New Game</button>
-      <button type="button" onclick="alert('Settings')">Settings</button>
-      <button type="button" onclick="alert('Stats')">Statistics</button>
-      <button type="button" onclick="alert('Create Strat')">Create a Strategy</button>
-      <button type="button" onclick="alert('About this app page')">About</button>
+      <button type="button" (click)="newGameClicked();">New Game</button>
+      <button type="button" (click)="settingsClicked();">Settings</button>
+      <button type="button" (click)="statisticsClicked();">Statistics</button>
+      <button type="button" (click)="createStrategyClicked();">Create a Strategy</button>
+      <button type="button" (click)="aboutClicked();">About</button>
     </div>
   </div>
   <div class="lower-boxes">

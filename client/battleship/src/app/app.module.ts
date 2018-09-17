@@ -16,11 +16,16 @@ import { MainMenuComponent } from './main-menu/main-menu.component';
 import { GridComponent } from './grid/grid.component';
 import { CellComponent } from './cell/cell.component';
 import { GameControlsComponent } from './game-controls/game-controls.component';
+import { NewGameMenuComponent } from './new-game-menu/new-game-menu.component';
+import { SettingsComponent } from './settings/settings.component';
+import { CreateStrategyComponent } from './create-strategy/create-strategy.component';
+import { StatisticsComponent } from './statistics/statistics.component';
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
   declarations: [
     AppComponent, 
-    NavigationComponent, MainMenuComponent, GridComponent, CellComponent, GameControlsComponent
+    NavigationComponent, MainMenuComponent, GridComponent, CellComponent, GameControlsComponent, NewGameMenuComponent, SettingsComponent, CreateStrategyComponent, StatisticsComponent, AboutComponent
   ],
   imports: [
     BrowserModule,
@@ -31,6 +36,11 @@ import { GameControlsComponent } from './game-controls/game-controls.component';
     RouterModule.forRoot([
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: MainMenuComponent } ,
+      { path: 'newGame', component: NewGameMenuComponent } ,
+      { path: 'settings', component: SettingsComponent } ,
+      { path: 'statistics', component: StatisticsComponent },
+      { path: 'createStrategy', component: CreateStrategyComponent },
+      { path: 'about', component: AboutComponent }
     ])
   ],
   providers: [],
