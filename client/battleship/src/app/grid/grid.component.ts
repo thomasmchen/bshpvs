@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { WebdriverWebElement } from 'protractor/built/element';
 
 @Component({
   selector: 'app-grid',
@@ -8,17 +9,19 @@ import { Component, OnInit, Input } from '@angular/core';
 export class GridComponent implements OnInit {
 
   // input to get number of columns
-  numCols: number;
+  @Input()
+  numcols : string;
 
   // representation of every column
   cols: string[];
 
   constructor() {
-    this.numCols = 15;
-    this.cols = new Array((this.numCols) * 15).fill('');
   }
 
   ngOnInit() {
+    var n = +this.numcols;
+    this.cols = new Array(n * n).fill('');
+    window.alert(n);
   }
 
 }

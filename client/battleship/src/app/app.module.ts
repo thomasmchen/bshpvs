@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+
 
 
 // Angular Material Modules
@@ -32,6 +34,7 @@ import { GameWindowComponent } from './game-window/game-window.component';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    FormsModule,
     MatToolbarModule,
     MatCardModule,
     MatButtonModule,
@@ -44,7 +47,8 @@ import { GameWindowComponent } from './game-window/game-window.component';
       { path: 'statistics', component: StatisticsComponent },
       { path: 'createStrategy', component: CreateStrategyComponent },
       { path: 'about', component: AboutComponent },
-      { path: 'grid', component: GridComponent }
+      { path: 'grid', component: GridComponent },
+      { path: 'gameWindow', component: GameWindowComponent }
     ])
   ],
   providers: [],
