@@ -7,9 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GameControlsComponent implements OnInit {
 
+  message : string = 'Please place your first battleship';
   constructor() { }
 
   ngOnInit() {
+  }
+
+  onPressed() {
+    
   }
 
 }

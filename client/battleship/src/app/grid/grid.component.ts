@@ -21,7 +21,9 @@ export class GridComponent implements OnInit {
   ngOnInit() {
     var n = +this.numcols;
     this.cols = new Array(n * n).fill('');
-    window.alert(n);
+    for (var i = 0; i < this.cols.length; i++) {
+      this.cols[i] = ""+i;
+    }
   }
 
 }

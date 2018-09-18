@@ -7,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GameWindowComponent implements OnInit {
 
-  constructor() { }
+  constructor() { 
+    
+  }
 
   ngOnInit() {
+  }
+
+  cellClicked() {
+    window.alert("Test");
   }
 
 }

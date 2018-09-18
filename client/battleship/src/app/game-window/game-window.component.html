@@ -1,11 +1,12 @@
-<div class="row-fluid" style="height: 100%;">
-  <div style="background-color: red" class="col-lg-6">
+<div class="row" style="height: 100%;">
+  <div class="col-lg-2">
+    <app-game-controls></app-game-controls>
+  </div>
+
+  <div style="background-color: rgba(255, 0, 0, 0.171)" class="col-lg-4">
     <app-grid [numcols]="'10'"></app-grid>
   </div>
-  <div style="background-color: blue" class="col-lg-6">
+  <div style="background-color: rgba(0, 0, 255, 0.082)" class="col-lg-4">
       <app-grid [numcols]="'10'"></app-grid>
-
   </div>
-
-
 </div>
