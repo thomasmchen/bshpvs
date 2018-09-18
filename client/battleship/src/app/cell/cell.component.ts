@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-cell',
@@ -7,9 +7,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CellComponent implements OnInit {
 
+  @Input()
+  width;
+
+  @Input()
+  height;
+  
   constructor() { }
 
   ngOnInit() {
   }
 
+  /*styleObject(): Object {
+    if (true){
+        return {'height': this.height + 'px',
+        'width': this.width + "px",
+        'background-color': '#90ee90'}
+    }
+  }*/
 }
+
+

@@ -7,6 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 import { NgModule } from '@angular/core';
 
@@ -21,11 +22,12 @@ import { SettingsComponent } from './settings/settings.component';
 import { CreateStrategyComponent } from './create-strategy/create-strategy.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { AboutComponent } from './about/about.component';
+import { GameWindowComponent } from './game-window/game-window.component';
 
 @NgModule({
   declarations: [
     AppComponent, 
-    NavigationComponent, MainMenuComponent, GridComponent, CellComponent, GameControlsComponent, NewGameMenuComponent, SettingsComponent, CreateStrategyComponent, StatisticsComponent, AboutComponent
+    NavigationComponent, MainMenuComponent, GridComponent, CellComponent, GameControlsComponent, NewGameMenuComponent, SettingsComponent, CreateStrategyComponent, StatisticsComponent, AboutComponent, GameWindowComponent
   ],
   imports: [
     BrowserModule,
@@ -33,6 +35,7 @@ import { AboutComponent } from './about/about.component';
     MatToolbarModule,
     MatCardModule,
     MatButtonModule,
+    MatGridListModule,
     RouterModule.forRoot([
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: MainMenuComponent } ,
@@ -40,7 +43,8 @@ import { AboutComponent } from './about/about.component';
       { path: 'settings', component: SettingsComponent } ,
       { path: 'statistics', component: StatisticsComponent },
       { path: 'createStrategy', component: CreateStrategyComponent },
-      { path: 'about', component: AboutComponent }
+      { path: 'about', component: AboutComponent },
+      { path: 'grid', component: GridComponent }
     ])
   ],
   providers: [],

@@ -1,0 +1,8 @@
+mat-card {
+    height: 100%;
+    max-width: 1200px;;
+}
+
+mat-card:hover {
+    background-color: #3374C2;
+}

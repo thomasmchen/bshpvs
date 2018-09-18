@@ -1,3 +1,5 @@
-<p>
-  grid works!
-</p>
+<mat-grid-list cols="{{numCols}}">
+    <mat-grid-tile *ngFor="let col of cols">
+        <app-cell></app-cell>
+    </mat-grid-tile>
+</mat-grid-list>
