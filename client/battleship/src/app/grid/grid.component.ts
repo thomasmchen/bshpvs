@@ -26,4 +26,13 @@ export class GridComponent implements OnInit {
     }
   }
 
+  cellUpdate(event: cell) {
+   window.alert('FROM PARENT: Row: '+ event.row + '  Col:' + event.col);
+  }
+
+}
+
+interface cell {
+  row: number,
+  col: number
 }

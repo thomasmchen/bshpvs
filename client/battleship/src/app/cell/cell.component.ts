@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NgModuleCompileResult } from '@angular/compiler/src/ng_module_compiler';
 
 @Component({
@@ -13,6 +13,9 @@ export class CellComponent implements OnInit {
 
   @Input()
   numcols;
+
+  @Output()
+  update = new EventEmitter<any>();
   
   constructor() { }
 
@@ -29,7 +32,12 @@ export class CellComponent implements OnInit {
     var col = index % (+ncols);
 
     //report what cell has been selected.
-    window.alert("Row: " + row + " Col: " + col);
+    //window.alert("Row: " + row + " Col: " + col);
+
+    this.update.emit({
+      row: row,
+      col: col
+    });
 
   }
   /*styleObject(): Object {
