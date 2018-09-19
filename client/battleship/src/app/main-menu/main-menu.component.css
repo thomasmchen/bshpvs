@@ -1,8 +1,11 @@
 .container{
-    margin: 0;
+    margin: auto;
+    min-width: 720px;
+    border-style: solid;
 }
 .option-btns-box {
-    border-style: solid;
+    margin: 2%;
+/*    border-style: solid;  for checking div dimensions*/
     margin-bottom: 2%;
 }
 
@@ -30,15 +33,17 @@
 }
 
 .lower-boxes {
+    margin: auto;
+    margin-bottom: 2%;
     padding: 2%;
     border-style: solid;
-    width: auto;
-    height: 125px;
+    width: 100%;
+    height: 225px;
 }
 
 .right-box{
     border-style: none;
-    height: 100%;
+
     float:left;
     width: 70%;
 }
@@ -50,6 +55,8 @@
     width: 25%;
     height: 100%;
     border-style: solid;
+
+    min-width: 200px;
 }
 
 .login-box button {
