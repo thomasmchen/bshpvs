@@ -4,9 +4,9 @@
   </div>
 
   <div style="background-color: rgba(255, 0, 0, 0.171)" class="col-lg-4">
-    <app-grid [numcols]="'10'"></app-grid>
+    <app-grid [numcols]="'10'" (cellClicked)="onCellClicked($event)"></app-grid>
   </div>
   <div style="background-color: rgba(0, 0, 255, 0.082)" class="col-lg-4">
-      <app-grid [numcols]="'10'"></app-grid>
+      <app-grid [numcols]="'10'"(cellClicked)="onCellClicked($event)"></app-grid>
   </div>
 </div>

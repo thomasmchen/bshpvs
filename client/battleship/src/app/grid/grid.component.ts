@@ -1,5 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { WebdriverWebElement } from 'protractor/built/element';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-grid',
@@ -11,6 +10,9 @@ export class GridComponent implements OnInit {
   // input to get number of columns
   @Input()
   numcols : string;
+
+  @Output()
+  cellClicked = new EventEmitter<any>();
 
   // representation of every column
   cols: string[];
@@ -27,7 +29,10 @@ export class GridComponent implements OnInit {
   }
 
   cellUpdate(event: cell) {
-   window.alert('FROM PARENT: Row: '+ event.row + '  Col:' + event.col);
+   this.cellClicked.emit({
+    row: event.row,
+    col: event.col
+  });
   }
 
 }

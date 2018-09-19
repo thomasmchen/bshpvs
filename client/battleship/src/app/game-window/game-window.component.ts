@@ -14,8 +14,13 @@ export class GameWindowComponent implements OnInit {
   ngOnInit() {
   }
 
-  cellClicked() {
-    window.alert("Test");
+  onCellClicked(event: Cell) {
+    window.alert("FROM GAME WINDOW Row: " + event.row + "   Col: " + event.col);
   }
 
+}
+
+interface Cell {
+  row: number;
+  col: number;
 }
