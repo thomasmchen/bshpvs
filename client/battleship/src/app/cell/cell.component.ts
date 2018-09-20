@@ -36,7 +36,8 @@ export class CellComponent implements OnInit {
 
     this.update.emit({
       row: row,
-      col: col
+      col: col,
+      index: index
     });
 
   }

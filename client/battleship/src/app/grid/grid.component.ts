@@ -31,7 +31,8 @@ export class GridComponent implements OnInit {
   cellUpdate(event: cell) {
    this.cellClicked.emit({
     row: event.row,
-    col: event.col
+    col: event.col,
+    index: event.index
   });
   }
 
@@ -39,5 +40,6 @@ export class GridComponent implements OnInit {
 
 interface cell {
   row: number,
-  col: number
+  col: number,
+  index: number
 }

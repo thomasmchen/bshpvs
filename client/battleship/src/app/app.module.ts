@@ -48,7 +48,8 @@ import { GameWindowComponent } from './game-window/game-window.component';
       { path: 'createStrategy', component: CreateStrategyComponent },
       { path: 'about', component: AboutComponent },
       { path: 'grid', component: GridComponent },
-      { path: 'gameWindow', component: GameWindowComponent }
+      { path: 'gameWindow', component: GameWindowComponent },
+      { path: 'newGame', component: NewGameMenuComponent }
     ])
   ],
   providers: [],

@@ -23,4 +23,5 @@ export class GameWindowComponent implements OnInit {
 interface Cell {
   row: number;
   col: number;
+  index: number;
 }
