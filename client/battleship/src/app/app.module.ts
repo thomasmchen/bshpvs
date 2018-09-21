@@ -3,6 +3,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
+import { AuthService } from './auth.service';
+
 
 
 // Angular Material Modules
@@ -26,11 +28,12 @@ import { CreateStrategyComponent } from './create-strategy/create-strategy.compo
 import { StatisticsComponent } from './statistics/statistics.component';
 import { AboutComponent } from './about/about.component';
 import { GameWindowComponent } from './game-window/game-window.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent, 
-    NavigationComponent, MainMenuComponent, GridComponent, CellComponent, GameControlsComponent, NewGameMenuComponent, SettingsComponent, CreateStrategyComponent, StatisticsComponent, AboutComponent, GameWindowComponent
+    NavigationComponent, MainMenuComponent, GridComponent, CellComponent, GameControlsComponent, NewGameMenuComponent, SettingsComponent, CreateStrategyComponent, StatisticsComponent, AboutComponent, GameWindowComponent, LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -42,16 +45,19 @@ import { GameWindowComponent } from './game-window/game-window.component';
     MatButtonModule,
     MatGridListModule,
     RouterModule.forRoot([
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: MainMenuComponent } ,
-      { path: 'newGame', component: NewGameMenuComponent } ,
-      { path: 'settings', component: SettingsComponent } ,
-      { path: 'statistics', component: StatisticsComponent },
-      { path: 'createStrategy', component: CreateStrategyComponent },
-      { path: 'about', component: AboutComponent },
-      { path: 'grid', component: GridComponent },
-      { path: 'gameWindow', component: GameWindowComponent },
-      { path: 'newGame', component: NewGameMenuComponent }
+      { path: '', redirectTo: 'login', pathMatch: 'full' },
+      { path: 'home', component: MainMenuComponent, canActivate: [AuthService]} ,
+      { path: 'newGame', component: NewGameMenuComponent, canActivate: [AuthService] } ,
+      { path: 'settings', component: SettingsComponent, canActivate: [AuthService] } ,
+      { path: 'statistics', component: StatisticsComponent, canActivate: [AuthService] },
+      { path: 'createStrategy', component: CreateStrategyComponent, canActivate: [AuthService] },
+      { path: 'about', component: AboutComponent, canActivate: [AuthService] },
+      { path: 'grid', component: GridComponent, canActivate: [AuthService] },
+      { path: 'gameWindow', component: GameWindowComponent, canActivate: [AuthService] },
+      { path: 'newGame', component: NewGameMenuComponent, canActivate: [AuthService] },
+      { path: 'login', component: LoginComponent },
+      { path: '**', component: LoginComponent }
+
     ])
   ],
   providers: [],
