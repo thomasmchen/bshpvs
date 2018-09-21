@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-new-game-menu',
@@ -7,68 +8,96 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NewGameMenuComponent implements OnInit {
 
-  selectB1: boolean = false;
-  selectB2: boolean = false;
-  selectC: boolean = false;
-  selectAC: boolean = false;
+  selectCarrier: boolean = false;
+  selectCruiser: boolean = false;
+  selectSubmarine: boolean = false;
+  selectDestroyer: boolean = false;
   placementCounter: number = 0;
 
-  battleShip1 : Ship = {identifier: 0, numSpaces: 3, spaces: new Array<Coordinate>()};
-  battleShip2 : Ship = {identifier: 0, numSpaces: 3, spaces: new Array<Coordinate>()};
-  cruiser: Ship = {identifier: 1, numSpaces: 2, spaces: new Array<Coordinate>()};
-  carrier: Ship = {identifier: 2, numSpaces: 4, spaces: new Array<Coordinate>()};
+  carrier : Ship = {identifier: 0, numSpaces: 5, spaces: new Array<Coordinate>()};
+  cruiser: Ship = {identifier: 1, numSpaces: 4, spaces: new Array<Coordinate>()};
+  submarine: Ship = {identifier: 2, numSpaces: 3, spaces: new Array<Coordinate>()};
+  destroyer : Ship = {identifier: 3, numSpaces: 2, spaces: new Array<Coordinate>()};
 
   message: string = "Place your carrier (4 spaces left)";
 
 
-  constructor() { }
+  constructor(public snackbar: MatSnackBar) { }
 
   ngOnInit() {
   }
 
   onCellClicked(event: Cell) {
-    var total : number = this.carrier.numSpaces + this.battleShip1.numSpaces + this.battleShip2.numSpaces + this.cruiser.numSpaces;
+    var total : number = this.carrier.numSpaces + this.cruiser.numSpaces + this.destroyer.numSpaces + this.submarine.numSpaces;
     if (this.placementCounter < this.carrier.numSpaces) {
+      if(!this.checkValidMove(event, this.carrier))
+        return;
       this.carrier.spaces.push({x: event.col, y: event.row});
-      this.message = "Place your carrier (4 spaces)";
+      this.message = "Place your carrier (5 spaces)";
       this.placementCounter++;
       if (this.placementCounter == this.carrier.numSpaces) {
-        this.message = "Place your 1st battleship (3 spaces)";
+        this.message = "Place your cruiser (4 spaces)";
       }
-    } else if (this.placementCounter < this.battleShip1.numSpaces + this.carrier.numSpaces) {
-      this.battleShip1.spaces.push({x: event.col, y: event.row});
-      this.message = "Place your 1st battleship (3 spaces)";
+    } else if (this.placementCounter < this.cruiser.numSpaces + this.carrier.numSpaces) {
+      if(!this.checkValidMove(event, this.cruiser))
+        return;
+      this.cruiser.spaces.push({x: event.col, y: event.row});
+      this.message = "Place your cruiser (4 spaces)";
       this.placementCounter++;
-      if (this.placementCounter == this.carrier.numSpaces + this.battleShip1.numSpaces) {
-        this.message = "Place your 2nd battleship (3 spaces)";
+      if (this.placementCounter == this.carrier.numSpaces + this.cruiser.numSpaces) {
+        this.message = "Place your submarine (3 spaces)";
       }
-    } else if (this.placementCounter < this.battleShip2.numSpaces + this.battleShip1.numSpaces + this.carrier.numSpaces) {
-      this.battleShip2.spaces.push({x: event.col, y: event.row});
-      this.message = "Place your 2nd battleship (3 spaces)";
+    } else if (this.placementCounter < this.submarine.numSpaces + this.cruiser.numSpaces + this.carrier.numSpaces) {
+      if(!this.checkValidMove(event, this.submarine))
+        return;
+      this.submarine.spaces.push({x: event.col, y: event.row});
+      this.message = "Place your submarine (3 spaces)";
       this.placementCounter++;
-      if (this.placementCounter == this.carrier.numSpaces + this.battleShip1.numSpaces + this.battleShip2.numSpaces) {
-        this.message = "Place your cruiser (2 spaces)";
+      if (this.placementCounter == this.carrier.numSpaces + this.cruiser.numSpaces + this.submarine.numSpaces) {
+        this.message = "Place your destroyer (2 spaces)";
       }
     } else if (this.placementCounter < total){
-      this.cruiser.spaces.push({x: event.col, y: event.row});
-      this.message = "Place your cruiser (2 spaces)";
+      if(!this.checkValidMove(event, this.destroyer))
+        return;
+      this.destroyer.spaces.push({x: event.col, y: event.row});
+      this.message = "Place your destroyer (2 spaces)";
       this.placementCounter++;
       if (this.placementCounter == total) {
         this.message = "All ships placed";
+        document.getElementById(event.index + '').style.backgroundColor = "red";
       }
     }
     if (this.placementCounter < total) {
       document.getElementById(event.index + '').style.backgroundColor = "red";
     }
-
   }
 
+  checkValidMove(event: Cell, ship: Ship) {
+    if (ship.spaces.length == 0) {
+      return true;
+    }
+    var coordinates = ship.spaces;
+    var flag = false;
+    for (let c of coordinates) {
+      if (Math.abs(c.x - event.col) < 2 && Math.abs(c.y - event.row) < 2) {
+        flag = true;
+      }
+    }
+
+    if (!flag) {
+      this.snackbar.open("Invalid space entered.", 'Ok', {
+        duration: 2000
+      });
+    }
+    return flag;
+  }
 }
 
 interface Ship {
-  // 0 is battleship
+  // 0 is carrier
   // 1 is cruiser
-  // 2 is aircraft carrier
+  // 2 is submarine
+  // 3 is destroyer
   identifier: number,
   numSpaces: number,
   spaces: Coordinate[]
