@@ -84,6 +84,9 @@ export class NewGameMenuComponent implements OnInit {
     var coordinates = ship.spaces;
     var flag = false;
     for (let c of coordinates) {
+      if (c.x == event.col && c.y == event.row) {
+        return false;
+      }
       if (Math.abs(c.x - event.col) < 2 && Math.abs(c.y - event.row) < 2) {
         flag = true;
       }
