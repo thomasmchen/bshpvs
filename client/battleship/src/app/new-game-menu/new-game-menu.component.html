@@ -4,16 +4,16 @@
           <h1>Create new game</h1>
           <form>
             <div class="form-group">
-              <label for="name">Screen Name</label>
-              <input type="text" class="form-control" id="screenName" required>
+              <label for="username">User Name</label>
+              <input type="text" class="form-control" id="userName" [(ngModel)]="username" name="username" required>
             </div>
        
             <div class="form-group">
-              <label for="alterEgo">Victory Message</label>
-              <input type="text" class="form-control" id="message">
+              <label for="victoryMessage">Victory Message</label>
+              <input type="text" class="form-control" id="message" [(ngModel)]="victoryMessage" name="victoryMessage">
             </div>
        
-            <button type="submit" class="btn btn-success" disabled>Begin Game</button>
+            <button id="submit" type="submit" class="btn btn-success" (click)="onSubmit()" disabled>Begin Game</button>
           </form>
 
           <div class="prompt">

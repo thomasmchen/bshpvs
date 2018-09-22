@@ -53,7 +53,7 @@ import { LoginComponent } from './login/login.component';
       { path: 'createStrategy', component: CreateStrategyComponent, canActivate: [AuthService] },
       { path: 'about', component: AboutComponent, canActivate: [AuthService] },
       { path: 'grid', component: GridComponent, canActivate: [AuthService] },
-      { path: 'gameWindow', component: GameWindowComponent, canActivate: [AuthService] },
+      { path: 'gameWindow', component: GameWindowComponent },
       { path: 'newGame', component: NewGameMenuComponent, canActivate: [AuthService] },
       { path: 'login', component: LoginComponent },
       { path: '**', component: LoginComponent }

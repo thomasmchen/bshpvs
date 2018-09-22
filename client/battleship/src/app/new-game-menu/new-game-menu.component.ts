@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-game-menu',
@@ -22,7 +23,10 @@ export class NewGameMenuComponent implements OnInit {
   message: string = "Place your carrier (4 spaces left)";
 
 
-  constructor(public snackbar: MatSnackBar) { }
+  username: string = "";
+  victoryMessage: string = "";
+
+  constructor(public snackbar: MatSnackBar, private router: Router) { }
 
   ngOnInit() {
   }
@@ -64,6 +68,7 @@ export class NewGameMenuComponent implements OnInit {
       this.placementCounter++;
       if (this.placementCounter == total) {
         this.message = "All ships placed";
+        document.getElementById('submit').removeAttribute('disabled');
         document.getElementById(event.index + '').style.backgroundColor = "red";
       }
     }
@@ -90,6 +95,16 @@ export class NewGameMenuComponent implements OnInit {
       });
     }
     return flag;
+  }
+
+  onSubmit() {
+    if (this.victoryMessage == "" || this.username == "") {
+      this.snackbar.open("Enter a victory message/username", 'Ok', {
+        duration: 2000
+      });
+    } else {
+      this.router.navigateByUrl('/gameWindow');
+    }
   }
 }
 
