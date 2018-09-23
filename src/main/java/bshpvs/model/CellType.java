@@ -2,7 +2,7 @@ package bshpvs.model;
 
 
 /**
- * Enumeration to define Type of Cell
+ * Enumeration to define Type of Cell.
  */
 public enum CellType {
     WATER(0),
@@ -11,7 +11,7 @@ public enum CellType {
     private int value;
 
     /**
-     * Retrieve integer value of cell type
+     * Retrieve integer value of cell type.
      * @return the integer corresponding to the cell type
      */
     public int getValue() {
@@ -19,7 +19,7 @@ public enum CellType {
     }
 
     /**
-     * Private constructor for enumeration class
+     * Private constructor for enumeration class.
      * @param value the value of the Cell
      */
     private CellType(int value) {

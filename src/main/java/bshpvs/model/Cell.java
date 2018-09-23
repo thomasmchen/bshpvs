@@ -1,14 +1,14 @@
 package bshpvs.model;
 
 /**
- * Cell Class defined individual node within a Map
+ * Cell Class defined individual node within a Map.
  */
 public class Cell {
     private CellType type;
     private boolean hit;
 
     /**
-     * Default Constructor
+     * Default Constructor.
      * Initializes Cell to Water with false Hit value
      */
     public Cell() {
@@ -17,7 +17,7 @@ public class Cell {
     }
 
     /**
-     * Mutator method for type
+     * Mutator method for type field.
      * @param type the type to set the Cell to
      */
     public void setType(CellType type) {
@@ -25,7 +25,7 @@ public class Cell {
     }
 
     /**
-     * Accessor for retrieving type of Cell object
+     * Accessor for retrieving type of Cell object.
      * @return
      */
     public CellType getType() {
@@ -33,7 +33,7 @@ public class Cell {
     }
 
     /**
-     * Accessor method for Cell hit value
+     * Accessor method for Cell hit value.
      * @return the hit value
      */
     public boolean isHit() {
@@ -41,14 +41,14 @@ public class Cell {
     }
 
     /**
-     * Mutator method for hit value, always sets hit to true
+     * Mutator method for hit value, always sets hit to true.
      */
     public void hit() {
         this.hit = true;
     }
 
     /**
-     * ToString method for Cell Class
+     * ToString method for Cell Class.
      * @return string version of Cell
      */
     public String toString() {
