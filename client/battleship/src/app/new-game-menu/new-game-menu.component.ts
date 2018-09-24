@@ -22,6 +22,7 @@ export class NewGameMenuComponent implements OnInit {
 
   message: string = "Place your carrier (4 spaces left)";
 
+  temp: any = "";
 
   username: string = "";
   victoryMessage: string = "";
@@ -106,8 +107,37 @@ export class NewGameMenuComponent implements OnInit {
         duration: 2000
       });
     } else {
-      this.router.navigateByUrl('/gameWindow');
+
+      let carrierJson = this.convertCoordinatesToJson(this.carrier.spaces);
+      let cruiserJson = this.convertCoordinatesToJson(this.cruiser.spaces);
+      let submarineJson = this.convertCoordinatesToJson(this.submarine.spaces);
+      let destroyerJson = this.convertCoordinatesToJson(this.destroyer.spaces);
+      let x = {
+        "Username": this.username, 
+        "VictoryMessage" : this.victoryMessage,
+        "Ships": [
+          carrierJson,
+          cruiserJson, 
+          submarineJson, 
+          destroyerJson
+        ]
+      };
+
+      window.alert(x);
+      console.log(x);
+      //this.router.navigateByUrl('/gameWindow');
     }
+  }
+
+  convertCoordinatesToJson(coordinate: Coordinate[]) {
+    let json = "";
+    for (let x of coordinate) {
+      json =  json + "{x:" + x.x + ", y:" + x.y + "},"
+    }
+
+    json = json.substring(0, json.length - 1);
+
+    return json;
   }
 }
 
