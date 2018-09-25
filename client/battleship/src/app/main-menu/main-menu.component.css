@@ -31,7 +31,7 @@
 .option-btns-box button:hover {
     box-shadow:  0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
-
+/* see html file
 .lower-boxes {
     margin: auto;
     margin-bottom: 2%;
@@ -64,3 +64,4 @@
 }
 .login-box button.login { float: left; margin-left:8px; }
 .login-box button.register { float: right; margin-right:8px; }
+*/
