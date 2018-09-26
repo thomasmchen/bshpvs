@@ -88,6 +88,12 @@ export class NewGameMenuComponent implements OnInit {
   }
 
   checkValidMove(event: Cell, ship: Ship) {
+    var tempShip = ship;
+    let colinearTest = this.checkShipColinear(ship, {x: event.col, y: event.row});
+    if (!colinearTest && ship.spaces.length >= 2) {
+      window.alert('colinear test');
+      return false;
+    }
     if (ship.spaces.length == 0) {
       return true;
     }
@@ -108,6 +114,40 @@ export class NewGameMenuComponent implements OnInit {
       });
     }
     return flag;
+  }
+
+  checkShipColinear(ship: Ship, coordinate: Coordinate) {
+    if (ship.spaces.length < 2) {
+      return true;
+    } else {
+      var tempSpaces = new Array<Coordinate>();
+
+      // duplicate the ship array
+      for (var i = 0; i < ship.spaces.length; i++) {
+        let tempSpace = { x: ship.spaces[i].x, y: ship.spaces[i].y};
+        tempSpaces.push(tempSpace);
+      }
+
+      // add new cadidate
+      tempSpaces.push(coordinate);
+      if (tempSpaces.length <= 2) {
+        return true;
+      }
+
+      var lastSlope = 100;
+
+      for (var i = 1; i < tempSpaces.length; i++) {
+        let n = tempSpaces[i];
+        let c = tempSpaces[i-1];
+        let slope = (n.y - c.y) / (n.x - c.x);
+        if (lastSlope == 100) {
+          lastSlope = slope;
+        } else if (lastSlope != slope) {
+          return false;
+        }
+      }
+      return true;
+    }
   }
 
 
