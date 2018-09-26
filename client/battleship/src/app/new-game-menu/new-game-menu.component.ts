@@ -19,7 +19,8 @@ export class NewGameMenuComponent implements OnInit {
 
   carrier : Ship = {identifier: 0, numSpaces: 5, spaces: new Array<Coordinate>()};
   cruiser: Ship = {identifier: 1, numSpaces: 4, spaces: new Array<Coordinate>()};
-  submarine: Ship = {identifier: 2, numSpaces: 3, spaces: new Array<Coordinate>()};
+  submarine1: Ship = {identifier: 2, numSpaces: 3, spaces: new Array<Coordinate>()};
+  submarine2: Ship = {identifier: 2, numSpaces: 3, spaces: new Array<Coordinate>()}
   destroyer : Ship = {identifier: 3, numSpaces: 2, spaces: new Array<Coordinate>()};
 
   message: string = "Place your carrier (4 spaces left)";
@@ -42,7 +43,7 @@ export class NewGameMenuComponent implements OnInit {
   }
 
   onCellClicked(event: Cell) {
-    var total : number = this.carrier.numSpaces + this.cruiser.numSpaces + this.destroyer.numSpaces + this.submarine.numSpaces;
+    var total : number = this.carrier.numSpaces + this.cruiser.numSpaces + this.destroyer.numSpaces + this.submarine1.numSpaces + this.submarine2.numSpaces;
     if (this.placementCounter < this.carrier.numSpaces) {
       if(!this.checkValidMove(event, this.carrier))
         return;
@@ -61,16 +62,26 @@ export class NewGameMenuComponent implements OnInit {
       if (this.placementCounter == this.carrier.numSpaces + this.cruiser.numSpaces) {
         this.message = "Place your submarine (3 spaces)";
       }
-    } else if (this.placementCounter < this.submarine.numSpaces + this.cruiser.numSpaces + this.carrier.numSpaces) {
-      if(!this.checkValidMove(event, this.submarine))
+    } else if (this.placementCounter < this.submarine1.numSpaces + this.cruiser.numSpaces + this.carrier.numSpaces) {
+      if(!this.checkValidMove(event, this.submarine1))
         return;
-      this.submarine.spaces.push({x: event.col, y: event.row});
-      this.message = "Place your submarine (3 spaces)";
+      this.submarine1.spaces.push({x: event.col, y: event.row});
+      this.message = "Place your 1st submarine (3 spaces)";
       this.placementCounter++;
-      if (this.placementCounter == this.carrier.numSpaces + this.cruiser.numSpaces + this.submarine.numSpaces) {
+      if (this.placementCounter == this.carrier.numSpaces + this.cruiser.numSpaces + this.submarine1.numSpaces) {
+        this.message = "Place your 2nd submarine (2 spaces)";
+      }
+    } else if (this.placementCounter < total - this.destroyer.numSpaces) {
+      if(!this.checkValidMove(event, this.submarine2))
+        return;
+      this.submarine2.spaces.push({x: event.col, y: event.row});
+      this.message = "Place your 2nd submarine (3 spaces)";
+      this.placementCounter++;
+      if (this.placementCounter == total - this.destroyer.numSpaces) {
         this.message = "Place your destroyer (2 spaces)";
       }
-    } else if (this.placementCounter < total){
+    }
+    else if (this.placementCounter < total){
       if(!this.checkValidMove(event, this.destroyer))
         return;
       this.destroyer.spaces.push({x: event.col, y: event.row});
@@ -88,19 +99,22 @@ export class NewGameMenuComponent implements OnInit {
   }
 
   checkValidMove(event: Cell, ship: Ship) {
+    if (ship.spaces.length == 0) {
+      return true;
+    }
     var tempShip = ship;
     let colinearTest = this.checkShipColinear(ship, {x: event.col, y: event.row});
     if (!colinearTest && ship.spaces.length >= 2) {
       window.alert('colinear test');
       return false;
     }
-    if (ship.spaces.length == 0) {
-      return true;
-    }
+    
+
     var coordinates = ship.spaces;
     var flag = false;
     for (let c of coordinates) {
       if (c.x == event.col && c.y == event.row) {
+        window.alert('here');
         return false;
       }
       if (Math.abs(c.x - event.col) < 2 && Math.abs(c.y - event.row) < 2) {
@@ -160,7 +174,7 @@ export class NewGameMenuComponent implements OnInit {
 
       let carrierJson = this.convertCoordinatesToJson(this.carrier.spaces);
       let cruiserJson = this.convertCoordinatesToJson(this.cruiser.spaces);
-      let submarineJson = this.convertCoordinatesToJson(this.submarine.spaces);
+      let submarineJson = this.convertCoordinatesToJson(this.submarine1.spaces);
       let destroyerJson = this.convertCoordinatesToJson(this.destroyer.spaces);
       let x = {
         "Username": this.username, 
