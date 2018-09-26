@@ -172,37 +172,35 @@ export class NewGameMenuComponent implements OnInit {
       });
     } else {
 
-      let carrierJson = this.convertCoordinatesToJson(this.carrier.spaces);
-      let cruiserJson = this.convertCoordinatesToJson(this.cruiser.spaces);
-      let submarineJson = this.convertCoordinatesToJson(this.submarine1.spaces);
-      let destroyerJson = this.convertCoordinatesToJson(this.destroyer.spaces);
-      let x = {
-        "Username": this.username, 
-        "VictoryMessage" : this.victoryMessage,
-        "Ships": [
-          carrierJson,
-          cruiserJson, 
-          submarineJson, 
-          destroyerJson
-        ]
+      let reqs = new Array<ShipReq>();
+      let ships = new Array<Ship>();
+      ships.push(this.carrier, this.cruiser, this.submarine1, this.submarine2, this.destroyer);
+      for (var i = 0; i < ships.length; i++) {
+        let ship = ships[i];
+        var req : ShipReq = {
+          identifier: ship.identifier, 
+          numSpaces: ship.numSpaces,
+          firstSpace: ship.spaces[0],
+          lastSpace: ship.spaces[ship.spaces.length - 1]
+        };
+
+        reqs.push(req);
+      }
+
+      let request : GameRequest = {
+        userId: 0,
+        userName: this.username,
+        victoryMessage: this.victoryMessage,
+        ships: reqs
       };
-
-      window.alert(x);
-      console.log(x);
       //this.router.navigateByUrl('/gameWindow');
+
+      let r = JSON.stringify(request);
+
+      console.log(r);
     }
   }
 
-  convertCoordinatesToJson(coordinate: Coordinate[]) {
-    let json = "";
-    for (let x of coordinate) {
-      json =  json + "{x:" + x.x + ", y:" + x.y + "},"
-    }
-
-    json = json.substring(0, json.length - 1);
-
-    return json;
-  }
 }
 
 interface Ship {
@@ -224,4 +222,18 @@ interface Cell {
   row: number,
   col: number,
   index: number
+}
+
+interface ShipReq {
+  identifier: number,
+  numSpaces: number,
+  firstSpace: Coordinate,
+  lastSpace: Coordinate
+}
+
+interface GameRequest {
+  userId: number,
+  userName: string,
+  victoryMessage: string,
+  ships: ShipReq[]
 }
