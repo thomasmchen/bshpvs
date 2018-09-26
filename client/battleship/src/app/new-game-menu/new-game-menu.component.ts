@@ -110,6 +110,7 @@ export class NewGameMenuComponent implements OnInit {
     return flag;
   }
 
+
   onSubmit() {
     if (this.victoryMessage == "" || this.username == "") {
       this.snackbar.open("Enter a victory message/username", 'Ok', {
