@@ -2,6 +2,7 @@ package bshpvs.model;
 
 import java.awt.Point;
 import java.awt.geom.Line2D;
+import java.util.EnumMap;
 
 /**
  * Ship class
@@ -10,6 +11,7 @@ public class Ship {
     public Point st;
     public Point end;
     private ShipType type;
+    private Point[] points;
 
     /**
      * Constructor for Ship Class.
@@ -30,6 +32,53 @@ public class Ship {
         } else {
             this.type = type;
         }
+
+        this.points = calcShipPoints();
+
+    }
+
+    /**
+     * Calculates the the individual points of the Ship
+     * @return the points of the ship
+     */
+    private Point[] calcShipPoints() {
+        Point[] pts = new Point[type.getValue()];
+
+        int x = this.st.x;
+        int y = this.st.y;
+        int i = 0;
+
+        if (this.st.x == this.end.x) {
+            while (y != this.end.y) {
+                pts[i] = new Point(this.st.x, y);
+                y++;
+                i++;
+            }
+        } else {
+            while (x != this.end.x) {
+                pts[i] = new Point(x, this.st.y);
+                x++;
+                i++;
+            }
+        }
+
+        return pts;
+    }
+
+    /**
+     * Checks if given Ship is sunk on a given board
+     * @param board the board the ship is on
+     * @return whether the Ship is sunk
+     */
+    public boolean checkSunk(Map board) {
+        Cell[][] map = board.getMap();
+        int hitCount = 0;
+        for (Point p : points) {
+            if (map[p.x][p.y].isHit())
+                hitCount++;
+        }
+
+        return (hitCount == points.length);
     }
 
     /**
