@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { DarkModeService } from '../settings/darkmode.service';
+
 @Component({
   selector: 'app-main-menu',
   templateUrl: './main-menu.component.html',
@@ -8,9 +10,12 @@ import { Router } from '@angular/router';
 })
 export class MainMenuComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  darkMode:boolean;
+
+  constructor(private router: Router, private dm: DarkModeService) { }
 
   ngOnInit() {
+    this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
   }
 
   newGameClicked() {

@@ -30,6 +30,8 @@ import { AboutComponent } from './about/about.component';
 import { GameWindowComponent } from './game-window/game-window.component';
 import { LoginComponent } from './login/login.component';
 
+import { DarkModeService } from './settings/darkmode.service'
+
 @NgModule({
   declarations: [
     AppComponent, 
@@ -60,7 +62,7 @@ import { LoginComponent } from './login/login.component';
 
     ])
   ],
-  providers: [],
+  providers: [DarkModeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { DarkModeService } from '../settings/darkmode.service';
 
 @Component({
   selector: 'app-new-game-menu',
@@ -14,6 +15,7 @@ export class NewGameMenuComponent implements OnInit {
   selectSubmarine: boolean = false;
   selectDestroyer: boolean = false;
   placementCounter: number = 0;
+  darkMode: boolean;
 
   carrier : Ship = {identifier: 0, numSpaces: 5, spaces: new Array<Coordinate>()};
   cruiser: Ship = {identifier: 1, numSpaces: 4, spaces: new Array<Coordinate>()};
@@ -27,9 +29,10 @@ export class NewGameMenuComponent implements OnInit {
   username: string = "";
   victoryMessage: string = "";
 
-  constructor(public snackbar: MatSnackBar, private router: Router) { }
+  constructor(public snackbar: MatSnackBar, private router: Router, private dm: DarkModeService) { }
 
   ngOnInit() {
+    this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
   }
 
   onCellClicked(event: Cell) {
