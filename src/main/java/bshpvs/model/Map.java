@@ -1,62 +1,64 @@
 package bshpvs.model;
 
+import java.awt.Point;
 import java.util.Arrays;
 
+/**
+ * Map Class.
+ */
 public class Map {
-    private Cell[][] map;
+    private Cell[][] grid;
 
+    /**
+     * Constructor for Map with specific grid size.
+     * @param gridSize the length and width of the grid
+     */
     public Map(int gridSize) {
-        map = new Cell[gridSize][gridSize];
-        for (Cell[] row: map)
-            Arrays.fill(row, new Cell());
-    }
+        grid = new Cell[gridSize][gridSize];
 
-    public Cell[][] getMap() {
-        return this.map;
-    }
-
-    public Cell[][] setShip(int x1, int y1, int x2, int y2) {
-
-        // TODO: Verify if client will be doing overlap validation
-        map[x1][y1].setType(CellType.SHIP);
-        map[x2][y2].setType(CellType.SHIP);
-
-        if (x1 == x2) {
-            final int x = x1;
-            int y = ++y1;
-            while (y != y2) {
-                map[x][y].setType(CellType.SHIP);
-                y++;
-            }
-        } else {
-            int x = ++x1;
-            final int y = y1;
-            while (x != x2) {
-                map[x][y].setType(CellType.SHIP);
-                x++;
+        for (int i = 0; i < gridSize; i++) {
+            for (int j = 0; j < gridSize; j++) {
+                grid[i][j] = new Cell();
             }
         }
-
-        return map;
     }
 
+    /**
+     * Accessor method for the map field.
+     * @return the grid field of the object
+     */
+    public Cell[][] getMap() {
+        return this.grid;
+    }
+
+    /**
+     * Sets the type of a specific cell on the grid.
+     * @param p the Point coordinates of the cell
+     * @param c the value to change the cell type to
+     */
+    public void setCell(Point p, CellType c) {
+        grid[p.y][p.x].setType(c);
+    }
+
+    /**
+     * Print function for Map object.
+     */
     public void printMap() {
-        System.out.println(Arrays.deepToString(map));
-    }
-
-    private int getY(int x1, int y1, int x2, int y2, int x) {
-        return  y1 + ((y2 - y1)/(x2 - x1))*(x - x1);
-    }
-
-    private int getX(int x1, int y1, int x2, int y2, int y) {
-        return ((x1*y2-x2*y1)+(y*(x2-x1)))/(y2-y1);
+        for (Cell[] row : grid) {
+            System.out.printf(Arrays.toString(row));
+            System.out.println();
+        }
     }
 
     public static void main(String[] args) {
         Map testMap = new Map(10);
-        testMap.printMap();
+        testMap.setCell(new Point(0,0), CellType.SHIP);
+        testMap.setCell(new Point(0,1), CellType.SHIP);
+        testMap.setCell(new Point(0,2), CellType.SHIP);
+        testMap.setCell(new Point(0,3), CellType.SHIP);
+        testMap.setCell(new Point(0,4), CellType.SHIP);
+        testMap.setCell(new Point(0,5), CellType.SHIP);
 
-        testMap.setShip(0,0,0,4);
         testMap.printMap();
     }
 
