@@ -16,6 +16,12 @@ export class MainMenuComponent implements OnInit {
 
   ngOnInit() {
     this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
+    const body = document.getElementsByTagName('mat-card')[0];
+    if(this.darkMode) {
+      body.classList.add('darkMode');
+    } else {
+      body.classList.remove('darkMode');
+    }
   }
 
   newGameClicked() {
