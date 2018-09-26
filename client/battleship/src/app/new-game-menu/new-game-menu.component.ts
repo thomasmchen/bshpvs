@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { DarkModeService } from '../settings/darkmode.service';
 
 @Component({
   selector: 'app-new-game-menu',
@@ -13,6 +15,7 @@ export class NewGameMenuComponent implements OnInit {
   selectSubmarine: boolean = false;
   selectDestroyer: boolean = false;
   placementCounter: number = 0;
+  darkMode: boolean;
 
   carrier : Ship = {identifier: 0, numSpaces: 5, spaces: new Array<Coordinate>()};
   cruiser: Ship = {identifier: 1, numSpaces: 4, spaces: new Array<Coordinate>()};
@@ -21,10 +24,21 @@ export class NewGameMenuComponent implements OnInit {
 
   message: string = "Place your carrier (4 spaces left)";
 
+  temp: any = "";
 
-  constructor(public snackbar: MatSnackBar) { }
+  username: string = "";
+  victoryMessage: string = "";
+
+  constructor(public snackbar: MatSnackBar, private router: Router, private dm: DarkModeService) { }
 
   ngOnInit() {
+    this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
+    const body = document.getElementsByTagName('mat-card')[0];
+    if(this.darkMode) {
+      body.classList.add('darkMode');
+    } else {
+      body.classList.remove('darkMode');
+    }
   }
 
   onCellClicked(event: Cell) {
@@ -64,6 +78,7 @@ export class NewGameMenuComponent implements OnInit {
       this.placementCounter++;
       if (this.placementCounter == total) {
         this.message = "All ships placed";
+        document.getElementById('submit').removeAttribute('disabled');
         document.getElementById(event.index + '').style.backgroundColor = "red";
       }
     }
@@ -79,6 +94,9 @@ export class NewGameMenuComponent implements OnInit {
     var coordinates = ship.spaces;
     var flag = false;
     for (let c of coordinates) {
+      if (c.x == event.col && c.y == event.row) {
+        return false;
+      }
       if (Math.abs(c.x - event.col) < 2 && Math.abs(c.y - event.row) < 2) {
         flag = true;
       }
@@ -90,6 +108,45 @@ export class NewGameMenuComponent implements OnInit {
       });
     }
     return flag;
+  }
+
+  onSubmit() {
+    if (this.victoryMessage == "" || this.username == "") {
+      this.snackbar.open("Enter a victory message/username", 'Ok', {
+        duration: 2000
+      });
+    } else {
+
+      let carrierJson = this.convertCoordinatesToJson(this.carrier.spaces);
+      let cruiserJson = this.convertCoordinatesToJson(this.cruiser.spaces);
+      let submarineJson = this.convertCoordinatesToJson(this.submarine.spaces);
+      let destroyerJson = this.convertCoordinatesToJson(this.destroyer.spaces);
+      let x = {
+        "Username": this.username, 
+        "VictoryMessage" : this.victoryMessage,
+        "Ships": [
+          carrierJson,
+          cruiserJson, 
+          submarineJson, 
+          destroyerJson
+        ]
+      };
+
+      window.alert(x);
+      console.log(x);
+      //this.router.navigateByUrl('/gameWindow');
+    }
+  }
+
+  convertCoordinatesToJson(coordinate: Coordinate[]) {
+    let json = "";
+    for (let x of coordinate) {
+      json =  json + "{x:" + x.x + ", y:" + x.y + "},"
+    }
+
+    json = json.substring(0, json.length - 1);
+
+    return json;
   }
 }
 

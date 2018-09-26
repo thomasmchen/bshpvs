@@ -30,6 +30,8 @@ import { AboutComponent } from './about/about.component';
 import { GameWindowComponent } from './game-window/game-window.component';
 import { LoginComponent } from './login/login.component';
 
+import { DarkModeService } from './settings/darkmode.service'
+
 @NgModule({
   declarations: [
     AppComponent, 
@@ -53,14 +55,14 @@ import { LoginComponent } from './login/login.component';
       { path: 'createStrategy', component: CreateStrategyComponent, canActivate: [AuthService] },
       { path: 'about', component: AboutComponent, canActivate: [AuthService] },
       { path: 'grid', component: GridComponent, canActivate: [AuthService] },
-      { path: 'gameWindow', component: GameWindowComponent, canActivate: [AuthService] },
+      { path: 'gameWindow', component: GameWindowComponent },
       { path: 'newGame', component: NewGameMenuComponent, canActivate: [AuthService] },
       { path: 'login', component: LoginComponent },
       { path: '**', component: LoginComponent }
 
     ])
   ],
-  providers: [],
+  providers: [DarkModeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
