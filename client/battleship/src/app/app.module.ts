@@ -29,6 +29,8 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { AboutComponent } from './about/about.component';
 import { GameWindowComponent } from './game-window/game-window.component';
 import { LoginComponent } from './login/login.component';
+import { HttpModule } from '@angular/http';
+
 
 import { DarkModeService } from './settings/darkmode.service'
 
@@ -42,6 +44,7 @@ import { DarkModeService } from './settings/darkmode.service'
     BrowserAnimationsModule,
     FormsModule,
     MatToolbarModule,
+    HttpModule,
     MatCardModule,
     MatSnackBarModule,
     MatButtonModule,
