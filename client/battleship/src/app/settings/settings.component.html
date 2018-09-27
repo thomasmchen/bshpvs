@@ -12,10 +12,10 @@
     <div class="setting">
         <h4>Setting 2</h4>
         <label class="switch"> <!-- Rounded switch -->
-            <input type="checkbox">
+            <input class="timerToggle" type="checkbox" (click)="toggleTimer()">
             <span class="slider round"></span>
         </label>
-      </div>
+    </div>
       <div class="setting">
         <h4>Go Fullscreen</h4>
         <label class="switch"> <!-- Rounded switch -->
@@ -25,11 +25,12 @@
       </div>
         <div class="setting">
             <h4>Setting 4</h4>
-            <label class="switch"> <!-- Rounded switch -->
-                <input type="checkbox">
-                <span class="slider round"></span>
-            </label>
-          </div>
-  </div>
-</div>
+                    <label class="switch"> <!-- Rounded switch -->
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+        </div>
+        <div class="test">TEST</div>
+    </div>
 </mat-card>

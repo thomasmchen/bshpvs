@@ -9,11 +9,13 @@ import { DarkModeService } from './darkmode.service';
 export class SettingsComponent implements OnInit {
   darkMode:boolean;
   fsMode:boolean;
+  timer: boolean;
 
   constructor(private dm: DarkModeService) { }
 
   ngOnInit() {
     this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
+    this.dm.currentTimer.subscribe(timer => this.timer = timer);
     const body = document.getElementsByTagName('mat-card')[0];
     if(this.darkMode) {
       const slider: HTMLInputElement = <HTMLInputElement>document.getElementsByClassName('dmtoggle')[0];
@@ -22,10 +24,9 @@ export class SettingsComponent implements OnInit {
     } else {
       body.classList.remove('darkMode');
     }
-
-    if(window.innerHeight != screen.height){
-      const slider: HTMLInputElement = <HTMLInputElement>document.getElementsByClassName('dmtoggle')[0];
-      slider.checked = false;
+    if(this.timer) {
+      const slider: HTMLInputElement = <HTMLInputElement>document.getElementsByClassName('timerToggle')[0];
+      slider.checked = true;
     }
   }
 
@@ -39,8 +40,6 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  @ViewChild('input') private input;
-
   toggleFullScreen() {
     if(window.innerHeight != screen.height) { //if not already in fullscreen mode
       let elem = document.body;
@@ -50,12 +49,11 @@ export class SettingsComponent implements OnInit {
         if(methodToBeInvoked) methodToBeInvoked.call(elem);
     }
     else { //else exit fullscreen
-      this.input.nativeElement.focus();
-      let startPos = this.input.nativeElement.selectionStart;
-      let value = this.input.nativeElement.value;
-      this.input.nativeElement.value=
-      value.substring(0, startPos) + 'YEEEEEET ' + value.substring(startPos, value.length)
     }
+  }
+
+  toggleTimer() {
+   this.dm.toggleTimer(!this.timer);
   }
 
 }
