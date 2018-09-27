@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DarkModeService } from './darkmode.service';
 
 @Component({
@@ -7,9 +7,10 @@ import { DarkModeService } from './darkmode.service';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-
   darkMode:boolean;
+  fsMode:boolean;
   timer: boolean;
+
   constructor(private dm: DarkModeService) { }
 
   ngOnInit() {
@@ -36,6 +37,18 @@ export class SettingsComponent implements OnInit {
       body.classList.add('darkMode');
     } else {
       body.classList.remove('darkMode');
+    }
+  }
+
+  toggleFullScreen() {
+    if(window.innerHeight != screen.height) { //if not already in fullscreen mode
+      let elem = document.body;
+      let methodToBeInvoked = elem.requestFullscreen ||
+        elem.webkitRequestFullscreen || elem['mozRequestFullscreen'] ||
+        elem['msRequestFullscreen'];
+        if(methodToBeInvoked) methodToBeInvoked.call(elem);
+    }
+    else { //else exit fullscreen
     }
   }
 
