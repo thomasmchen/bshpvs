@@ -24,7 +24,13 @@ export class GameWindowComponent implements OnInit {
     tmr.subscribe(
       function(x) {
         var tst = document.querySelector(".timerContainer");
-        tst.innerHTML = ""+x;
+        var sec = x%60;
+        var min = Math.floor(x/60);
+        if(sec < 10) {
+          tst.innerHTML = min+":0"+sec;
+        } else {
+          tst.innerHTML = min+":"+sec;
+        }
       }
     );
     const body = document.getElementsByTagName('mat-card')[0];
