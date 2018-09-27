@@ -95,15 +95,20 @@ export class GameWindowComponent implements OnInit {
     );
     const body = document.getElementsByTagName('mat-card')[0];
     const timerContainer = document.getElementsByClassName('timerContainer')[0];
+    const timerBody = document.getElementsByTagName('mat-card')[1];
     if(this.darkMode) {
       body.classList.add('darkMode');
+      timerBody.classList.add('darkMode');
     } else {
       body.classList.remove('darkMode');
+      timerBody.classList.remove('darkMode');
     }
     if(this.timer) {
       timerContainer.classList.remove('hidden');
+      timerBody.classList.remove('hidden');
     } else {
       timerContainer.classList.add('hidden');
+      timerBody.classList.add('hidden');
     }
   }
 

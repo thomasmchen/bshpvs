@@ -14,7 +14,7 @@ export class DarkModeService {
         this.darkModeSource.next(darkMode)
     }
 
-    public timer: boolean = true;
+    public timer: boolean = false;
     private timerSource = new BehaviorSubject<boolean>(this.timer);
     currentTimer = this.timerSource.asObservable();
 
