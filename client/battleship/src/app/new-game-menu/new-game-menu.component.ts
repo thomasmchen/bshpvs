@@ -19,7 +19,8 @@ export class NewGameMenuComponent implements OnInit {
 
   carrier : Ship = {identifier: 0, numSpaces: 5, spaces: new Array<Coordinate>()};
   cruiser: Ship = {identifier: 1, numSpaces: 4, spaces: new Array<Coordinate>()};
-  submarine: Ship = {identifier: 2, numSpaces: 3, spaces: new Array<Coordinate>()};
+  submarine1: Ship = {identifier: 2, numSpaces: 3, spaces: new Array<Coordinate>()};
+  submarine2: Ship = {identifier: 2, numSpaces: 3, spaces: new Array<Coordinate>()}
   destroyer : Ship = {identifier: 3, numSpaces: 2, spaces: new Array<Coordinate>()};
 
   message: string = "Place your carrier (4 spaces left)";
@@ -42,7 +43,7 @@ export class NewGameMenuComponent implements OnInit {
   }
 
   onCellClicked(event: Cell) {
-    var total : number = this.carrier.numSpaces + this.cruiser.numSpaces + this.destroyer.numSpaces + this.submarine.numSpaces;
+    var total : number = this.carrier.numSpaces + this.cruiser.numSpaces + this.destroyer.numSpaces + this.submarine1.numSpaces + this.submarine2.numSpaces;
     if (this.placementCounter < this.carrier.numSpaces) {
       if(!this.checkValidMove(event, this.carrier))
         return;
@@ -61,16 +62,26 @@ export class NewGameMenuComponent implements OnInit {
       if (this.placementCounter == this.carrier.numSpaces + this.cruiser.numSpaces) {
         this.message = "Place your submarine (3 spaces)";
       }
-    } else if (this.placementCounter < this.submarine.numSpaces + this.cruiser.numSpaces + this.carrier.numSpaces) {
-      if(!this.checkValidMove(event, this.submarine))
+    } else if (this.placementCounter < this.submarine1.numSpaces + this.cruiser.numSpaces + this.carrier.numSpaces) {
+      if(!this.checkValidMove(event, this.submarine1))
         return;
-      this.submarine.spaces.push({x: event.col, y: event.row});
-      this.message = "Place your submarine (3 spaces)";
+      this.submarine1.spaces.push({x: event.col, y: event.row});
+      this.message = "Place your 1st submarine (3 spaces)";
       this.placementCounter++;
-      if (this.placementCounter == this.carrier.numSpaces + this.cruiser.numSpaces + this.submarine.numSpaces) {
+      if (this.placementCounter == this.carrier.numSpaces + this.cruiser.numSpaces + this.submarine1.numSpaces) {
+        this.message = "Place your 2nd submarine (2 spaces)";
+      }
+    } else if (this.placementCounter < total - this.destroyer.numSpaces) {
+      if(!this.checkValidMove(event, this.submarine2))
+        return;
+      this.submarine2.spaces.push({x: event.col, y: event.row});
+      this.message = "Place your 2nd submarine (3 spaces)";
+      this.placementCounter++;
+      if (this.placementCounter == total - this.destroyer.numSpaces) {
         this.message = "Place your destroyer (2 spaces)";
       }
-    } else if (this.placementCounter < total){
+    }
+    else if (this.placementCounter < total){
       if(!this.checkValidMove(event, this.destroyer))
         return;
       this.destroyer.spaces.push({x: event.col, y: event.row});
@@ -91,6 +102,13 @@ export class NewGameMenuComponent implements OnInit {
     if (ship.spaces.length == 0) {
       return true;
     }
+    var tempShip = ship;
+    let colinearTest = this.checkShipColinear(ship, {x: event.col, y: event.row});
+    if (!colinearTest && ship.spaces.length >= 2) {
+      return false;
+    }
+    
+
     var coordinates = ship.spaces;
     var flag = false;
     for (let c of coordinates) {
@@ -110,6 +128,40 @@ export class NewGameMenuComponent implements OnInit {
     return flag;
   }
 
+  checkShipColinear(ship: Ship, coordinate: Coordinate) {
+    if (ship.spaces.length < 2) {
+      return true;
+    } else {
+      var tempSpaces = new Array<Coordinate>();
+
+      // duplicate the ship array
+      for (var i = 0; i < ship.spaces.length; i++) {
+        let tempSpace = { x: ship.spaces[i].x, y: ship.spaces[i].y};
+        tempSpaces.push(tempSpace);
+      }
+
+      // add new cadidate
+      tempSpaces.push(coordinate);
+      if (tempSpaces.length <= 2) {
+        return true;
+      }
+
+      var lastSlope = 100;
+
+      for (var i = 1; i < tempSpaces.length; i++) {
+        let n = tempSpaces[i];
+        let c = tempSpaces[i-1];
+        let slope = (n.y - c.y) / (n.x - c.x);
+        if (lastSlope == 100) {
+          lastSlope = slope;
+        } else if (lastSlope != slope) {
+          return false;
+        }
+      }
+      return true;
+    }
+  }
+
 
   onSubmit() {
     if (this.victoryMessage == "" || this.username == "") {
@@ -118,37 +170,35 @@ export class NewGameMenuComponent implements OnInit {
       });
     } else {
 
-      let carrierJson = this.convertCoordinatesToJson(this.carrier.spaces);
-      let cruiserJson = this.convertCoordinatesToJson(this.cruiser.spaces);
-      let submarineJson = this.convertCoordinatesToJson(this.submarine.spaces);
-      let destroyerJson = this.convertCoordinatesToJson(this.destroyer.spaces);
-      let x = {
-        "Username": this.username, 
-        "VictoryMessage" : this.victoryMessage,
-        "Ships": [
-          carrierJson,
-          cruiserJson, 
-          submarineJson, 
-          destroyerJson
-        ]
+      let reqs = new Array<ShipReq>();
+      let ships = new Array<Ship>();
+      ships.push(this.carrier, this.cruiser, this.submarine1, this.submarine2, this.destroyer);
+      for (var i = 0; i < ships.length; i++) {
+        let ship = ships[i];
+        var req : ShipReq = {
+          identifier: ship.identifier, 
+          numSpaces: ship.numSpaces,
+          firstSpace: ship.spaces[0],
+          lastSpace: ship.spaces[ship.spaces.length - 1]
+        };
+
+        reqs.push(req);
+      }
+
+      let request : GameRequest = {
+        userId: 0,
+        userName: this.username,
+        victoryMessage: this.victoryMessage,
+        ships: reqs
       };
-
-      window.alert(x);
-      console.log(x);
       //this.router.navigateByUrl('/gameWindow');
+
+      let r = JSON.stringify(request);
+
+      console.log(r);
     }
   }
 
-  convertCoordinatesToJson(coordinate: Coordinate[]) {
-    let json = "";
-    for (let x of coordinate) {
-      json =  json + "{x:" + x.x + ", y:" + x.y + "},"
-    }
-
-    json = json.substring(0, json.length - 1);
-
-    return json;
-  }
 }
 
 interface Ship {
@@ -170,4 +220,18 @@ interface Cell {
   row: number,
   col: number,
   index: number
+}
+
+interface ShipReq {
+  identifier: number,
+  numSpaces: number,
+  firstSpace: Coordinate,
+  lastSpace: Coordinate
+}
+
+interface GameRequest {
+  userId: number,
+  userName: string,
+  victoryMessage: string,
+  ships: ShipReq[]
 }
