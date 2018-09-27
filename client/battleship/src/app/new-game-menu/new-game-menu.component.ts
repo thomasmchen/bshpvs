@@ -105,7 +105,6 @@ export class NewGameMenuComponent implements OnInit {
     var tempShip = ship;
     let colinearTest = this.checkShipColinear(ship, {x: event.col, y: event.row});
     if (!colinearTest && ship.spaces.length >= 2) {
-      window.alert('colinear test');
       return false;
     }
     
@@ -114,7 +113,6 @@ export class NewGameMenuComponent implements OnInit {
     var flag = false;
     for (let c of coordinates) {
       if (c.x == event.col && c.y == event.row) {
-        window.alert('here');
         return false;
       }
       if (Math.abs(c.x - event.col) < 2 && Math.abs(c.y - event.row) < 2) {

@@ -6,6 +6,7 @@ target/
 .idea/dictionaries
 .idea/
 \.DS_Store
+node_modules/
 
 
 # Sensitive or high-churn files:

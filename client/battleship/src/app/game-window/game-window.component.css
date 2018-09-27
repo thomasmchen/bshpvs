@@ -28,11 +28,10 @@ div.userGrid {
   }
 
   .timerContainer {
-    width: max-content;
-    font-size: 20pt;
+    font-size: 15pt;
   }
 
   #timer {
-    width: 5%;
+    width: 90px;
     float: right;
   }
