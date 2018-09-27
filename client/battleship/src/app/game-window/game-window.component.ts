@@ -31,6 +31,8 @@ export class GameWindowComponent implements OnInit {
 
   public ships: Ship[] = new Array<Ship>();
 
+  gridSize: number = 10;
+
 
   constructor(private http: Http) { 
     this.http.get('http://www.mocky.io/v2/5babd5cb310000550065455a').subscribe((res) => {
@@ -59,7 +61,13 @@ export class GameWindowComponent implements OnInit {
 
   renderShips() {
     for (var i = 0; i < this.ships.length; i++) {
-      console.log(this.ships[i]);
+      for (var j = 0; j < this.ships[i].spaces.length; j++) {
+        let x = this.ships[i].spaces[j].x;
+        let y = this.ships[i].spaces[j].y;
+        var id = x * this.gridSize + y;
+
+        document.getElementById("user_"+id).style.backgroundColor = "red";
+      }
     }
   }
 

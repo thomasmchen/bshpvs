@@ -25,7 +25,6 @@ export class CellComponent implements OnInit {
   onClick() {
     // convert inputs to numbers
     var temp = this.n.replace(/[^0-9]/gi, '')
-    window.alert(temp);
     var index = +temp;
     var ncols = +this.numcols;
 
