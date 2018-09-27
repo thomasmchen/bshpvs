@@ -21,4 +21,12 @@ export class DarkModeService {
     toggleTimer(timer: boolean) {
         this.timerSource.next(timer);
     }
+
+    public fsMode: boolean = false;
+    private fsModeSource = new BehaviorSubject<boolean>(this.fsMode);
+    currentFSmode = this.fsModeSource.asObservable();
+
+    toggleFSmode(fsMode: boolean) {
+        this.fsModeSource.next(fsMode);
+    }
 }

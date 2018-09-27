@@ -3,14 +3,14 @@
   <h1 class="mat-h1">Settings</h1>
   <div class="settings-box">
     <div class="setting">
-      <h4>Dark Theme [WIP]</h4>
+      <h4>Dark Theme</h4>
       <label class="switch"> <!-- Rounded switch -->
           <input class="dmtoggle" type="checkbox" (click)="toggleDarkMode()">
           <span class="slider round"></span>
       </label>
     </div>
     <div class="setting">
-        <h4>Setting 2</h4>
+        <h4>In-Game Timer</h4>
         <label class="switch"> <!-- Rounded switch -->
             <input class="timerToggle" type="checkbox" (click)="toggleTimer()">
             <span class="slider round"></span>
@@ -19,18 +19,17 @@
       <div class="setting">
         <h4>Go Fullscreen</h4>
         <label class="switch"> <!-- Rounded switch -->
-            <input #input class="FStoggle" type="checkbox" (click)="toggleFullScreen()">
+            <input class="FStoggle" type="checkbox" (click)="toggleFullScreen()">
             <span class="slider round"></span>
         </label>
       </div>
         <div class="setting">
-            <h4>Setting 4</h4>
-                    <label class="switch"> <!-- Rounded switch -->
-                        <input type="checkbox">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
+          <h4>Setting 4</h4>
+          <label class="switch"> <!-- Rounded switch -->
+              <input type="checkbox">
+              <span class="slider round"></span>
+          </label>
         </div>
-        <div class="test">TEST</div>
     </div>
+</div>
 </mat-card>
