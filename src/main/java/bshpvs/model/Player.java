@@ -26,6 +26,8 @@ public class Player {
         board = new Map(DEFAULT_GRID_SIZE);
         oppBoard = new Map(DEFAULT_GRID_SIZE);
         id = UUID.randomUUID();
+        ships = new EnumMap<ShipType, Ship>(ShipType.class);
+        statuses = new EnumMap<ShipType, Boolean>(ShipType.class);
     }
 
     /**
@@ -36,6 +38,8 @@ public class Player {
         board = new Map(size);
         oppBoard = new Map(size);
         id = UUID.randomUUID();
+        ships = new EnumMap<ShipType, Ship>(ShipType.class);
+        statuses = new EnumMap<ShipType, Boolean>(ShipType.class);
     }
 
     /**
@@ -89,8 +93,6 @@ public class Player {
                 x++;
             }
         }
-
-        board.printMap();
     }
 
 
@@ -101,7 +103,7 @@ public class Player {
      * @return the Cell that was hit
      */
     public Cell hitOppCell(Point pt, Player player) {
-        player.updateCell(pt);
+        player.board.getMap()[pt.x][pt.y].hit();
         return player.getCell(pt);
     }
 
@@ -112,6 +114,12 @@ public class Player {
      * @return the status of the ship
      */
     public boolean isShipSunk(ShipType type) {
+
+        if (ships.get(type).checkSunk(this.board)) {
+            statuses.remove(type);
+            statuses.put(type,true);
+        }
+
         return statuses.get(type);
     }
 
@@ -130,14 +138,6 @@ public class Player {
      */
     public Cell getCell(Point p) {
         return board.getMap()[p.x][p.y];
-    }
-
-    /**
-     * Update the hit status of a specific cell to HIT
-     * @param p the point to be updated
-     */
-    public void updateCell(Point p) {
-        board.getMap()[p.x][p.y].hit();
     }
 
     /**

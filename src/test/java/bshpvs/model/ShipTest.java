@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 import java.awt.*;
+import java.util.Arrays;
 
 public class ShipTest {
 
@@ -30,5 +31,15 @@ public class ShipTest {
         Ship c = new Ship(new Point(6,6), new Point(6,7), ShipType.DESTROYER);
         assertEquals(true, a.doesOverlap(b));
         assertEquals(false, a.doesOverlap(c));
+    }
+
+    @Test
+    public void testGetPoints() {
+        Ship a = new Ship(new Point(0,0), new Point(0, 2), ShipType.SUBMARINE);
+        Point[] pts = a.getPoints();
+
+        assertEquals(new Point(0,0), pts[0]);
+        assertEquals(new Point(0,1), pts[1]);
+        assertEquals(new Point(0,2), pts[2]);
     }
 }

@@ -2,7 +2,6 @@ package bshpvs.model;
 
 import java.awt.Point;
 import java.awt.geom.Line2D;
-import java.util.EnumMap;
 
 /**
  * Ship class
@@ -49,13 +48,13 @@ public class Ship {
         int i = 0;
 
         if (this.st.x == this.end.x) {
-            while (y != this.end.y) {
+            while (y != (this.end.y + 1)) {
                 pts[i] = new Point(this.st.x, y);
                 y++;
                 i++;
             }
         } else {
-            while (x != this.end.x) {
+            while ((x != this.end.x + 1)) {
                 pts[i] = new Point(x, this.st.y);
                 x++;
                 i++;
@@ -87,6 +86,14 @@ public class Ship {
      */
     public ShipType getType() {
         return this.type;
+    }
+
+    /**
+     * Accessor function for the points of a ship
+     * @return the points of a ship
+     */
+    public Point[] getPoints() {
+        return this.points;
     }
 
     /**

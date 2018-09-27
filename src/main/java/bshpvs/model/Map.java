@@ -49,17 +49,4 @@ public class Map {
             System.out.println();
         }
     }
-
-    public static void main(String[] args) {
-        Map testMap = new Map(10);
-        testMap.setCell(new Point(0,0), CellType.SHIP);
-        testMap.setCell(new Point(0,1), CellType.SHIP);
-        testMap.setCell(new Point(0,2), CellType.SHIP);
-        testMap.setCell(new Point(0,3), CellType.SHIP);
-        testMap.setCell(new Point(0,4), CellType.SHIP);
-        testMap.setCell(new Point(0,5), CellType.SHIP);
-
-        testMap.printMap();
-    }
-
 }
