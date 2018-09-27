@@ -53,7 +53,7 @@ export class SettingsComponent implements OnInit {
   }
 
   toggleTimer() {
-   this.dm.toggleTimer(!this.timer);
+   this.dm.toggleTimer(this.timer);
   }
 
 }
