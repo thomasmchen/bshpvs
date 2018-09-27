@@ -33,15 +33,6 @@ export class SettingsComponent implements OnInit {
       const slider: HTMLInputElement = <HTMLInputElement>document.getElementsByClassName('timerToggle')[0];
       slider.checked = true;
     }
-
-    if(this.fsMode && window.innerHeight == screen.height) {
-      const slider: HTMLInputElement = <HTMLInputElement>document.getElementsByClassName('FStoggle')[0];
-      slider.checked = true;
-    }
-    else{
-      const slider: HTMLInputElement = <HTMLInputElement>document.getElementsByClassName('FStoggle')[0];
-      slider.checked = false;
-    }
   }
 
   toggleDarkMode() {
@@ -65,8 +56,6 @@ export class SettingsComponent implements OnInit {
         elem.webkitRequestFullscreen || elem['mozRequestFullscreen'] ||
         elem['msRequestFullscreen'];
         if(methodToBeInvoked) methodToBeInvoked.call(elem);
-    }
-    else { //else exit fullscreen, elem.exitFullscreen not allowed in TS???
     }
   }
 
