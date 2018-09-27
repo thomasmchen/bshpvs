@@ -30,7 +30,7 @@ import { AboutComponent } from './about/about.component';
 import { GameWindowComponent } from './game-window/game-window.component';
 import { LoginComponent } from './login/login.component';
 
-import { DarkModeService } from './settings/darkmode.service'
+import { DarkModeService } from './settings/darkmode.service';
 
 @NgModule({
   declarations: [

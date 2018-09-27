@@ -9,12 +9,12 @@ import { DarkModeService } from './darkmode.service';
 export class SettingsComponent implements OnInit {
 
   darkMode:boolean;
-  
-
+  timer: boolean;
   constructor(private dm: DarkModeService) { }
 
   ngOnInit() {
     this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
+    this.dm.currentTimer.subscribe(timer => this.timer = timer);
     const body = document.getElementsByTagName('mat-card')[0];
     if(this.darkMode) {
       const slider: HTMLInputElement = <HTMLInputElement>document.getElementsByClassName('dmtoggle')[0];
@@ -22,6 +22,10 @@ export class SettingsComponent implements OnInit {
       body.classList.add('darkMode');
     } else {
       body.classList.remove('darkMode');
+    }
+    if(this.timer) {
+      const slider: HTMLInputElement = <HTMLInputElement>document.getElementsByClassName('timerToggle')[0];
+      slider.checked = true;
     }
   }
 
@@ -33,6 +37,10 @@ export class SettingsComponent implements OnInit {
     } else {
       body.classList.remove('darkMode');
     }
+  }
+
+  toggleTimer() {
+   this.dm.toggleTimer(!this.timer);
   }
 
 }
