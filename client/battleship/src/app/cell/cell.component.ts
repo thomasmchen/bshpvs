@@ -9,7 +9,7 @@ import { NgModuleCompileResult } from '@angular/compiler/src/ng_module_compiler'
 export class CellComponent implements OnInit {
 
   @Input()
-  n;
+  n: string;
 
   @Input()
   numcols;
@@ -24,7 +24,9 @@ export class CellComponent implements OnInit {
 
   onClick() {
     // convert inputs to numbers
-    var index = +this.n;
+    var temp = this.n.replace(/[^0-9]/gi, '')
+    window.alert(temp);
+    var index = +temp;
     var ncols = +this.numcols;
 
     // calculate the row and col

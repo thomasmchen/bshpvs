@@ -11,6 +11,9 @@ export class GridComponent implements OnInit {
   @Input()
   numcols : string;
 
+  @Input()
+  prefix : string;
+
   @Output()
   cellClicked = new EventEmitter<any>();
 
@@ -24,7 +27,7 @@ export class GridComponent implements OnInit {
     var n = +this.numcols;
     this.cols = new Array(n * n).fill('');
     for (var i = 0; i < this.cols.length; i++) {
-      this.cols[i] = ""+i;
+        this.cols[i] = ""+this.prefix+i;
     }
   }
 
