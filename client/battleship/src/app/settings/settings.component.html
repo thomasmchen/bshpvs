@@ -16,20 +16,19 @@
             <span class="slider round"></span>
         </label>
     </div>
-      <div class="setting">
-        <h4>Go Fullscreen</h4>
-        <label class="switch"> <!-- Rounded switch -->
-            <input #input class="FStoggle" type="checkbox" (click)="toggleFullScreen()">
-            <span class="slider round"></span>
-        </label>
-      </div>
-        <div class="setting">
-            <h4>Setting 4</h4>
-                    <label class="switch"> <!-- Rounded switch -->
-                        <input type="checkbox">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-        </div>
+    <div class="setting">
+        <h4>Go Fullscreen &nbsp;&nbsp;&nbsp;&nbsp; {{message}}</h4>
+        <button class="FSbutton" type="button" (click)="toggleFullScreen()">Press</button>
     </div>
+    <!--
+        <div class="setting">
+          <h4>Setting 4</h4>
+          <label class="switch"> 
+              <input type="checkbox">
+              <span class="slider round"></span>
+          </label>
+        </div>
+    -->
+    </div>
+</div>
 </mat-card>

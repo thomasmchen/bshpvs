@@ -14,11 +14,19 @@ export class DarkModeService {
         this.darkModeSource.next(darkMode)
     }
 
-    public timer: boolean = true;
+    public timer: boolean = false;
     private timerSource = new BehaviorSubject<boolean>(this.timer);
     currentTimer = this.timerSource.asObservable();
 
     toggleTimer(timer: boolean) {
         this.timerSource.next(timer);
+    }
+
+    public fsMode: boolean = false;
+    private fsModeSource = new BehaviorSubject<boolean>(this.fsMode);
+    currentFSmode = this.fsModeSource.asObservable();
+
+    toggleFSmode(fsMode: boolean) {
+        this.fsModeSource.next(fsMode);
     }
 }
