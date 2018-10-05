@@ -1,0 +1,11 @@
+.container {
+    margin: auto;
+    margin-top: 2%;
+    min-width: 720px;
+    min-height: 100vh;
+}
+
+.darkMode {
+    background-color: rgb(34, 34, 34);
+    color: white;
+}
