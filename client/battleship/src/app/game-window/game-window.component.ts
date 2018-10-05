@@ -113,10 +113,10 @@ export class GameWindowComponent implements OnInit {
   }
 
   onCellClicked(event: Cell) {
-    this.makePlayerMove(event.row, event.col);
+    this.makePlayerMove(event.row, event.col, 0);
   }
 
-  makePlayerMove(_x, _y) {
+  makePlayerAttack(_x, _y) {
     let request : AttackRequest = {
       enemy : 0,
       x : _x,
@@ -125,6 +125,18 @@ export class GameWindowComponent implements OnInit {
 
     console.log(request);
   }
+
+  makePlayerMove(_x, _y, _direction) {
+    let request : MoveRequest = {
+      x: _x,
+      y: _y, 
+      direction: _direction
+    }
+
+    console.log(request);
+  }
+
+  
 
 }
 
@@ -156,6 +168,12 @@ interface AttackRequest {
   enemy: number,
   x: number,
   y: number
+}
+
+interface MoveRequest {
+  x: number,
+  y: number,
+  direction: number
 }
 
 
