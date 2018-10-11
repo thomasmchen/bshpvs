@@ -8,6 +8,16 @@ public class AttackRequest
 
     private String x;
 
+    private String userID;
+
+    public void setUserID(String userID) {
+      this.userID = userID;
+    }
+
+    public String getUserID() {
+      return userID;
+    }
+
     public String getEnemy ()
     {
         return enemy;
@@ -41,6 +51,6 @@ public class AttackRequest
     @Override
     public String toString()
     {
-        return "MoveRequest [enemy = "+enemy+", y = "+y+", x = "+x+"]";
+        return "MoveRequest [userID = "+userID+", enemy = "+enemy+", y = "+y+", x = "+x+"]";
     }
 }

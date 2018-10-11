@@ -8,6 +8,16 @@ public class MoveRequest
 
     private String x;
 
+    private String userID;
+
+    public void setUserID(String userID) {
+      this.userID = userID;
+    }
+
+    public String getUserID() {
+      return userID;
+    }
+
     public String getDirection ()
     {
         return direction;
@@ -41,6 +51,6 @@ public class MoveRequest
     @Override
     public String toString()
     {
-        return "MoveRequest [direction = "+direction+", y = "+y+", x = "+x+"]";
+        return "MoveRequest [userID = "+userID+", direction = "+direction+", y = "+y+", x = "+x+"]";
     }
 }

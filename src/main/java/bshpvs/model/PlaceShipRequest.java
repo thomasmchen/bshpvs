@@ -2,11 +2,21 @@ package bshpvs.model;
 
 public class PlaceShipRequest {
 
-  String start;
+  private String start;
 
-  String end;
+  private String end;
 
-  String shipType;
+  private String shipType;
+
+  private String userID;
+
+  public void setUserID(String userID) {
+    this.userID = userID;
+  }
+
+  public String getUserID() {
+    return userID;
+  }
 
   public void setStart(String start) {
     this.start = start;
@@ -35,7 +45,7 @@ public class PlaceShipRequest {
   @Override
   public String toString()
   {
-      return "PlaceShipRequest [start = "+start+", end = "+end+", type = "+shipType+"]";
+      return "PlaceShipRequest [userID = "+userID+", start = "+start+", end = "+end+", type = "+shipType+"]";
   }
 
 
