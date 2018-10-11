@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { WebService } from '../web.service';
+import { Config } from 'protractor';
+
+
+
 
 @Component({
   selector: 'app-new-game-menu',
@@ -20,14 +25,21 @@ export class NewGameMenuComponent implements OnInit {
   destroyer : Ship = {identifier: 3, numSpaces: 2, spaces: new Array<Coordinate>()};
 
   message: string = "Place your carrier (4 spaces left)";
+  wsConf : Config = {
+    host:'localhost:8080/battleship',
+    debug:true,
+    queue:{'init':false}
+  }
 
-
-  constructor(public snackbar: MatSnackBar) { }
+  constructor(public snackbar: MatSnackBar, private stomp: WebService) { 
+    stomp.initializeConnection();  
+  }
 
   ngOnInit() {
   }
 
   onCellClicked(event: Cell) {
+    this.stomp.sendMessage("test");
     var total : number = this.carrier.numSpaces + this.cruiser.numSpaces + this.destroyer.numSpaces + this.submarine.numSpaces;
     if (this.placementCounter < this.carrier.numSpaces) {
       if(!this.checkValidMove(event, this.carrier))

@@ -6,9 +6,10 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer  {
 
     private static final String BATTLESHIP = "/battleship";
 
@@ -18,9 +19,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         config.setApplicationDestinationPrefixes("/app");
     }
 
+
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint(BATTLESHIP).withSockJS();
+    public void registerStompEndpoints(StompEndpointRegistry registry) {   
+        registry.addEndpoint(BATTLESHIP).setAllowedOrigins("*").withSockJS();
     }
+
 
 }
