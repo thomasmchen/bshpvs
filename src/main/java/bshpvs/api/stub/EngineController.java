@@ -13,8 +13,8 @@ import org.springframework.web.util.HtmlUtils;
 public class EngineController {
 
 
-    @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
+    @MessageMapping("/placeShips")
+    @SendTo("/topic/getUserShips")
     public Greeting greeting(HelloMessage message) throws Exception {
         Thread.sleep(1000); // simulated delay
         return new Greeting("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
