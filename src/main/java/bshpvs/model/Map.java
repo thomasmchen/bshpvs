@@ -162,13 +162,4 @@ public class Map {
         }
         System.out.println();
     }
-
-    public static void main(String[] args) {
-        Ship shp = new Ship(new Point(0, 0), new Point(0,4), CellType.CARRIER);
-
-        Player p = new Player(10);
-        p.addShip(shp);
-
-        p.getMap().prettyPrintMap();
-    }
 }
