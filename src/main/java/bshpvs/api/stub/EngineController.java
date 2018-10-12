@@ -3,6 +3,7 @@ package bshpvs.api.stub;
 import bshpvs.api.core.NewGameRequest;
 import bshpvs.model.Game;
 import bshpvs.model.Player;
+import bshpvs.model.Ship;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -27,9 +28,9 @@ public class EngineController {
         Thread.sleep(1000); // simulated delay
         ObjectMapper objectMapper = new ObjectMapper();
         NewGameRequest req = objectMapper.readValue(json, NewGameRequest.class);
-        
+        req.convertShips();
         System.out.println(req.toString());
-        //return new Greeting("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
+        
         return null;
     }
 
