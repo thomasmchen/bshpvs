@@ -28,6 +28,7 @@ public class Game {
     }
 
     public void init() {
+
     }
 
     public static void main(String[] args) throws IOException {
@@ -85,7 +86,7 @@ public class Game {
         while (!one.isDefeated() && !two.isDefeated()) {
             if (current == one) {
                 System.out.println("Type in Target Coordinate: ");
-                String target = reader.readLine();
+                String target = reader.readLine().toUpperCase();
                 if (!target.matches("[A-J][0-9]")) {
                     System.out.println("Invalid Target, Please Try Again:"); //TODO: Real input validation function
                     continue;
@@ -159,13 +160,13 @@ public class Game {
 
         System.out.println("Place " +  ct.getText() + " of Length " + ct.getValue() + " : ");
         System.out.println(ct.getText() + " Starting Coordinate (e.g, A4): ");
-        String start = reader.readLine();
+        String start = reader.readLine().toUpperCase();
         while (!start.matches("[A-J][0-9]")) {
             System.out.print("Invalid Coordinate, Please Try Again: "); //TODO: Real input validation function
             start = reader.readLine();
         }
         System.out.println(ct.getText() + " Ending Coordinate (e.g, A4): ");
-        String end = reader.readLine();
+        String end = reader.readLine().toUpperCase();
         while (!start.matches("[A-J][0-9]")) {
             System.out.print("Invalid Coordinate, Please Try Again: "); //TODO: Real input validation function
             end = reader.readLine();
