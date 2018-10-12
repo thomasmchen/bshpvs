@@ -73,18 +73,18 @@ public class Game {
                     continue;
                 }
                 Point targPt = ptConv(target);
-                Cell c = two.getHit(targPt);
+                Cell c = one.hitOppCell(targPt, two);
 
                 System.out.println("Hit target: " + c.getType().getText());
                 if (c.getType().getGroup().equals(CellGroup.SHIP) && two.getShipStatus(c.getType()))
                     System.out.println("You sunk your opponents: " + c.getType().getText());
                 System.out.println("Opponents Map: ");
-                two.getMap().prettyPrintBlindMap();
+                one.getTargetBoard().prettyPrintBlindMap();
                 current = two;
             } else {
                 Random gen = new Random();
                 Point tgt = new Point(gen.nextInt(one.getMap().getLength()), gen.nextInt(one.getMap().getLength()));
-                Cell c = one.getHit(tgt);
+                Cell c = two.hitOppCell(tgt, one);
                 System.out.println("Opponent hit " + c.getType().getText() + " at " + tgt.x + "," +  tgt.y);
                 System.out.println("Your map: ");
                 one.getMap().prettyPrintMap();

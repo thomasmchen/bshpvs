@@ -1,21 +1,21 @@
-package bshpvs.model;
+package bshpvs.api.core;
 
-public class MoveRequest
+public class AttackRequest
 {
-    private String direction;
+    private String enemy;
 
     private String y;
 
     private String x;
 
-    public String getDirection ()
+    public String getEnemy ()
     {
-        return direction;
+        return enemy;
     }
 
-    public void setDirection (String direction)
+    public void setEnemy (String enemy)
     {
-        this.direction = direction;
+        this.enemy = enemy;
     }
 
     public String getY ()
@@ -41,6 +41,6 @@ public class MoveRequest
     @Override
     public String toString()
     {
-        return "MoveRequest [direction = "+direction+", y = "+y+", x = "+x+"]";
+        return "MoveRequest [enemy = "+enemy+", y = "+y+", x = "+x+"]";
     }
 }

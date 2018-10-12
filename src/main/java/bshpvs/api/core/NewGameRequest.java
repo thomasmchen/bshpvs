@@ -1,4 +1,4 @@
-package bshpvs.model;
+package bshpvs.api.core;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;

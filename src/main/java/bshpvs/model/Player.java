@@ -22,6 +22,7 @@ public class Player {
      */
     public Player() {
         board = new Map(DEFAULT_GRID_SIZE);
+        targetBoard = new Map(DEFAULT_GRID_SIZE);
         id = UUID.randomUUID();
         ships = new EnumMap<CellType, Ship>(CellType.class);
         statuses = new EnumMap<CellType, Boolean>(CellType.class);
@@ -33,6 +34,7 @@ public class Player {
      */
     public Player(int size) {
         board = new Map(size);
+        targetBoard = new Map(size);
         id = UUID.randomUUID();
         ships = new EnumMap<CellType, Ship>(CellType.class);
         statuses = new EnumMap<CellType, Boolean>(CellType.class);
@@ -109,7 +111,13 @@ public class Player {
      * @return the Cell that was hit
      */
     public Cell hitOppCell(Point pt, Player player) {
-        return player.getHit(pt);
+        // Hit the opposing player
+        Cell c = player.getHit(pt);
+
+        // Update player record of move
+        targetBoard.setCell(pt, c.getType());
+        targetBoard.getCell(pt).hit();
+        return c;
     }
 
     /**
@@ -161,12 +169,21 @@ public class Player {
         }
     }
 
+
     /**
      * Accessor for Player board
      * @return the board of the player
      */
     public Map getMap() {
         return this.board;
+    }
+
+    /**
+     * Accessor for targetBoard
+     * @return the current players view of the board of the player's opponents
+     */
+    public Map getTargetBoard() {
+        return this.targetBoard;
     }
 
 }

@@ -118,7 +118,7 @@ public class Map {
 
 
     /**
-     * Pretty printing of Map object
+     * Pretty printing of Map object blindly (Only hit objects are revealed)
      */
     public void prettyPrintBlindMap() {
         String border = StringUtils.repeat("-", grid.length * 4 + 3);
@@ -150,12 +150,12 @@ public class Map {
                     if (grid[i][j].isHit())
                         System.out.print(ANSI_RED + grid[i][j] +  ANSI_RESET + " | ");
                     else
-                        System.out.print(ANSI_BLACK + "?" +  ANSI_RESET + " | ");
+                        System.out.print("? | ");
                 else
                 if (grid[i][j].isHit())
                     System.out.print(ANSI_RED + grid[i][j] + ANSI_RESET + " | ");
                 else
-                    System.out.print(ANSI_BLACK + "?" + ANSI_RESET + " | ");
+                    System.out.print("? | ");
 
             }
             System.out.println();
