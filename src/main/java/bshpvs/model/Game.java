@@ -59,24 +59,22 @@ public class Game {
             }
         }
 
-        System.out.println("============ Switching Players =============");
-
         randomPromptShips(two);
-        // two.getMap().prettyPrintMap(); // Prints AI Map
 
-        System.out.println("============ Shipes Placed, Players Ready! =============");
+        System.out.println("============ The AI is ready! =============");
 
         // While neither player has lost
         while (!one.isDefeated() && !two.isDefeated()) {
             if (current == one) {
-                System.out.print("Type in Target Coordinate: ");
+                System.out.println("Type in Target Coordinate: ");
                 String target = reader.readLine();
-                while (target.length() != 2) {
-                    System.out.print("Invalid Target, Please Try Again:"); //TODO: Real input validation function
-                    target = reader.readLine();
+                if (!target.matches("[A-J][0-9]")) {
+                    System.out.println("Invalid Target, Please Try Again:"); //TODO: Real input validation function
+                    continue;
                 }
                 Point targPt = ptConv(target);
                 Cell c = two.getHit(targPt);
+
                 System.out.println("Hit target: " + c.getType().getText());
                 if (c.getType().getGroup().equals(CellGroup.SHIP) && two.getShipStatus(c.getType()))
                     System.out.println("You sunk your opponents: " + c.getType().getText());
@@ -91,14 +89,27 @@ public class Game {
                 System.out.println("Your map: ");
                 one.getMap().prettyPrintMap();
                 current = one;
-
             }
         }
 
         if (one.isDefeated()) {
-            System.out.println("You Lost!");
+            System.out.println(ANSI_RED + "\n" +
+                    "██████╗ ███████╗███████╗███████╗ █████╗ ████████╗\n" +
+                    "██╔══██╗██╔════╝██╔════╝██╔════╝██╔══██╗╚══██╔══╝\n" +
+                    "██║  ██║█████╗  █████╗  █████╗  ███████║   ██║   \n" +
+                    "██║  ██║██╔══╝  ██╔══╝  ██╔══╝  ██╔══██║   ██║   \n" +
+                    "██████╔╝███████╗██║     ███████╗██║  ██║   ██║   \n" +
+                    "╚═════╝ ╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   \n" +
+                    "                                                 \n" + ANSI_RESET);
         } else {
-            System.out.println("You Won!");
+            System.out.println(ANSI_GREEN + "\n" +
+                    "██╗   ██╗██╗ ██████╗████████╗ ██████╗ ██████╗ ██╗   ██╗\n" +
+                    "██║   ██║██║██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗╚██╗ ██╔╝\n" +
+                    "██║   ██║██║██║        ██║   ██║   ██║██████╔╝ ╚████╔╝ \n" +
+                    "╚██╗ ██╔╝██║██║        ██║   ██║   ██║██╔══██╗  ╚██╔╝  \n" +
+                    " ╚████╔╝ ██║╚██████╗   ██║   ╚██████╔╝██║  ██║   ██║   \n" +
+                    "  ╚═══╝  ╚═╝ ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   \n" +
+                    "                                                       \n" + ANSI_RESET);
         }
     }
 
@@ -130,15 +141,15 @@ public class Game {
             throw new IllegalArgumentException("Invalid Ship Type: " + ct.getText());
 
         System.out.println("Place " +  ct.getText() + " of Length " + ct.getValue() + " : ");
-        System.out.print(ct.getText() + " Starting Coordinate (e.g, A4): ");
+        System.out.println(ct.getText() + " Starting Coordinate (e.g, A4): ");
         String start = reader.readLine();
-        while (start.length() != 2) {
+        while (!start.matches("[A-J][0-9]")) {
             System.out.print("Invalid Coordinate, Please Try Again: "); //TODO: Real input validation function
             start = reader.readLine();
         }
-        System.out.print(ct.getText() + " Ending Coordinate (e.g, A4): ");
+        System.out.println(ct.getText() + " Ending Coordinate (e.g, A4): ");
         String end = reader.readLine();
-        while (end.length() != 2) {
+        while (!start.matches("[A-J][0-9]")) {
             System.out.print("Invalid Coordinate, Please Try Again: "); //TODO: Real input validation function
             end = reader.readLine();
         }
@@ -195,9 +206,9 @@ public class Game {
         try {
             Ship s = new Ship(st, end, ct);
             pl.addShip(s);
-            System.out.println(s.getType().getText() +
-                    " - (" + s.st.x + "," + s.st.y + ")" +
-                    " to (" + s.end.x + "," + s.end.y + ")");
+//            System.out.println(s.getType().getText() +
+//                    " - (" + s.st.x + "," + s.st.y + ")" +
+//                    " to (" + s.end.x + "," + s.end.y + ")");
         } catch (IllegalArgumentException iae) {
             genShip(constraint, ct, pl);
         }
