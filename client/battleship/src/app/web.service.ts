@@ -40,6 +40,6 @@ export class WebService {
   }
 
   sendMessage(message) {
-    this.stompClient.send(this.messageUrl, {}, JSON.stringify({'name': 'money'}));
+    this.stompClient.send(this.messageUrl, {}, message);
   }
 }

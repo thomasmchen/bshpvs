@@ -57,7 +57,6 @@ export class NewGameMenuComponent implements OnInit {
 
   onCellClicked(event: Cell) {
     var total : number = this.carrier.numSpaces + this.cruiser.numSpaces + this.destroyer.numSpaces + this.submarine1.numSpaces + this.submarine2.numSpaces;
-    this.stomp.sendMessage("test");
     if (this.placementCounter < this.carrier.numSpaces) {
       if(!this.checkValidMove(event, this.carrier))
         return;
@@ -208,6 +207,9 @@ export class NewGameMenuComponent implements OnInit {
       //this.router.navigateByUrl('/gameWindow');
 
       let r = JSON.stringify(request);
+
+      this.stomp.sendMessage(r);
+
 
       console.log(r);
     }

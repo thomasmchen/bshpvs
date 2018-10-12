@@ -1,12 +1,19 @@
 package bshpvs.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 public class NewGameRequest
 {
     private String userId;
 
     private String userName;
 
-    private Ship[] ships;
+    private UserShip[] ships;
 
     private String victoryMessage;
 
@@ -30,12 +37,12 @@ public class NewGameRequest
         this.userName = userName;
     }
 
-    public Ship[] getShips ()
+    public UserShip[] getShips ()
     {
         return ships;
     }
 
-    public void setShips (Ship[] ships)
+    public void setShips (UserShip[] ships)
     {
         this.ships = ships;
     }
@@ -54,5 +61,29 @@ public class NewGameRequest
     public String toString()
     {
         return "ClassPojo [userId = "+userId+", userName = "+userName+", ships = "+ships+", victoryMessage = "+victoryMessage+"]";
+    }
+
+    public static class UserShip {
+        @JsonProperty("firstSpace") Point firstSpace;
+        @JsonProperty("lastSpace") Point lastSpace;
+        @JsonProperty("numSpaces") int numSpaces;
+        @JsonProperty("identifier") int identifier;
+        public UserShip(@JsonProperty("firstSpace") Point firstSpace, @JsonProperty("lastSpace") Point lastSpace, @JsonProperty("identifier") int identifier, @JsonProperty("numSpaces") int numSpaces) {
+            this.firstSpace = firstSpace;
+            this.lastSpace = lastSpace;
+            this.identifier = identifier;
+            this.numSpaces = numSpaces;
+        }
+        
+    }
+
+    public static class Point {
+        @JsonProperty("x") public int x;
+        @JsonProperty("y") public int y;
+        public Point(@JsonProperty("x") int x, @JsonProperty("Y") int y) {
+            this.x = x;
+            this.y = y;
+
+        }
     }
 }

@@ -3,12 +3,15 @@ package bshpvs.api.stub;
 import bshpvs.api.stub.Greeting;
 import bshpvs.api.stub.HelloMessage;
 import bshpvs.model.Map;
+import bshpvs.model.NewGameRequest;
 import bshpvs.model.Ship;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.util.HtmlUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @CrossOrigin
 @Controller
@@ -18,8 +21,13 @@ public class EngineController {
     @CrossOrigin
     @MessageMapping("/placeShips")
     @SendTo("/topic/getUserShips")
-    public Greeting greeting(HelloMessage message) throws Exception {
+    public NewGameRequest greeting(String json) throws Exception {
         Thread.sleep(1000); // simulated delay
-        return new Greeting("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
+        ObjectMapper objectMapper = new ObjectMapper();
+        NewGameRequest req = objectMapper.readValue(json, NewGameRequest.class);
+
+        System.out.println(req.toString());
+        //return new Greeting("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
+        return null;
     }
 }
