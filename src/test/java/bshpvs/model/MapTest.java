@@ -23,19 +23,19 @@ class MapTest {
     @Test
     void setCell() {
         Map mp = new Map(5);
-        mp.setCell(new Point(1,1), CellType.SHIP);
-        assertEquals(CellType.SHIP, mp.getMap()[1][1].getType());
+        mp.setCell(new Point(1,1), CellType.CARRIER);
+        assertEquals(CellType.CARRIER, mp.getMap()[1][1].getType());
     }
 
     @Test
     void printMap() {
         Map mp = new Map(10);
-        mp.setCell(new Point(0,0), CellType.SHIP);
-        mp.setCell(new Point(0,1), CellType.SHIP);
-        mp.setCell(new Point(0,2), CellType.SHIP);
-        mp.setCell(new Point(0,3), CellType.SHIP);
-        mp.setCell(new Point(0,4), CellType.SHIP);
-        mp.setCell(new Point(0,5), CellType.SHIP);
+        mp.setCell(new Point(0,0), CellType.CARRIER);
+        mp.setCell(new Point(0,1), CellType.CARRIER);
+        mp.setCell(new Point(0,2), CellType.CARRIER);
+        mp.setCell(new Point(0,3), CellType.CARRIER);
+        mp.setCell(new Point(0,4), CellType.CARRIER);
+        mp.setCell(new Point(0,5), CellType.CARRIER);
 
 
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -54,5 +54,13 @@ class MapTest {
                 "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]\n";
 
         assertEquals(expectedOutput, outContent.toString());
+    }
+
+    @Test
+    void getCell() {
+        Map mp = new Map(10);
+        mp.setCell(new Point(0,5), CellType.CARRIER);
+        Cell c = mp.getCell(new Point(0, 5));
+        assertEquals(CellType.CARRIER, c.getType());
     }
 }
