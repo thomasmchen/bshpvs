@@ -23,6 +23,7 @@ import { timer } from 'rxjs';
 
 import { DarkModeService } from '../settings/darkmode.service';
 import { Http } from '@angular/http';
+import { WebService } from '../web.service';
 
 @Component({
   selector: 'app-game-window',
@@ -40,12 +41,24 @@ export class GameWindowComponent implements OnInit {
   gridSize: number = 10;
 
 
-  constructor(private http: Http, private dm: DarkModeService) { 
-    this.http.get('http://www.mocky.io/v2/5babd5cb310000550065455a').subscribe((res) => {
+  constructor(private http: Http, private dm: DarkModeService, private stomp: WebService) { 
+    /*this.http.get('http://www.mocky.io/v2/5babd5cb310000550065455a').subscribe((res) => {
       let result = res.json() as GameResponse;
       this.loadShips(result);
       this.renderShips();
-    });
+    });*/
+
+    if (this.stomp.stompClient) {
+      console.log("Connected to server in game window");
+    } else {
+      console.log("Not connected");
+    }
+
+    this.stomp.sendGameWindowInit();
+
+
+
+
   }
 
   loadShips(result: GameResponse) {

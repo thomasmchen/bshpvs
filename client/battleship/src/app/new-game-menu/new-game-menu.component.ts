@@ -206,11 +206,12 @@ export class NewGameMenuComponent implements OnInit {
       };
       //this.router.navigateByUrl('/gameWindow');
 
+      this.stomp.stompClient.subscribe('/topic/confirmPlacement', (res) => {
+        this.stomp.setConnected();
+        this.router.navigateByUrl('/gameWindow');
+      });
       let r = JSON.stringify(request);
-
       this.stomp.sendMessage(r);
-
-
       console.log(r);
     }
   }
