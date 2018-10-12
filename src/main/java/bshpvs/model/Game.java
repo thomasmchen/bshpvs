@@ -31,6 +31,8 @@ public class Game {
     }
 
     public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
         System.out.println("\n" +
                 "██████╗ ███████╗██╗  ██╗██████╗ ██╗   ██╗███████╗\n" +
                 "██╔══██╗██╔════╝██║  ██║██╔══██╗██║   ██║██╔════╝\n" +
@@ -41,7 +43,24 @@ public class Game {
                 "                                                 \n");
 
         Player one = new Player(10);
-        Player two = new Player(10);
+        Player two;
+
+        System.out.println("Please select AI Difficulty:\n" +
+                "1) Easy\n" +
+                "2) Medium\n");
+
+        String difficulty = reader.readLine();
+        while (!difficulty.matches("[1-2]")) {
+            System.out.println("Invalid Difficulty, Please Try Again: ");
+            difficulty = reader.readLine();
+        }
+
+        if (Integer.parseInt(difficulty) == 1) {
+            two = new Player();
+        } else {
+            two = new HunterPlayer();
+        }
+
         Player current = one;
 
 
@@ -51,7 +70,6 @@ public class Game {
         Map.printKey();
         one.getMap().prettyPrintMap();
         System.out.println("Please place your ships:");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         for (CellType ct : CellType.values()) {
             if (ct.getGroup().equals(CellGroup.SHIP)) {
@@ -78,13 +96,12 @@ public class Game {
                 System.out.println("Hit target: " + c.getType().getText());
                 if (c.getType().getGroup().equals(CellGroup.SHIP) && two.getShipStatus(c.getType()))
                     System.out.println("You sunk your opponents: " + c.getType().getText());
-                System.out.println("Opponents Map: ");
+                System.out.println("Target Map: ");
                 one.getTargetBoard().prettyPrintBlindMap();
                 current = two;
             } else {
-                Random gen = new Random();
-                Point tgt = new Point(gen.nextInt(one.getMap().getLength()), gen.nextInt(one.getMap().getLength()));
-                Cell c = two.hitOppCell(tgt, one);
+                Point tgt = two.move(one);
+                Cell c = one.getCell(tgt);
                 System.out.println("Opponent hit " + c.getType().getText() + " at " + tgt.x + "," +  tgt.y);
                 System.out.println("Your map: ");
                 one.getMap().prettyPrintMap();

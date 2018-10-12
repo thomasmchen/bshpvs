@@ -18,8 +18,9 @@ class PlayerTest {
     @Test
     void getCell() {
         Player pl1 = new Player(2);
-        assertEquals(CellType.WATER, pl1.getCell(new Point(1,1)).getType());
-
+        pl1.getMap().setCell(new Point(1,1), CellType.CARRIER);
+        assertEquals(CellType.CARRIER, pl1.getCell(new Point(1,1)).getType());
+        assertEquals(CellGroup.SHIP, pl1.getCell(new Point(1,1)).getType().getGroup());
     }
 
     @Test
