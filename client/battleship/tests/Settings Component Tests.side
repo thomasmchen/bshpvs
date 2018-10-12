@@ -1,0 +1,173 @@
+{
+  "id": "80402470-9ecf-4625-9c6a-8c638ff951fb",
+  "version": "1.1",
+  "name": "Settings Component Tests",
+  "url": "http://localhost:4200",
+  "tests": [{
+    "id": "05c10c52-8474-4c4e-bc92-40829e0ff4a4",
+    "name": "Dark Theme Slider",
+    "commands": [{
+      "id": "b82e886b-62d1-4404-a8aa-99d0b3ecff50",
+      "comment": "",
+      "command": "open",
+      "target": "/home",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "e80d5ffd-17a3-4a38-a265-73280aad24f2",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "974x1047",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "7808a379-a2d2-41b6-80c7-df802d69e5ce",
+      "comment": "",
+      "command": "click",
+      "target": "css=button:nth-child(2)",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "893f2f7c-a154-4d8f-8bf9-f134da2d162d",
+      "comment": "",
+      "command": "click",
+      "target": "css=span.slider.round",
+      "targets": [
+        ["css=span.slider.round", "css"],
+        ["css=.setting:nth-child(1) .round", "css:finder"],
+        ["xpath=//label/span", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1b8861e2-9559-4bff-b2ed-3862956c3498",
+      "comment": "",
+      "command": "click",
+      "target": "css=span.slider.round",
+      "targets": [
+        ["css=span.slider.round", "css"],
+        ["css=.setting:nth-child(1) .round", "css:finder"],
+        ["xpath=//label/span", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "c954ca3f-d5d9-4ae4-bebc-b50f0b24d061",
+    "name": "Game Timer Slider",
+    "commands": [{
+      "id": "1306a979-eda5-4ed0-89b4-0a4e7b136b4f",
+      "comment": "",
+      "command": "open",
+      "target": "/home",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "dc9ca8e0-fa86-4935-ae0b-d277e860aca6",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "974x1047",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "74bb1920-5ce2-420c-9ecf-3354bd29c956",
+      "comment": "",
+      "command": "click",
+      "target": "css=button:nth-child(2)",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0401d04c-d356-4845-97ef-8652e7e1e55e",
+      "comment": "",
+      "command": "click",
+      "target": "css=.setting:nth-child(2) .round",
+      "targets": [
+        ["css=.setting:nth-child(2) .round", "css:finder"],
+        ["xpath=//div[2]/label/span", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "733161df-c003-4ff2-a1ab-87aaedc9bc07",
+      "comment": "",
+      "command": "click",
+      "target": "css=.setting:nth-child(2) .round",
+      "targets": [
+        ["css=.setting:nth-child(2) .round", "css:finder"],
+        ["xpath=//div[2]/label/span", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "5022d96b-a33f-4965-a4ad-392abee1bb4f",
+    "name": "Go Fullscreen Button",
+    "commands": [{
+      "id": "43dab30d-ce05-4453-b9e9-d44b87ab2675",
+      "comment": "",
+      "command": "open",
+      "target": "/home",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5591cd48-e13b-40dd-ace6-57baeac338f6",
+      "comment": "",
+      "command": "click",
+      "target": "css=button:nth-child(2)",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "abb64f23-4034-4fe9-85ef-eb3c342254e6",
+      "comment": "",
+      "command": "click",
+      "target": "css=button.FSbutton",
+      "targets": [
+        ["css=button.FSbutton", "css"],
+        ["css=.FSbutton", "css:finder"],
+        ["xpath=//button[@type='button']", "xpath:attributes"],
+        ["xpath=//div[3]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0dcfd7e0-f391-4356-ba8f-601cdfd10d97",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=span.mat-button-wrapper",
+      "targets": [
+        ["css=span.mat-button-wrapper", "css"],
+        ["css=.mat-button-wrapper", "css:finder"],
+        ["xpath=//button/span", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "974c36aa-83a6-435b-a95c-0684b344d0e4",
+      "comment": "",
+      "command": "click",
+      "target": "css=span.mat-button-wrapper",
+      "targets": [
+        ["css=span.mat-button-wrapper", "css"],
+        ["css=.mat-button-wrapper", "css:finder"],
+        ["xpath=//button/span", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "a6acee17-2ef1-4fd2-a999-1d00889d8dff",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["05c10c52-8474-4c4e-bc92-40829e0ff4a4"]
+  }],
+  "urls": ["http://localhost:4200/"],
+  "plugins": []
+}
