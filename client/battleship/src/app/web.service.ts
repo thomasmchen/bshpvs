@@ -9,7 +9,7 @@ import * as SockJS from 'sockjs-client';
 export class WebService {
 
   private backendUrl = 'http://localhost:8080/battleship';
-  private messageUrl = '/app/hello';
+  private messageUrl = '/app/placeShips';
   public stompClient = null;
   connected = false;
 
@@ -24,7 +24,7 @@ export class WebService {
     this.stompClient = Stomp.over(socket);
     let that = this;
     this.stompClient.connect({}, function (frame) {
-      that.stompClient.subscribe('/topic/getUserShip', (res) => {
+      that.stompClient.subscribe('/topic/getUserShips', (res) => {
         console.log('something happend');
       });
     });
