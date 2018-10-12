@@ -1,6 +1,6 @@
 package bshpvs.model;
 
-public class QuitRequest {
+public class QuitResponse {
 
   private String userId;
 
@@ -38,6 +38,6 @@ public class QuitRequest {
   @Override
   public String toString()
   {
-      return "QuitRequest [userId = "+userId+", userName = "+userName+", quitMessage = "+quitMessage+"]";
+      return "QuitResponse [userId = "+userId+", userName = "+userName+", quitMessage = "+quitMessage+"]";
   }
 }

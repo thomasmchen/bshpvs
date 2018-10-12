@@ -1,6 +1,6 @@
 package bshpvs.model;
 
-public class NewGameRequest
+public class NewGameResponse
 {
     private String userId;
 
@@ -43,6 +43,6 @@ public class NewGameRequest
     @Override
     public String toString()
     {
-        return "NewGameRequest [userId = "+userId+", userName = "+userName+", ships = "+ships+"]";
+        return "NewGameResponse [userId = "+userId+", userName = "+userName+", ships = "+ships+"]";
     }
 }
