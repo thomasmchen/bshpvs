@@ -24,7 +24,7 @@ export class WebService {
     this.stompClient = Stomp.over(socket);
     let that = this;
     this.stompClient.connect({}, function (frame) {
-      that.stompClient.subscribe('/topic/greetings', (res) => {
+      that.stompClient.subscribe('/topic/getUserShip', (res) => {
         console.log('something happend');
       });
     });

@@ -32,6 +32,7 @@ export class NewGameMenuComponent implements OnInit {
   }
 
   constructor(public snackbar: MatSnackBar, private stomp: WebService) { 
+    // initialize connection to backend
     stomp.initializeConnection();  
   }
 
