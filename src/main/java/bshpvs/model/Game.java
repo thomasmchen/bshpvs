@@ -11,6 +11,16 @@ public class Game {
     Player secondPlayer;
     Player current;
 
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_BLACK = "\u001B[30m";
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_YELLOW = "\u001B[33m";
+    private static final String ANSI_BLUE = "\u001B[34m";
+    private static final String ANSI_PURPLE = "\u001B[35m";
+    private static final String ANSI_CYAN = "\u001B[36m";
+    private static final String ANSI_WHITE = "\u001B[37m";
+
     public Game(Player first, Player second, int size) {
         this.firstPlayer = first;
         this.secondPlayer = second;
@@ -29,16 +39,6 @@ public class Game {
                 "██████╔╝███████║██║  ██║██║      ╚████╔╝ ███████║\n" +
                 "╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝       ╚═══╝  ╚══════╝\n" +
                 "                                                 \n");
-
-        final String ANSI_RESET = "\u001B[0m";
-        final String ANSI_BLACK = "\u001B[30m";
-        final String ANSI_RED = "\u001B[31m";
-        final String ANSI_GREEN = "\u001B[32m";
-        final String ANSI_YELLOW = "\u001B[33m";
-        final String ANSI_BLUE = "\u001B[34m";
-        final String ANSI_PURPLE = "\u001B[35m";
-        final String ANSI_CYAN = "\u001B[36m";
-        final String ANSI_WHITE = "\u001B[37m";
 
         Player one = new Player(10);
         Player two = new Player(10);
@@ -142,8 +142,14 @@ public class Game {
             System.out.print("Invalid Coordinate, Please Try Again: "); //TODO: Real input validation function
             end = reader.readLine();
         }
-        Ship shp = new Ship(ptConv(start), ptConv(end), ct);
-        pl.addShip(shp);
+
+        try {
+            Ship shp = new Ship(ptConv(start), ptConv(end), ct);
+            pl.addShip(shp);
+        } catch (IllegalArgumentException ie) {
+            System.out.println(ANSI_RED + "Error: invalid coordinates for " + ct.getText() + ANSI_RESET);
+            promptShips(ct, reader, pl);
+        }
         pl.getMap().prettyPrintMap();
     }
 
