@@ -52,6 +52,6 @@ public class Cell {
      * @return string version of Cell
      */
     public String toString() {
-        return type.equals(CellType.WATER) ? "0" : "1";
+        return Integer.toString(type.getValue());
     }
 }
