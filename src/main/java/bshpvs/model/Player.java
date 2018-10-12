@@ -3,12 +3,13 @@ package bshpvs.model;
 import java.awt.Point;
 import java.util.EnumMap;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.UUID;
 
 /**
  * Player class.
  */
-public class Player {
+public class Player implements Playable {
     private UUID id;
     private Map board;
     private Map targetBoard;
@@ -89,7 +90,7 @@ public class Player {
      * @return true if hit a ship, false if hit nothing
      */
     public Cell getHit(Point pt) {
-        Cell c = board.getCell(new Point(pt.x, pt.y));
+        Cell c = this.board.getCell(pt);
         c.hit();
         resolveShipStatus(c.getType());
         return c;
@@ -115,8 +116,8 @@ public class Player {
         Cell c = player.getHit(pt);
 
         // Update player record of move
-        targetBoard.setCell(pt, c.getType());
-        targetBoard.getCell(pt).hit();
+        this.targetBoard.setCell(pt, c.getType());
+        this.targetBoard.getCell(pt).hit();
         return c;
     }
 
@@ -152,7 +153,7 @@ public class Player {
      * @return the cell
      */
     public Cell getCell(Point p) {
-        return board.getMap()[p.x][p.y];
+        return board.getMap()[p.y][p.x];
     }
 
     /**
@@ -169,7 +170,6 @@ public class Player {
         }
     }
 
-
     /**
      * Accessor for Player board
      * @return the board of the player
@@ -184,6 +184,40 @@ public class Player {
      */
     public Map getTargetBoard() {
         return this.targetBoard;
+    }
+
+    /**
+     * Randomly generate a valid target
+     * @return the valid target
+     */
+    public Point genRandomTarget() {
+        Random gen = new Random();
+        Point tgt = new Point(gen.nextInt(targetBoard.getLength()), gen.nextInt(targetBoard.getLength()));
+        while (targetBoard.getCell(tgt).isHit())
+            tgt = new Point(gen.nextInt(targetBoard.getLength()), gen.nextInt(targetBoard.getLength()));
+
+        return tgt;
+    }
+
+    /**
+     * Checks if a point is valid:
+     * 1) Is on the map
+     * 2) Has not been hit already
+     * @return true if valid false if invalid
+     */
+    public boolean isValidPoint(Point p) {
+        return (p.x < targetBoard.getLength() && p.y < targetBoard.getLength() && p.x >= 0 && p.y >= 0 && !targetBoard.getCell(p).isHit());
+    }
+
+    /**
+     * Implements playable interface with most naive algorithm:
+     * Random selection of a valid move
+     * @return the Cell that was hit by the move
+     */
+    public Point move(Player opp) {
+        Point tgt = genRandomTarget();
+        opp.hitOppCell(tgt, opp);
+        return tgt;
     }
 
 }
