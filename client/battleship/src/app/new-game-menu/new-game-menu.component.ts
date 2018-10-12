@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { DarkModeService } from '../settings/darkmode.service';
+import { WebService } from '../web.service';
+import { Config } from 'protractor';
+
+
+
 
 @Component({
   selector: 'app-new-game-menu',
@@ -24,13 +29,21 @@ export class NewGameMenuComponent implements OnInit {
   destroyer : Ship = {identifier: 3, numSpaces: 2, spaces: new Array<Coordinate>()};
 
   message: string = "Place your carrier (4 spaces left)";
+  wsConf : Config = {
+    host:'localhost:8080/battleship',
+    debug:true,
+    queue:{'init':false}
+  }
 
   temp: any = "";
 
   username: string = "";
   victoryMessage: string = "";
 
-  constructor(public snackbar: MatSnackBar, private router: Router, private dm: DarkModeService) { }
+  constructor(public snackbar: MatSnackBar, private stomp: WebService, private router: Router, private dm: DarkModeService) { 
+    // initialize connection to backend
+    stomp.initializeConnection();  
+  }
 
   ngOnInit() {
     this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
@@ -44,6 +57,7 @@ export class NewGameMenuComponent implements OnInit {
 
   onCellClicked(event: Cell) {
     var total : number = this.carrier.numSpaces + this.cruiser.numSpaces + this.destroyer.numSpaces + this.submarine1.numSpaces + this.submarine2.numSpaces;
+    this.stomp.sendMessage("test");
     if (this.placementCounter < this.carrier.numSpaces) {
       if(!this.checkValidMove(event, this.carrier))
         return;
