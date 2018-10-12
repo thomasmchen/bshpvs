@@ -23,15 +23,15 @@ public class EngineController {
 
     @CrossOrigin
     @MessageMapping("/placeShips")
-    @SendTo("/topic/getUserShips")
-    public NewGameRequest greeting(String json) throws Exception {
+    @SendTo("/topic/confirmPlacement")
+    public NewGameRequest newGame(String json) throws Exception {
         Thread.sleep(1000); // simulated delay
         ObjectMapper objectMapper = new ObjectMapper();
         NewGameRequest req = objectMapper.readValue(json, NewGameRequest.class);
         req.convertShips();
         System.out.println(req.toString());
-        
-        return null;
+
+        return req;
     }
 
 

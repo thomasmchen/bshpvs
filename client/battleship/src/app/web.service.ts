@@ -11,25 +11,26 @@ export class WebService {
   private backendUrl = 'http://localhost:8080/battleship';
   private messageUrl = '/app/placeShips';
   public stompClient = null;
-  connected = false;
+  public connected;
 
-  constructor() { 
-
+  constructor() {
+    this.connected = false;
   }
-
-
 
   initializeConnection() {
     let socket = new SockJS(this.backendUrl);
     this.stompClient = Stomp.over(socket);
     let that = this;
     this.stompClient.connect({}, function (frame) {
-      that.stompClient.subscribe('/topic/getUserShips', (res) => {
+      that.stompClient.subscribe('/topic/confirmPlacement', (res) => {
         console.log('something happend');
       });
     });
   }
   
+  setConnected() {
+    this.connected = true;
+  }
 
   isConnected() {
     return this.connected;
