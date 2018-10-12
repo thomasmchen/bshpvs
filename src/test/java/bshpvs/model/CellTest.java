@@ -27,8 +27,8 @@ public class CellTest {
 
     @Test
     public void testSetType() {
-        c.setType(CellType.SHIP);
-        assertEquals(CellType.SHIP, c.getType());
+        c.setType(CellType.WATER);
+        assertEquals(CellType.WATER, c.getType());
     }
 
     @Test void testToString() {

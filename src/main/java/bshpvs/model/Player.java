@@ -1,7 +1,5 @@
 package bshpvs.model;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import java.awt.Point;
 import java.util.EnumMap;
 import java.util.Map.Entry;
@@ -13,9 +11,9 @@ import java.util.UUID;
 public class Player {
     private UUID id;
     private Map board;
-    private Map oppBoard;
-    private EnumMap<ShipType, Ship> ships;
-    private EnumMap<ShipType, Boolean> statuses;
+    private Map targetBoard;
+    private EnumMap<CellType, Ship> ships;
+    private EnumMap<CellType, Boolean> statuses;
 
     private static final int DEFAULT_GRID_SIZE = 10;
 
@@ -24,10 +22,9 @@ public class Player {
      */
     public Player() {
         board = new Map(DEFAULT_GRID_SIZE);
-        oppBoard = new Map(DEFAULT_GRID_SIZE);
         id = UUID.randomUUID();
-        ships = new EnumMap<ShipType, Ship>(ShipType.class);
-        statuses = new EnumMap<ShipType, Boolean>(ShipType.class);
+        ships = new EnumMap<CellType, Ship>(CellType.class);
+        statuses = new EnumMap<CellType, Boolean>(CellType.class);
     }
 
     /**
@@ -36,10 +33,9 @@ public class Player {
      */
     public Player(int size) {
         board = new Map(size);
-        oppBoard = new Map(size);
         id = UUID.randomUUID();
-        ships = new EnumMap<ShipType, Ship>(ShipType.class);
-        statuses = new EnumMap<ShipType, Boolean>(ShipType.class);
+        ships = new EnumMap<CellType, Ship>(CellType.class);
+        statuses = new EnumMap<CellType, Boolean>(CellType.class);
     }
 
     /**
@@ -72,29 +68,39 @@ public class Player {
      * @param shp the ship to be placed
      */
     private void setShip(Ship shp) throws ShipOverlapException {
-        for (Entry<ShipType, Ship> s : ships.entrySet()) {
+        for (Entry<CellType, Ship> s : ships.entrySet()) {
             if (shp.doesOverlap(s.getValue())) {
                 throw new IllegalArgumentException("Cannot place" + shp.getType() +
                         " it overlaps with " +  s.getValue().getType());
             }
         }
 
-        int x = shp.st.x;
-        int y = shp.st.y;
-
-        if (shp.st.x == shp.end.x) {
-            while (y != shp.end.y) {
-                board.setCell(new Point(shp.st.x, y), CellType.SHIP);
-                y++;
-            }
-        } else {
-            while (x != shp.end.x) {
-                board.setCell(new Point(x, shp.st.y), CellType.SHIP);
-                x++;
-            }
+        for (Point pt : shp.getPoints()) {
+            board.setCell(pt, shp.getType());
         }
     }
 
+    /**
+     * Hits the player's cell at point x,y
+     * Sets the Cell at the coordinate to hit
+     * @param pt the coordinate of the cell
+     * @return true if hit a ship, false if hit nothing
+     */
+    public Cell getHit(Point pt) {
+        Cell c = board.getCell(new Point(pt.x, pt.y));
+        c.hit();
+        resolveShipStatus(c.getType());
+        return c;
+    }
+
+    /**
+     * Returns the status of a Players ship, true if hit, false if not
+     * @param ship the ship to be checked
+     * @return the status of the ship
+     */
+    public boolean getShipStatus(CellType ship) {
+        return statuses.get(ship);
+    }
 
     /**
      * Hit an opposing players cell
@@ -103,17 +109,18 @@ public class Player {
      * @return the Cell that was hit
      */
     public Cell hitOppCell(Point pt, Player player) {
-        player.board.getMap()[pt.x][pt.y].hit();
-        return player.getCell(pt);
+        return player.getHit(pt);
     }
-
 
     /**
      * Returns the status of a specific ship
      * @param type the ship's type
      * @return the status of the ship
      */
-    public boolean isShipSunk(ShipType type) {
+    public boolean resolveShipStatus(CellType type) {
+        //TODO: Throw Custom Exception
+        if (type.getGroup().equals(CellGroup.TERRAIN))
+            return false;
 
         if (ships.get(type).checkSunk(this.board)) {
             statuses.remove(type);
@@ -128,7 +135,7 @@ public class Player {
      * @return the status of the player
      */
     public boolean isDefeated() {
-        return !statuses.containsValue(true);
+        return !statuses.containsValue(false);
     }
 
     /**
@@ -152,6 +159,14 @@ public class Player {
             //TODO: Provide additional functionality
             super(errorMessage);
         }
+    }
+
+    /**
+     * Accessor for Player board
+     * @return the board of the player
+     */
+    public Map getMap() {
+        return this.board;
     }
 
 }
