@@ -113,8 +113,30 @@ export class GameWindowComponent implements OnInit {
   }
 
   onCellClicked(event: Cell) {
-    window.alert("FROM GAME WINDOW Row: " + event.row + "   Col: " + event.col);
+    this.makePlayerMove(event.row, event.col, 0);
   }
+
+  makePlayerAttack(_x, _y) {
+    let request : AttackRequest = {
+      enemy : 0,
+      x : _x,
+      y : _y
+    }
+
+    console.log(request);
+  }
+
+  makePlayerMove(_x, _y, _direction) {
+    let request : MoveRequest = {
+      x: _x,
+      y: _y, 
+      direction: _direction
+    }
+
+    console.log(request);
+  }
+
+  
 
 }
 
@@ -140,6 +162,18 @@ interface GameResponse {
 interface Coordinate {
   x: number,
   y: number
+}
+
+interface AttackRequest {
+  enemy: number,
+  x: number,
+  y: number
+}
+
+interface MoveRequest {
+  x: number,
+  y: number,
+  direction: number
 }
 
 
