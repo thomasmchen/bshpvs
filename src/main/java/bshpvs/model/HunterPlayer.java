@@ -26,29 +26,20 @@ public class HunterPlayer extends Player implements Playable{
     public Point move(Player opp) {
         System.out.println(ANSI_YELLOW + "AI MOVE" + ANSI_RESET);
 
-        // First move
-        if (target == null) {
+        // First move or no more targets
+        if (target == null || targets.empty()) {
             target = genRandomTarget();
             System.out.println(ANSI_YELLOW + "Calculating Target: (" + target.x + ", " + target.y + ")" + ANSI_RESET);
-            Cell c =this.hitOppCell(target, opp);
+            Cell c = this.hitOppCell(target, opp);
             this.updateTargets(c);
             
             return target;
-        }
-
-        if (!targets.empty()) {
+        }  else {
             target = targets.pop();
             System.out.println(ANSI_YELLOW + "Calculating Target: (" + target.x + ", " + target.y + ")" + ANSI_RESET);
             Cell c = this.hitOppCell(target, opp);
             this.updateTargets(c);
 
-            return target;
-        } else {
-            // Switch back to hunt mode (No more candidates)
-            target = genRandomTarget();
-            System.out.println(ANSI_YELLOW + "Calculating Target: (" + target.x + ", " + target.y + ")" + ANSI_RESET);
-            Cell c = this.hitOppCell(target, opp);
-            this.updateTargets(c);
             return target;
         }
     }
