@@ -2,6 +2,7 @@ package bshpvs.api.stub;
 
 import bshpvs.api.core.NewGameRequest;
 import bshpvs.api.core.NewGameResponse;
+import bshpvs.api.core.NewGameRequest.UserShip;
 import bshpvs.model.Game;
 import bshpvs.model.Player;
 import bshpvs.model.Ship;
@@ -46,7 +47,7 @@ public class EngineController {
         this.initializePlayers();
         this.initializeGame();
         for (int i = 0; i < newGameRequest.getShips().length; i++) {
-            System.out.println("Found ship");
+            
         }
         return null;
     }
