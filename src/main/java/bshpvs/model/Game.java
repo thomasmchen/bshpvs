@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Random;
 
+import bshpvs.api.core.AttackResponse;
+
 public class Game {
     Player firstPlayer;
     Player secondPlayer;
@@ -27,7 +29,37 @@ public class Game {
         this.current = firstPlayer;
     }
 
-    public void init() {
+    public void initAi(int difficulty) {
+        if (difficulty == 1) {
+            secondPlayer = new Player();
+        } else {
+            secondPlayer = new HunterPlayer();
+        }
+
+        randomPromptShips(secondPlayer);
+        System.out.println("We are ready to play!");
+    }
+
+    public AttackResponse turn(Point coordinate) {
+        String yourMove = "water";
+        String theirMove = "miss";
+        Cell c = firstPlayer.hitOppCell(coordinate, secondPlayer);
+        if (c.getType().getGroup().equals(CellGroup.SHIP)) {
+            yourMove = "hit";
+        } else if (c.getType() == CellType.LAND) {
+            yourMove = "land";
+        }
+
+        Point tgt = secondPlayer.move(firstPlayer);
+        Cell a = firstPlayer.getCell(tgt);
+        if (a.getType().getGroup().equals(CellGroup.SHIP)) {
+            theirMove = "hit";
+        }
+
+        AttackResponse response = new AttackResponse(tgt.y, tgt.x, yourMove, theirMove);
+
+        return response;
+
 
     }
 

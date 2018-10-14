@@ -1,5 +1,7 @@
 package bshpvs.api.stub;
 
+import bshpvs.api.core.AttackRequest;
+import bshpvs.api.core.AttackResponse;
 import bshpvs.api.core.NewGameRequest;
 import bshpvs.api.core.NewGameResponse;
 import bshpvs.api.core.NewGameRequest.UserShip;
@@ -78,7 +80,16 @@ public class EngineController {
         return json;
     }  
 
-    @MessageMapping("/userMove")
+    @CrossOrigin
+    @MessageMapping("/turn")
+    @SendTo("/topic/turnResponse")
+    public AttackResponse turn(String json) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        AttackRequest req = objectMapper.readValue(json, AttackRequest.class);
+        Point p = new Point(req.x, req.y);
+        return this.turn(p);
+    }
+
 
 
     public void initializePlayers() {
@@ -88,5 +99,14 @@ public class EngineController {
 
     public void initializeGame() {
         game = new Game(this.playerOne, this.playerTwo, 10);
+        game.initAi(1);
+
+        for (int i = 0; i < newGameRequest.getShips().length; i++) {
+            this.playerOne.addShip(newGameRequest.getShips()[i]);
+        }
+    }
+
+    public AttackResponse turn(Point p) {
+        return this.game.turn(p);
     }
 }

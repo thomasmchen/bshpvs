@@ -6,15 +6,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class AttackRequest
+public class AttackResponse
 {
-    @JsonProperty("y") public int y;
+    @JsonProperty public String yourMove;
+    @JsonProperty public String theirMove;
+    @JsonProperty public int y;
+    @JsonProperty public int x;
 
-    @JsonProperty("x") public int x;
-
-    public AttackRequest(@JsonProperty("y") int y, @JsonProperty("x") int x) {
+    public AttackResponse(@JsonProperty  int y, @JsonProperty  int x, @JsonProperty String yourMove, @JsonProperty String theirMove) {
         this.y = y;
         this.x = x;
+        this.yourMove = yourMove;
+        this.theirMove = theirMove;
     }
 
     public int getY ()

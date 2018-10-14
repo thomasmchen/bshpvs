@@ -22,7 +22,7 @@ import { Component, OnInit } from '@angular/core';
 import { timer } from 'rxjs';
 
 import { DarkModeService } from '../settings/darkmode.service';
-import { Http } from '@angular/http';
+import { Http, Jsonp } from '@angular/http';
 import { WebService } from '../web.service';
 
 @Component({
@@ -39,6 +39,9 @@ export class GameWindowComponent implements OnInit {
   public ships: Ship[] = new Array<Ship>();
 
   gridSize: number = 10;
+
+  lastX : number = 0;
+  lastY : number = 0;
 
 
   constructor(private http: Http, private dm: DarkModeService, private stomp: WebService) { 
@@ -61,11 +64,43 @@ export class GameWindowComponent implements OnInit {
       this.loadShips(r);
       this.renderShips();
     });
+
+    this.stomp.stompClient.subscribe('/topic/turnResponse', (res) => {
+      console.log(res);
+      let r = JSON.parse(res.body) as AttackResponse;
+      if (r.yourMove == "hit") {
+        this.markEnemyGrid(this.lastX, this.lastY, true);
+      } else {
+        this.markEnemyGrid(this.lastX, this.lastY, false);
+      }
+
+      if (r.theirMove == "hit") {
+        this.markUserGrid(r.x, r.y, true);
+      } else {
+        this.markUserGrid(r.x, r.y, false);
+      }
+    });
     this.stomp.sendGameWindowInit();
 
+  }
 
+  markUserGrid(x, y, hit) {
+    var id = y * this.gridSize + x;
+    if (hit) {
+      document.getElementById("user_"+id).style.backgroundColor = "black";
+    } else {
+      document.getElementById("user_"+id).style.backgroundColor = "yellow";
+    }
+  }
 
+  markEnemyGrid(x, y, hit) {
+    var id = y * this.gridSize + x;
+    if (hit) {
+      document.getElementById("enemy_"+id).style.backgroundColor = "black";
+    } else {
+      document.getElementById("enemy_"+id).style.backgroundColor = "yellow";
 
+    }
   }
 
   loadShips(result: GameResponse) {
@@ -133,15 +168,21 @@ export class GameWindowComponent implements OnInit {
   }
 
   onCellClicked(event: Cell) {
-    this.makePlayerMove(event.row, event.col, 0);
+    this.makePlayerAttack(event.col, event.row);
   }
 
   makePlayerAttack(_x, _y) {
+    this.lastX = _x;
+    this.lastY = _y;
     let request : AttackRequest = {
-      enemy : 0,
       x : _x,
       y : _y
     }
+
+    let j = JSON.stringify(request);
+
+
+    this.stomp.sendMove(j);
 
     console.log(request);
   }
@@ -172,6 +213,13 @@ interface Ship {
   spaces: Coordinate[]
 }
 
+interface AttackResponse {
+  yourMove: string,
+  theirMove: string,
+  x: number,
+  y: number
+}
+
 interface GameResponse {
   userId: number,
   userName: string,
@@ -185,7 +233,6 @@ interface Coordinate {
 }
 
 interface AttackRequest {
-  enemy: number,
   x: number,
   y: number
 }
