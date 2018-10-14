@@ -56,6 +56,14 @@ export class NewGameMenuComponent implements OnInit {
   }
 
   onCellClicked(event: Cell) {
+    if (this.placementCounter == 0) {
+      this.stomp.stompClient.subscribe('/topic/confirmPlacement', (res) => {
+        this.stomp.setConnected();
+        this.router.navigateByUrl('/gameWindow');
+      });
+    }
+    
+
     var total : number = this.carrier.numSpaces + this.battleship.numSpaces + this.destroyer.numSpaces + this.cruiser.numSpaces + this.submarine.numSpaces;
     if (this.placementCounter < this.carrier.numSpaces) {
       if(!this.checkValidMove(event, this.carrier))
@@ -206,10 +214,7 @@ export class NewGameMenuComponent implements OnInit {
       };
       //this.router.navigateByUrl('/gameWindow');
 
-      this.stomp.stompClient.subscribe('/topic/confirmPlacement', (res) => {
-        this.stomp.setConnected();
-        this.router.navigateByUrl('/gameWindow');
-      });
+     
       let r = JSON.stringify(request);
       this.stomp.sendMessage(r);
       console.log(r);

@@ -76,9 +76,10 @@ public class Ship {
                 }
             }
         }
-
         return pts;
     }
+
+
 
     /**
      * Checks if given Ship is sunk on a given board
@@ -109,6 +110,7 @@ public class Ship {
      * @return the points of a ship
      */
     public Point[] getPoints() {
+        this.calcShipPoints();
         return this.points;
     }
 

@@ -3,6 +3,9 @@ package bshpvs.api.stub;
 import bshpvs.api.core.NewGameRequest;
 import bshpvs.api.core.NewGameResponse;
 import bshpvs.api.core.NewGameRequest.UserShip;
+import bshpvs.api.core.NewGameRequest._Point;
+import bshpvs.api.core.NewGameResponse.Coordinate;
+import bshpvs.api.core.NewGameResponse.ShipObject;
 import bshpvs.model.Game;
 import bshpvs.model.Player;
 import bshpvs.model.Ship;
@@ -12,6 +15,9 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+
+import java.awt.Point;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -43,14 +49,36 @@ public class EngineController {
     @CrossOrigin
     @MessageMapping("/windowInit")
     @SendTo("/topic/windowInitResponse")
-    public NewGameResponse gameInit() throws Exception {
+    public String gameInit() throws Exception {
         this.initializePlayers();
         this.initializeGame();
+        int userId = 0;
+        String userName = newGameRequest.getUserName();
+        String victoryMessage = newGameRequest.getVictoryMessage();
+        ShipObject[] ships = new ShipObject[newGameRequest.getShips().length];
+
+
         for (int i = 0; i < newGameRequest.getShips().length; i++) {
-            
+            Ship s = newGameRequest.getShips()[i];
+            System.out.println("st.x: " + s.st.x + " st.y " + s.st.y);
+            Point[] points = s.getPoints();
+            Coordinate[] pts = new Coordinate[points.length];
+            for (int j = 0; j < points.length; j++) {
+                pts[j] = new Coordinate(points[j].x, points[j].y);
+            }
+
+            ShipObject obj = new ShipObject(s.getType().getValue(), pts.length, pts);
+            ships[i] = obj;
+
         }
-        return null;
-    }
+        ObjectMapper mapper = new ObjectMapper();
+
+        NewGameResponse response = new NewGameResponse(userId, userName, victoryMessage, ships);
+        String json = mapper.writeValueAsString(response);
+        return json;
+    }  
+
+    @MessageMapping("/userMove")
 
 
     public void initializePlayers() {

@@ -54,6 +54,13 @@ export class GameWindowComponent implements OnInit {
       console.log("Not connected");
     }
 
+
+    this.stomp.stompClient.subscribe('/topic/windowInitResponse', (res) => {
+      let r = JSON.parse(res.body) as GameResponse;
+      console.log(r);
+      this.loadShips(r);
+      this.renderShips();
+    });
     this.stomp.sendGameWindowInit();
 
 
@@ -83,7 +90,7 @@ export class GameWindowComponent implements OnInit {
       for (var j = 0; j < this.ships[i].spaces.length; j++) {
         let x = this.ships[i].spaces[j].x;
         let y = this.ships[i].spaces[j].y;
-        var id = x * this.gridSize + y;
+        var id = y * this.gridSize + x;
 
         document.getElementById("user_"+id).style.backgroundColor = "red";
       }

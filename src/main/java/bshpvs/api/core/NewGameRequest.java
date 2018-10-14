@@ -45,9 +45,9 @@ public class NewGameRequest
         this.userName = userName;
     }
 
-    public UserShip[] getShips ()
+    public Ship[] getShips ()
     {
-        return _ships;
+        return ships;
     }
 
     public void setShips (UserShip[] ships)
@@ -85,6 +85,7 @@ public class NewGameRequest
              }
 
              Ship s = new Ship(p1, p2, type);
+             System.out.println(s.getPoints().toString());
              ships[i] = s;
         }
     }

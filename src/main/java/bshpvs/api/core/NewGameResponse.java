@@ -17,7 +17,11 @@ public class NewGameResponse {
     @JsonProperty("ships") public ShipObject[] ships;
 
     
-    public NewGameResponse() {
+    public NewGameResponse(@JsonProperty("userId") int userId, @JsonProperty("userName") String username, @JsonProperty("victoryMessage") String victoryMessage, @JsonProperty("ships")  ShipObject[] ships ) {
+        this.userId = userId;
+        this.username = username;
+        this.victoryMessage = victoryMessage;
+        this.ships = ships;
     }
 
     public static class ShipObject {
@@ -36,7 +40,8 @@ public class NewGameResponse {
         @JsonProperty("x") public int x;
         @JsonProperty("y") public int y;
         public Coordinate(@JsonProperty("x") int x, @JsonProperty("y") int y) {
-
+            this.x = x;
+            this.y = y;
         }
     }
 }
