@@ -27,11 +27,28 @@ public class CellTest {
 
     @Test
     public void testSetType() {
-        c.setType(CellType.SHIP);
-        assertEquals(CellType.SHIP, c.getType());
+        c.setType(CellType.WATER);
+        assertEquals(CellType.WATER, c.getType());
     }
 
     @Test void testToString() {
         assertEquals("0", c.toString());
+    }
+
+    @Test void testIsSimpleShip() {
+        c.setType(CellType.DESTROYER);
+        assertEquals(true, c.isShip());
+        c.setType(CellType.CARRIER);
+        assertEquals(true, c.isShip());
+        c.setType(CellType.CRUISER);
+        assertEquals(true, c.isShip());
+        c.setType(CellType.SUBMARINE);
+        assertEquals(true, c.isShip());
+        c.setType(CellType.BATTLESHIP);
+        assertEquals(true, c.isShip());
+        c.setType(CellType.WATER);
+        assertEquals(false, c.isShip());
+        c.setType(CellType.LAND);
+        assertEquals(false, c.isShip());
     }
 }

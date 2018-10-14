@@ -1,28 +1,45 @@
 package bshpvs.model;
 
+public enum CellType implements TypeInterface {
 
-/**
- * Enumeration to define Type of Cell.
- */
-public enum CellType {
-    WATER(0),
-    SHIP(1);
+    WATER(0, CellGroup.TERRAIN),
+    LAND(1, CellGroup.TERRAIN),
+    DESTROYER(2, CellGroup.SHIP),
+    CRUISER(3, CellGroup.SHIP),
+    SUBMARINE(3, CellGroup.SHIP),
+    BATTLESHIP(4, CellGroup.SHIP),
+    CARRIER(5, CellGroup.SHIP);
 
-    private int value;
+    private final int shipVal;
+    private final CellGroup group;
 
     /**
-     * Retrieve integer value of cell type.
-     * @return the integer corresponding to the cell type
+     * Return the string name of the ship
+     * @return the string name of the ship
      */
-    public int getValue() {
-        return this.value;
+    public String getText() {
+        return this.name();
     }
 
     /**
      * Private constructor for enumeration class.
      * @param value the value of the Cell
      */
-    private CellType(int value) {
-        this.value = value;
+    private CellType(int value, CellGroup group) {
+        this.shipVal = value;
+        this.group = group;
     }
+
+    /**
+     * Retrieve integer value of cell type.
+     * @return the integer corresponding to the cell type
+     */
+    public int getValue() {
+        return this.shipVal;
+    }
+
+    public CellGroup getGroup() {
+        return this.group;
+    }
+
 }

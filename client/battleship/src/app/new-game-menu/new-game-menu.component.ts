@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { DarkModeService } from '../settings/darkmode.service';
+import { WebService } from '../web.service';
+import { Config } from 'protractor';
+
+
+
 
 @Component({
   selector: 'app-new-game-menu',
@@ -11,26 +16,34 @@ import { DarkModeService } from '../settings/darkmode.service';
 export class NewGameMenuComponent implements OnInit {
 
   selectCarrier: boolean = false;
-  selectCruiser: boolean = false;
+  selectbattleship: boolean = false;
   selectSubmarine: boolean = false;
   selectDestroyer: boolean = false;
   placementCounter: number = 0;
   darkMode: boolean;
 
   carrier : Ship = {identifier: 0, numSpaces: 5, spaces: new Array<Coordinate>()};
-  cruiser: Ship = {identifier: 1, numSpaces: 4, spaces: new Array<Coordinate>()};
-  submarine1: Ship = {identifier: 2, numSpaces: 3, spaces: new Array<Coordinate>()};
-  submarine2: Ship = {identifier: 2, numSpaces: 3, spaces: new Array<Coordinate>()}
-  destroyer : Ship = {identifier: 3, numSpaces: 2, spaces: new Array<Coordinate>()};
+  battleship: Ship = {identifier: 1, numSpaces: 4, spaces: new Array<Coordinate>()};
+  cruiser: Ship = {identifier: 2, numSpaces: 3, spaces: new Array<Coordinate>()};
+  submarine: Ship = {identifier: 3, numSpaces: 3, spaces: new Array<Coordinate>()}
+  destroyer : Ship = {identifier: 4, numSpaces: 2, spaces: new Array<Coordinate>()};
 
-  message: string = "Place your carrier (4 spaces left)";
+  message: string = "Place your carrier (5 spaces left)";
+  wsConf : Config = {
+    host:'localhost:8080/battleship',
+    debug:true,
+    queue:{'init':false}
+  }
 
   temp: any = "";
 
   username: string = "";
   victoryMessage: string = "";
 
-  constructor(public snackbar: MatSnackBar, private router: Router, private dm: DarkModeService) { }
+  constructor(public snackbar: MatSnackBar, private stomp: WebService, private router: Router, private dm: DarkModeService) { 
+    // initialize connection to backend
+    stomp.initializeConnection();  
+  }
 
   ngOnInit() {
     this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
@@ -43,7 +56,15 @@ export class NewGameMenuComponent implements OnInit {
   }
 
   onCellClicked(event: Cell) {
-    var total : number = this.carrier.numSpaces + this.cruiser.numSpaces + this.destroyer.numSpaces + this.submarine1.numSpaces + this.submarine2.numSpaces;
+    if (this.placementCounter == 0) {
+      this.stomp.stompClient.subscribe('/topic/confirmPlacement', (res) => {
+        this.stomp.setConnected();
+        this.router.navigateByUrl('/gameWindow');
+      });
+    }
+    
+
+    var total : number = this.carrier.numSpaces + this.battleship.numSpaces + this.destroyer.numSpaces + this.cruiser.numSpaces + this.submarine.numSpaces;
     if (this.placementCounter < this.carrier.numSpaces) {
       if(!this.checkValidMove(event, this.carrier))
         return;
@@ -51,31 +72,31 @@ export class NewGameMenuComponent implements OnInit {
       this.message = "Place your carrier (5 spaces)";
       this.placementCounter++;
       if (this.placementCounter == this.carrier.numSpaces) {
-        this.message = "Place your cruiser (4 spaces)";
+        this.message = "Place your battleship (4 spaces)";
       }
-    } else if (this.placementCounter < this.cruiser.numSpaces + this.carrier.numSpaces) {
+    } else if (this.placementCounter < this.battleship.numSpaces + this.carrier.numSpaces) {
+      if(!this.checkValidMove(event, this.battleship))
+        return;
+      this.battleship.spaces.push({x: event.col, y: event.row});
+      this.message = "Place your battleship (4 spaces)";
+      this.placementCounter++;
+      if (this.placementCounter == this.carrier.numSpaces + this.battleship.numSpaces) {
+        this.message = "Place your cruiser (3 spaces)";
+      }
+    } else if (this.placementCounter < this.cruiser.numSpaces + this.battleship.numSpaces + this.carrier.numSpaces) {
       if(!this.checkValidMove(event, this.cruiser))
         return;
       this.cruiser.spaces.push({x: event.col, y: event.row});
-      this.message = "Place your cruiser (4 spaces)";
+      this.message = "Place your cruiser (3 spaces)";
       this.placementCounter++;
-      if (this.placementCounter == this.carrier.numSpaces + this.cruiser.numSpaces) {
-        this.message = "Place your submarine (3 spaces)";
-      }
-    } else if (this.placementCounter < this.submarine1.numSpaces + this.cruiser.numSpaces + this.carrier.numSpaces) {
-      if(!this.checkValidMove(event, this.submarine1))
-        return;
-      this.submarine1.spaces.push({x: event.col, y: event.row});
-      this.message = "Place your 1st submarine (3 spaces)";
-      this.placementCounter++;
-      if (this.placementCounter == this.carrier.numSpaces + this.cruiser.numSpaces + this.submarine1.numSpaces) {
-        this.message = "Place your 2nd submarine (2 spaces)";
+      if (this.placementCounter == this.carrier.numSpaces + this.battleship.numSpaces + this.cruiser.numSpaces) {
+        this.message = "Place your submarine (2 spaces)";
       }
     } else if (this.placementCounter < total - this.destroyer.numSpaces) {
-      if(!this.checkValidMove(event, this.submarine2))
+      if(!this.checkValidMove(event, this.submarine))
         return;
-      this.submarine2.spaces.push({x: event.col, y: event.row});
-      this.message = "Place your 2nd submarine (3 spaces)";
+      this.submarine.spaces.push({x: event.col, y: event.row});
+      this.message = "Place your submarine (3 spaces)";
       this.placementCounter++;
       if (this.placementCounter == total - this.destroyer.numSpaces) {
         this.message = "Place your destroyer (2 spaces)";
@@ -172,7 +193,7 @@ export class NewGameMenuComponent implements OnInit {
 
       let reqs = new Array<ShipReq>();
       let ships = new Array<Ship>();
-      ships.push(this.carrier, this.cruiser, this.submarine1, this.submarine2, this.destroyer);
+      ships.push(this.carrier, this.battleship, this.cruiser, this.submarine, this.destroyer);
       for (var i = 0; i < ships.length; i++) {
         let ship = ships[i];
         var req : ShipReq = {
@@ -193,8 +214,9 @@ export class NewGameMenuComponent implements OnInit {
       };
       //this.router.navigateByUrl('/gameWindow');
 
+     
       let r = JSON.stringify(request);
-
+      this.stomp.sendMessage(r);
       console.log(r);
     }
   }
@@ -203,7 +225,7 @@ export class NewGameMenuComponent implements OnInit {
 
 interface Ship {
   // 0 is carrier
-  // 1 is cruiser
+  // 1 is battleship
   // 2 is submarine
   // 3 is destroyer
   identifier: number,

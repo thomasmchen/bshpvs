@@ -41,6 +41,14 @@ public class Cell {
     }
 
     /**
+     * Returns whether the cell is a ship
+     * @return true if ship, false if not
+     */
+    public boolean isShip() {
+        return (this.getType().getGroup().equals(CellGroup.SHIP));
+    }
+
+    /**
      * Mutator method for hit value, always sets hit to true.
      */
     public void hit() {
@@ -52,6 +60,6 @@ public class Cell {
      * @return string version of Cell
      */
     public String toString() {
-        return type.equals(CellType.WATER) ? "0" : "1";
+        return Integer.toString(type.getValue());
     }
 }
