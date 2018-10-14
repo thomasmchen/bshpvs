@@ -159,6 +159,321 @@
       ],
       "value": ""
     }]
+  }, {
+    "id": "16c73f63-8378-4cb2-8d1f-c5c6ab5a79fa",
+    "name": "Dark Theme Apply Settings",
+    "commands": [{
+      "id": "6e67e747-e8b8-4a16-9898-bfc7f3f22f20",
+      "comment": "",
+      "command": "open",
+      "target": "/home",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d0605c7b-7fb1-4f5b-9eea-1502e69d1816",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "974x1047",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d1b71ff6-5323-4cc0-84ca-f1c61fb358d4",
+      "comment": "",
+      "command": "click",
+      "target": "css=button:nth-child(2)",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "426206f1-8453-490f-8543-b71c34fa9a3e",
+      "comment": "",
+      "command": "verifyElementNotPresent",
+      "target": "css=.darkMode",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "0ac266c1-ca85-4666-a5dd-69f690ddaf03",
+      "comment": "",
+      "command": "click",
+      "target": "css=span.slider.round",
+      "targets": [
+        ["css=span.slider.round", "css"],
+        ["css=.setting:nth-child(1) .round", "css:finder"],
+        ["xpath=//label/span", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "25dbbb4a-82d8-4b4c-8fed-935a18df1b3a",
+      "comment": "",
+      "command": "verifyElementPresent",
+      "target": "css=.darkMode",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "c7d52fa5-1ce8-4e53-b504-2c86a8e4b803",
+    "name": "Dark Theme Main Menu",
+    "commands": [{
+      "id": "093e9c43-7e3c-47cd-adf8-c103f31078b2",
+      "comment": "",
+      "command": "open",
+      "target": "/home",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c0ab8088-c73d-4d84-b0f6-a08b55709aa3",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "974x1047",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b956122f-67ef-4a9a-adb3-00eb73be1b0c",
+      "comment": "",
+      "command": "verifyElementNotPresent",
+      "target": "css=.darkMode",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "0d973abe-7fb1-4383-bf78-b852ca071502",
+      "comment": "",
+      "command": "click",
+      "target": "css=button:nth-child(2)",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "353969f3-c026-4def-9e7c-6a0dcedc81e9",
+      "comment": "",
+      "command": "click",
+      "target": "css=span.slider.round",
+      "targets": [
+        ["css=span.slider.round", "css"],
+        ["css=.setting:nth-child(1) .round", "css:finder"],
+        ["xpath=//label/span", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "26f79e16-403c-4598-99c8-cfe9d3f22d9d",
+      "comment": "",
+      "command": "click",
+      "target": "css=.mat-button",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "be3a70ad-1aff-498e-b371-6dea6c8ad09a",
+      "comment": "",
+      "command": "verifyElementPresent",
+      "target": "css=.darkMode",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "e62caf24-fb36-4e7f-9051-362c10e6bfe1",
+    "name": "Dark Theme Apply About",
+    "commands": [{
+      "id": "e7844f41-8200-4438-be5f-fea523406f7e",
+      "comment": "",
+      "command": "open",
+      "target": "/home",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "92d61aee-ea22-4a1d-a526-29e7f54caf66",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "974x1047",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "76530188-6fd9-46b0-9f0e-d5f137c0ef45",
+      "comment": "",
+      "command": "click",
+      "target": "css=button:nth-child(5)",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c37fe834-984f-44f3-8d1b-fa724140aab1",
+      "comment": "",
+      "command": "verifyElementNotPresent",
+      "target": "css=.darkMode",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "cadcccfa-8ad4-4263-be05-2872a0d5568c",
+      "comment": "",
+      "command": "click",
+      "target": "css=.mat-button",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0880b240-6303-40e5-a5cf-45b407c87460",
+      "comment": "",
+      "command": "click",
+      "target": "css=button:nth-child(2)",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "28f74f15-7057-49e9-b808-d4b901e691af",
+      "comment": "",
+      "command": "click",
+      "target": "css=span.slider.round",
+      "targets": [
+        ["css=span.slider.round", "css"],
+        ["css=.setting:nth-child(1) .round", "css:finder"],
+        ["xpath=//label/span", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "74665871-50a2-4865-b1c2-970fd06b7a1b",
+      "comment": "",
+      "command": "click",
+      "target": "css=.mat-button",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "471bc4d8-32ef-4b35-9bf6-c96ce8899dda",
+      "comment": "",
+      "command": "click",
+      "target": "css=button:nth-child(5)",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "65af25da-da49-43c0-a73b-bf0b4a5417a0",
+      "comment": "",
+      "command": "verifyElementPresent",
+      "target": "css=.darkMode",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "423e587c-36b0-4982-8904-a858ffd0d5b0",
+    "name": "Dark Theme Apply New Game",
+    "commands": [{
+      "id": "256c866c-65d7-4fdb-a65b-8bd235a9a19e",
+      "comment": "",
+      "command": "open",
+      "target": "/home",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8a4f6346-6641-44f0-803a-4689089d03c1",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "974x1047",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "05ccbdd8-1744-4c32-8561-198bf8d43d18",
+      "comment": "",
+      "command": "click",
+      "target": "css=button:nth-child(1)",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "675f7255-7448-42ea-aee0-47e2724bb8ca",
+      "comment": "",
+      "command": "verifyElementNotPresent",
+      "target": "css=.darkMode",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d79263f3-8c0b-4596-9c02-fec879e67ade",
+      "comment": "",
+      "command": "click",
+      "target": "css=.mat-button",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d3014928-3f75-4709-93a2-b488e299f648",
+      "comment": "",
+      "command": "click",
+      "target": "css=button:nth-child(2)",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0f8c3e2a-e82c-4bc4-93de-2f8cd258910e",
+      "comment": "",
+      "command": "click",
+      "target": "css=span.slider.round",
+      "targets": [
+        ["css=span.slider.round", "css"],
+        ["css=.setting:nth-child(1) .round", "css:finder"],
+        ["xpath=//label/span", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "80fdc53c-1be2-4316-a6cc-32a8afa3c416",
+      "comment": "",
+      "command": "click",
+      "target": "css=.mat-button",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "60daaf31-02ce-47c1-be2c-7ade4542e86f",
+      "comment": "",
+      "command": "click",
+      "target": "css=button:nth-child(1)",
+      "targets": [
+        ["css=button:nth-child(2)", "css:finder"],
+        ["xpath=(//button[@type='button'])[2]", "xpath:attributes"],
+        ["xpath=//button[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "74ca0846-003a-4268-81ed-57f7b91c1688",
+      "comment": "",
+      "command": "verifyElementPresent",
+      "target": "css=.darkMode",
+      "targets": [],
+      "value": ""
+    }]
   }],
   "suites": [{
     "id": "a6acee17-2ef1-4fd2-a999-1d00889d8dff",
