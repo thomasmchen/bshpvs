@@ -2,18 +2,12 @@ package bshpvs.engine;
 
 import bshpvs.ai.HunterPlayer;
 import bshpvs.ai.NaivePlayer;
-import bshpvs.model.CellGroup;
-import bshpvs.model.CellType;
-import bshpvs.model.Player;
-import bshpvs.model.Ship;
-import bshpvs.statistics.GameStat;
-import bshpvs.statistics.PlayerStat;
-import bshpvs.statistics.Statistics;
+import bshpvs.api.core.AttackResponse;
+import bshpvs.model.*;
 
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Game {
@@ -31,185 +25,38 @@ public class Game {
     private static final String ANSI_CYAN = "\u001B[36m";
     private static final String ANSI_WHITE = "\u001B[37m";
 
-    public Game(Player first, Player second, int size) {
+    public Game(Player first, Player second) {
         this.firstPlayer = first;
         this.secondPlayer = second;
         this.current = firstPlayer;
     }
 
-    public void init() {
-
-    }
-
-    public static GameStat scrimmage(Player alpha, Player beta) {
-        long startTime = System.nanoTime();
-        int alphaHits = 0;
-        int alphaMisses = 0;
-        int betaHits = 0;
-        int betaMisses = 0;
-
-        randomPromptShips(alpha);
-        randomPromptShips(beta);
-
-        Player current = alpha;
-        int numTurns = 0;
-
-        while (!alpha.isDefeated() && !beta.isDefeated()) {
-            if (current.equals(alpha)) {
-                alpha.move(beta);
-                current = beta;
-            } else {
-                beta.move(alpha);
-                current = alpha;
-                numTurns++;
-            }
+    public void initAi(int difficulty) {
+        if (difficulty == 1) {
+            secondPlayer = new NaivePlayer();
+        } else {
+            secondPlayer = new HunterPlayer();
         }
-
-//        Map alphaMap = alpha.getMap();
-//        Map betaMap = beta.getMap();
-//        System.out.println("Alpha's Map: ");
-//        alphaMap.prettyPrintMap();
-//        System.out.println("Beta's Map: ");
-//        betaMap.prettyPrintMap();
-
-        long stopTime = System.nanoTime();
-        long gameTime = stopTime - startTime;
-
-        ArrayList<PlayerStat> stats = new ArrayList<>();
-        stats.add(alpha.getPlayerStat());
-        stats.add(beta.getPlayerStat());
-
-        PlayerStat winner = alpha.isDefeated() ? beta.getPlayerStat() : alpha.getPlayerStat();
-        return new GameStat(stats, gameTime, winner);
+        randomPromptShips(secondPlayer);
+        System.out.println("We are ready to play!");
     }
 
-    public static void main(String[] args) {
-        int epochs = 10;
-
-        ArrayList<GameStat> gameStats = new ArrayList<>();
-        for (int i = 0; i < epochs; i++) {
-            Player alpha = new NaivePlayer(10);
-            Player beta = new HunterPlayer(10);
-            GameStat round = Game.scrimmage(alpha, beta);
-            System.out.println("====================================================================================" +
-                    "Round " + i +
-                    "====================================================================================");
-            round.printPlayerRanks();
-            gameStats.add(round);
+    public AttackResponse turn(Point coordinate) {
+        String yourMove = "water";
+        String theirMove = "miss";
+        Cell c = firstPlayer.hitOppCell(coordinate, secondPlayer);
+        if (c.getType().getGroup().equals(CellGroup.SHIP)) {
+            yourMove = "hit";
+        } else if (c.getType() == CellType.LAND) {
+            yourMove = "land";
         }
-
-        System.out.println("\n================================= Epoch Statistics =================================");
-        Statistics stats = new Statistics(gameStats);
-        System.out.println(stats.toString());
-        System.out.println("====================================================================================");
-        stats.printPlayerStats("HunterPlayer");
-        System.out.println("====================================================================================");
-        stats.printPlayerStats("NaivePlayer");
-        System.out.println("====================================================================================");
-
+        Point tgt = secondPlayer.move(firstPlayer);
+        Cell a = firstPlayer.getCell(tgt);
+        if (a.getType().getGroup().equals(CellGroup.SHIP)) {
+            theirMove = "hit";
+        }
+        return new AttackResponse(tgt.y, tgt.x, yourMove, theirMove);
     }
-
-
-//    public static void main(String[] args) throws IOException {
-//
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-//
-//        System.out.println("\n" +
-//                "██████╗ ███████╗██╗  ██╗██████╗ ██╗   ██╗███████╗\n" +
-//                "██╔══██╗██╔════╝██║  ██║██╔══██╗██║   ██║██╔════╝\n" +
-//                "██████╔╝███████╗███████║██████╔╝██║   ██║███████╗\n" +
-//                "██╔══██╗╚════██║██╔══██║██╔═══╝ ╚██╗ ██╔╝╚════██║\n" +
-//                "██████╔╝███████║██║  ██║██║      ╚████╔╝ ███████║\n" +
-//                "╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝       ╚═══╝  ╚══════╝\n" +
-//                "                                                 \n");
-//
-//        Player one = new Player(10);
-//        Player two;
-//
-//        System.out.println("Please select AI Difficulty:\n" +
-//                "1) Easy\n" +
-//                "2) Medium\n");
-//
-//        String difficulty = reader.readLine();
-//        while (!difficulty.matches("[1-2]")) {
-//            System.out.println("Invalid Difficulty, Please Try Again: ");
-//            difficulty = reader.readLine();
-//        }
-//
-//        if (Integer.parseInt(difficulty) == 1) {
-//            two = new Player();
-//        } else {
-//            two = new HunterPlayer();
-//        }
-//
-//        Player current = one;
-//
-//
-//        // Player 1 Setup
-//        System.out.println("Welcome Player 1!");
-//        System.out.println("This is your grid:");
-//        Map.printKey();
-//        one.getMap().prettyPrintMap();
-//        System.out.println("Please place your ships:");
-//
-//        for (CellType ct : CellType.values()) {
-//            if (ct.getGroup().equals(CellGroup.SHIP)) {
-//                promptShips(ct, reader, one);
-//            }
-//        }
-//
-//        randomPromptShips(two);
-//
-//        System.out.println("============ The AI is ready! =============");
-//
-//        // While neither player has lost
-//        while (!one.isDefeated() && !two.isDefeated()) {
-//            if (current == one) {
-//                System.out.println("Type in Target Coordinate: ");
-//                String target = reader.readLine().toUpperCase();
-//                if (!target.matches("[A-J][0-9]")) {
-//                    System.out.println("Invalid Target, Please Try Again:"); //TODO: Real input validation function
-//                    continue;
-//                }
-//                Point targPt = ptConv(target);
-//                Cell c = one.hitOppCell(targPt, two);
-//
-//                System.out.println("Hit target: " + c.getType().getText());
-//                if (c.getType().getGroup().equals(CellGroup.SHIP) && two.getShipStatus(c.getType()))
-//                    System.out.println("You sunk your opponents: " + c.getType().getText());
-//                System.out.println("Target Map: ");
-//                one.getTargetBoard().prettyPrintBlindMap();
-//                current = two;
-//            } else {
-//                Point tgt = two.move(one);
-//                Cell c = one.getCell(tgt);
-//                System.out.println("Opponent hit " + c.getType().getText() + " at " + tgt.x + "," +  tgt.y);
-//                System.out.println("Your map: ");
-//                one.getMap().prettyPrintMap();
-//                current = one;
-//            }
-//        }
-//
-//        if (one.isDefeated()) {
-//            System.out.println(ANSI_RED + "\n" +
-//                    "██████╗ ███████╗███████╗███████╗ █████╗ ████████╗\n" +
-//                    "██╔══██╗██╔════╝██╔════╝██╔════╝██╔══██╗╚══██╔══╝\n" +
-//                    "██║  ██║█████╗  █████╗  █████╗  ███████║   ██║   \n" +
-//                    "██║  ██║██╔══╝  ██╔══╝  ██╔══╝  ██╔══██║   ██║   \n" +
-//                    "██████╔╝███████╗██║     ███████╗██║  ██║   ██║   \n" +
-//                    "╚═════╝ ╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   \n" +
-//                    "                                                 \n" + ANSI_RESET);
-//        } else {
-//            System.out.println(ANSI_GREEN + "\n" +
-//                    "██╗   ██╗██╗ ██████╗████████╗ ██████╗ ██████╗ ██╗   ██╗\n" +
-//                    "██║   ██║██║██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗╚██╗ ██╔╝\n" +
-//                    "██║   ██║██║██║        ██║   ██║   ██║██████╔╝ ╚████╔╝ \n" +
-//                    "╚██╗ ██╔╝██║██║        ██║   ██║   ██║██╔══██╗  ╚██╔╝  \n" +
-//                    " ╚████╔╝ ██║╚██████╗   ██║   ╚██████╔╝██║  ██║   ██║   \n" +
-//                    "  ╚═══╝  ╚═╝ ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   \n" +
-//                    "                                                       \n" + ANSI_RESET);
-//        }
-//    }
 
     /**
      * Converts a readable point (E.g, A4) into numerical point (0,4)
@@ -272,7 +119,6 @@ public class Game {
                 genShip(pl.getMap().getLength(), ct, pl);
             }
         }
-
     }
 
     //TODO: remove constraint param redundant can be derived from pl
@@ -304,13 +150,8 @@ public class Game {
         try {
             Ship s = new Ship(st, end, ct);
             pl.addShip(s);
-//            System.out.println(s.getType().getText() +
-//                    " - (" + s.st.x + "," + s.st.y + ")" +
-//                    " to (" + s.end.x + "," + s.end.y + ")");
         } catch (IllegalArgumentException iae) {
             genShip(constraint, ct, pl);
         }
     }
-
-
 }
