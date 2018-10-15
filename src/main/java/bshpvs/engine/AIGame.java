@@ -42,22 +42,19 @@ public class AIGame {
         return new GameStat(stats, gameTime, winner);
     }
 
-    public static Statistics simulateAIMatch(Player alpha, Player beta, int numMatches) {
+    public static void main(String[] args) {
         ArrayList<GameStat> gameStats = new ArrayList<>();
+        long start = System.nanoTime();
 
-        for (int i = 0; i < numMatches; i++) {
-            GameStat round = playMatch(alpha, beta);
+        for (int i = 0; i < 10000; i++) {
+
+            GameStat round = playMatch(new NaivePlayer(), new HunterPlayer());
             gameStats.add(round);
         }
-
-        return new Statistics(gameStats);
-    }
-
-    public static void main(String[] args) {
-
-        long start = System.nanoTime();
-        Statistics stats = simulateAIMatch(new NaivePlayer(), new HunterPlayer(), 10000);
         long stop = System.nanoTime();
+
+        Statistics stats = new Statistics(gameStats);
+
         long runTime = stop - start;
 
         System.out.println("\n================================= Epoch Statistics =================================");
