@@ -1,4 +1,7 @@
-package bshpvs.model;
+package bshpvs.ai;
+
+import bshpvs.model.Cell;
+import bshpvs.model.Player;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -6,7 +9,7 @@ import java.util.Stack;
 
 public class HunterPlayer extends Player implements Playable{
     private Stack<Point> targets;
-    private Point target;
+    //private Point target;
     private static final String ANSI_YELLOW = "\u001B[33m";
     private static final String ANSI_RESET = "\u001B[0m";
 
@@ -14,31 +17,33 @@ public class HunterPlayer extends Player implements Playable{
     public HunterPlayer() {
         super();
         this.targets = new Stack<Point>();
-        target = null;
     }
 
     public HunterPlayer(int size) {
         super(size);
         this.targets = new Stack<Point>();
-        target = null;
     }
 
     public Point move(Player opp) {
-        System.out.println(ANSI_YELLOW + "AI MOVE" + ANSI_RESET);
+        //System.out.println(ANSI_YELLOW + "HUNTER MOVE" + ANSI_RESET);
 
+        Point target = null;
         // First move or no more targets
-        if (target == null || targets.empty()) {
-            target = genRandomTarget();
-            System.out.println(ANSI_YELLOW + "Calculating Target: (" + target.x + ", " + target.y + ")" + ANSI_RESET);
+        if (targets.empty()) {
+            //System.out.println("No Targets");
+            target = genRandomTarget(opp);
+            //System.out.println(ANSI_YELLOW + "Calculating Target: (" + target.x + ", " + target.y + ")" + ANSI_RESET);
             Cell c = this.hitOppCell(target, opp);
-            this.updateTargets(c);
+            this.updateTargets(c, target);
             
             return target;
         }  else {
+            //System.out.println("Has Targets");
+            //System.out.println(target.toString());
             target = targets.pop();
-            System.out.println(ANSI_YELLOW + "Calculating Target: (" + target.x + ", " + target.y + ")" + ANSI_RESET);
+            //System.out.println(ANSI_YELLOW + "Calculating Target: (" + target.x + ", " + target.y + ")" + ANSI_RESET);
             Cell c = this.hitOppCell(target, opp);
-            this.updateTargets(c);
+            this.updateTargets(c, target);
 
             return target;
         }
@@ -48,16 +53,16 @@ public class HunterPlayer extends Player implements Playable{
      * Given a hit target cell will update candidates
      * @param c the cell that was hit
      */
-    private void updateTargets(Cell c) {
+    private void updateTargets(Cell c, Point p) {
         if (c.isShip()) {
-            System.out.println(ANSI_YELLOW + "Target Hit! Adding new Candidate Targets: " + ANSI_RESET);
-            ArrayList<Point> candidates = huntPts(target);
+            //System.out.println(ANSI_YELLOW + "Target Hit! Adding new Candidate Targets: " + ANSI_RESET);
+            ArrayList<Point> candidates = huntPts(p);
             if (candidates.size() == 0) {
-                System.out.println(ANSI_YELLOW + "No Suitable Targets!" + ANSI_RESET);
+                //System.out.println(ANSI_YELLOW + "No Suitable Targets!" + ANSI_RESET);
                 return;
             }
             for (Point pt : candidates) {
-                System.out.println(ANSI_YELLOW + pt + ANSI_RESET);
+                //System.out.println(ANSI_YELLOW + pt + ANSI_RESET);
                 targets.push(pt);
             }
         }
@@ -83,7 +88,6 @@ public class HunterPlayer extends Player implements Playable{
                 targets.add(pt);
             }
         }
-
 
         return targets;
     }

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -62,5 +61,20 @@ class MapTest {
         mp.setCell(new Point(0,5), CellType.CARRIER);
         Cell c = mp.getCell(new Point(0, 5));
         assertEquals(CellType.CARRIER, c.getType());
+    }
+
+    @Test
+    void testGetKeyMap() {
+        assertEquals("----------------\n" +
+                "Battleship Key\n" +
+                "----------------\n" +
+                "0 : WATER\n" +
+                "1 : LAND\n" +
+                "2 : DESTROYER\n" +
+                "3 : CRUISER\n" +
+                "3 : SUBMARINE\n" +
+                "4 : BATTLESHIP\n" +
+                "5 : CARRIER\n" +
+                "----------------\n", Map.getKeyMap());
     }
 }

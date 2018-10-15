@@ -1,5 +1,8 @@
 package bshpvs.model;
 
+import bshpvs.ai.Playable;
+import bshpvs.statistics.PlayerStat;
+
 import java.awt.Point;
 import java.util.EnumMap;
 import java.util.Map.Entry;
@@ -15,8 +18,10 @@ public class Player implements Playable {
     private Map targetBoard;
     private EnumMap<CellType, Ship> ships;
     private EnumMap<CellType, Boolean> statuses;
+    private PlayerStat stat;
 
     private static final int DEFAULT_GRID_SIZE = 10;
+
 
     /**
      * Default constructor for Player.
@@ -27,6 +32,7 @@ public class Player implements Playable {
         id = UUID.randomUUID();
         ships = new EnumMap<CellType, Ship>(CellType.class);
         statuses = new EnumMap<CellType, Boolean>(CellType.class);
+        stat = new PlayerStat(this);
     }
 
     /**
@@ -39,6 +45,7 @@ public class Player implements Playable {
         id = UUID.randomUUID();
         ships = new EnumMap<CellType, Ship>(CellType.class);
         statuses = new EnumMap<CellType, Boolean>(CellType.class);
+        stat = new PlayerStat(this);
     }
 
     /**
@@ -56,7 +63,8 @@ public class Player implements Playable {
         try {
             this.setShip(shp);
         } catch (ShipOverlapException soe) {
-            throw new IllegalArgumentException("Failed to add Ship to Player, Ship overlaps with Existing Ship.");
+            throw new IllegalArgumentException("Failed to add " + shp.getType().toString() +
+                    " to Player, Ship overlaps with Existing Ship.");
         }
 
         // Store ship in Player's EnumMap
@@ -73,7 +81,7 @@ public class Player implements Playable {
     private void setShip(Ship shp) throws ShipOverlapException {
         for (Entry<CellType, Ship> s : ships.entrySet()) {
             if (shp.doesOverlap(s.getValue())) {
-                throw new IllegalArgumentException("Cannot place" + shp.getType() +
+                throw new ShipOverlapException("Cannot place " + shp.getType() +
                         " it overlaps with " +  s.getValue().getType());
             }
         }
@@ -90,18 +98,18 @@ public class Player implements Playable {
      * @return true if hit a ship, false if hit nothing
      */
     public Cell getHit(Point pt) {
-        Cell c = this.board.getCell(pt);
+        Cell c = this.getMap().getCell(pt);
         c.hit();
         resolveShipStatus(c.getType());
         return c;
     }
 
     /**
-     * Returns the status of a Players ship, true if hit, false if not
+     * Returns the status of a Players ship, true if sunk, false if not
      * @param ship the ship to be checked
      * @return the status of the ship
      */
-    public boolean getShipStatus(CellType ship) {
+    public boolean isShipSunk(CellType ship) {
         return statuses.get(ship);
     }
 
@@ -114,6 +122,15 @@ public class Player implements Playable {
     public Cell hitOppCell(Point pt, Player player) {
         // Hit the opposing player
         Cell c = player.getHit(pt);
+
+        // Update Stats
+        this.getPlayerStat().incrementTurns();
+
+        if (c.isShip()) {
+            this.getPlayerStat().incrementHits();
+        } else {
+            this.getPlayerStat().incrementMisses();
+        }
 
         // Update player record of move
         this.targetBoard.setCell(pt, c.getType());
@@ -190,11 +207,18 @@ public class Player implements Playable {
      * Randomly generate a valid target
      * @return the valid target
      */
-    public Point genRandomTarget() {
+    public Point genRandomTarget(Player opp) {
         Random gen = new Random();
         Point tgt = new Point(gen.nextInt(targetBoard.getLength()), gen.nextInt(targetBoard.getLength()));
-        while (targetBoard.getCell(tgt).isHit())
-            tgt = new Point(gen.nextInt(targetBoard.getLength()), gen.nextInt(targetBoard.getLength()));
+        if (opp.getCell(tgt).isHit()) {
+            for (int i = 0; i < opp.getMap().getLength(); i++) {
+                for (int j = 0; j < opp.getMap().getLength(); j++) {
+                    tgt = new Point(i ,j);
+                    if (!opp.getCell(tgt).isHit())
+                        return  tgt;
+                }
+            }
+        }
 
         return tgt;
     }
@@ -215,9 +239,34 @@ public class Player implements Playable {
      * @return the Cell that was hit by the move
      */
     public Point move(Player opp) {
-        Point tgt = genRandomTarget();
-        opp.hitOppCell(tgt, opp);
+        Point tgt = genRandomTarget(opp);
+        this.hitOppCell(tgt, opp);
         return tgt;
+    }
+
+    /**
+     * Accessor method for player ID
+     * @return the id of the player
+     */
+    public UUID getID() {
+        return this.id;
+    }
+
+    /**
+     * Accessor method for player's statistics
+     * @return the statistics of the player
+     */
+    public PlayerStat getPlayerStat() {
+        return this.stat;
+    }
+
+    /**
+     * Equals method based on unique id
+     * @param pl the player to be compared to
+     * @return whether the two player objects are equal
+     */
+    public boolean equals(Player pl) {
+        return this.id.equals(pl.getID());
     }
 
 }

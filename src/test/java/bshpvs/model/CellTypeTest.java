@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Created by thomas on 9/21/18.
  */
 public class CellTypeTest {
+
     @Test
     public void testGetValue() {
         assertEquals(5, CellType.CARRIER.getValue());
@@ -15,5 +16,14 @@ public class CellTypeTest {
         assertEquals(3, CellType.SUBMARINE.getValue());
         assertEquals(3, CellType.CRUISER.getValue());
         assertEquals(2, CellType.DESTROYER.getValue());
+    }
+
+    @Test
+    public void testGetText() {
+        assertEquals("CARRIER",CellType.CARRIER.getText());
+        assertEquals("BATTLESHIP",CellType.BATTLESHIP.getText());
+        assertEquals("SUBMARINE",CellType.SUBMARINE.getText());
+        assertEquals("CRUISER",CellType.CRUISER.getText());
+        assertEquals("DESTROYER",CellType.DESTROYER.getText());
     }
 }

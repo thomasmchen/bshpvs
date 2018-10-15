@@ -3,12 +3,12 @@ package bshpvs.api.stub;
 import bshpvs.api.core.AttackRequest;
 import bshpvs.api.core.AttackResponse;
 import bshpvs.api.core.NewGameRequest;
+import bshpvs.engine.Game;
 import bshpvs.api.core.NewGameResponse;
 import bshpvs.api.core.NewGameRequest.UserShip;
 import bshpvs.api.core.NewGameRequest._Point;
 import bshpvs.api.core.NewGameResponse.Coordinate;
 import bshpvs.api.core.NewGameResponse.ShipObject;
-import bshpvs.model.Game;
 import bshpvs.model.Player;
 import bshpvs.model.Ship;
 
@@ -97,7 +97,7 @@ public class EngineController {
     }
 
     public void initializeGame() {
-        game = new Game(this.playerOne, this.playerTwo, 10);
+        game = new Game(this.playerOne, this.playerTwo);
         game.initAi(1);
 
         for (int i = 0; i < newGameRequest.getShips().length; i++) {
