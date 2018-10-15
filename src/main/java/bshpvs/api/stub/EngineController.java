@@ -40,6 +40,6 @@ public class EngineController {
     }
 
     public void initializeGame() {
-        game = new Game(this.playerOne, this.playerTwo, 10);
+        game = new Game(this.playerOne, this.playerTwo);
     }
 }
