@@ -1,7 +1,7 @@
 package bshpvs.api.stub;
 
 import bshpvs.api.core.NewGameRequest;
-import bshpvs.model.Game;
+import bshpvs.engine.Game;
 import bshpvs.model.Player;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
