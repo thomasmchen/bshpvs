@@ -4,10 +4,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class ShipTest {
 
@@ -71,7 +74,21 @@ public class ShipTest {
         pl.getMap().prettyPrintMap();
 
         assertEquals(true, a.checkSunk(pl.getMap()));
+    }
 
+    @Test
+    public void testCalcPoints() {
+        Ship shp = new Ship(new Point(5,0), new Point(1,0), CellType.CARRIER);
 
+        Point[] checkPoints = new Point[]{
+                new Point(5,0),
+                new Point(4,0),
+                new Point(3,0),
+                new Point(2,0),
+                new Point(1,0)
+        };
+
+        Point[] output = shp.getPoints();
+        assertTrue(Arrays.equals(checkPoints, shp.getPoints()));
     }
 }

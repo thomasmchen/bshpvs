@@ -22,10 +22,6 @@ public class Player implements Playable {
 
     private static final int DEFAULT_GRID_SIZE = 10;
 
-    private static final String ANSI_YELLOW = "\u001B[33m";
-    private static final String ANSI_RESET = "\u001B[0m";
-    private static final String ANSI_GREEN = "\u001B[32m";
-
 
     /**
      * Default constructor for Player.
@@ -67,7 +63,8 @@ public class Player implements Playable {
         try {
             this.setShip(shp);
         } catch (ShipOverlapException soe) {
-            throw new IllegalArgumentException("Failed to add Ship to Player, Ship overlaps with Existing Ship.");
+            throw new IllegalArgumentException("Failed to add " + shp.getType().toString() +
+                    " to Player, Ship overlaps with Existing Ship.");
         }
 
         // Store ship in Player's EnumMap
@@ -84,7 +81,7 @@ public class Player implements Playable {
     private void setShip(Ship shp) throws ShipOverlapException {
         for (Entry<CellType, Ship> s : ships.entrySet()) {
             if (shp.doesOverlap(s.getValue())) {
-                throw new IllegalArgumentException("Cannot place" + shp.getType() +
+                throw new ShipOverlapException("Cannot place " + shp.getType() +
                         " it overlaps with " +  s.getValue().getType());
             }
         }
@@ -108,11 +105,11 @@ public class Player implements Playable {
     }
 
     /**
-     * Returns the status of a Players ship, true if hit, false if not
+     * Returns the status of a Players ship, true if sunk, false if not
      * @param ship the ship to be checked
      * @return the status of the ship
      */
-    public boolean getShipStatus(CellType ship) {
+    public boolean isShipSunk(CellType ship) {
         return statuses.get(ship);
     }
 
