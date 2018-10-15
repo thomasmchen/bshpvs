@@ -114,7 +114,7 @@ public class Statistics {
                 "\n\tnumPlayers: " + numPlayers +
                 "\n\tnumGames: " + numGames +
                 ",\n\tavgTurns: " + avgTurns +
-                ",\n\tavgTime: " + (double) avgTime/1000000000.0 + " seconds" +
+                ",\n\tavgGameTime: " + (double) avgTime/1000000000.0 + " seconds" +
                 "\n}";
     }
 }
