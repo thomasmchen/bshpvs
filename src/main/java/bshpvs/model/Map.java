@@ -55,20 +55,21 @@ public class Map {
      */
     public void printMap() {
         for (Cell[] row : grid) {
-            System.out.printf(Arrays.toString(row));
+            System.out.print(Arrays.toString(row));
             System.out.println();
         }
     }
 
-    public static void printKey() {
-        System.out.println("----------------");
-        System.out.println("Battleship Key");
-        System.out.println("----------------");
+    /**
+     * Static cosmetic function for printing Key for Battleship Map
+     */
+    public static String getKeyMap() {
+        StringBuilder key = new StringBuilder("----------------\nBattleship Key\n----------------\n");
         for (CellType ct : CellType.values()) {
-            System.out.println(ct.getValue() + " : " + ct.getText());
+            key.append(ct.getValue() + " : " + ct.getText() + '\n');
         }
-        System.out.println("----------------");
-        System.out.println();
+        key.append("----------------\n");
+        return key.toString();
     }
 
     /**
@@ -116,18 +117,14 @@ public class Map {
         System.out.println();
     }
 
-
     /**
      * Pretty printing of Map object blindly (Only hit objects are revealed)
      */
     public void prettyPrintBlindMap() {
         String border = StringUtils.repeat("-", grid.length * 4 + 3);
         final String ANSI_PURPLE = "\u001B[35m";
-        final String ANSI_CYAN = "\u001B[36m";
-        final String ANSI_GREEN = "\u001B[32m";
         final String ANSI_RED = "\u001B[31m";
         final String ANSI_RESET = "\u001B[0m";
-        final String ANSI_BLACK = "\u001B[30m";
 
 
         System.out.print(ANSI_PURPLE +  "  | " + ANSI_RESET);
