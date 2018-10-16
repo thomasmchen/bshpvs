@@ -1,0 +1,30 @@
+{
+    "run": {
+        "default": "",
+        "items": [
+            {
+                "name": "bshpvs",
+                "projectName": "bshpvs",
+                "workingDirectory": "/Users/dmorton/Documents/Senior Year/CS40800/bshpvs",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    },
+    "debug": {
+        "default": "",
+        "items": [
+            {
+                "name": "bshpvs",
+                "projectName": "bshpvs",
+                "workingDirectory": "/Users/dmorton/Documents/Senior Year/CS40800/bshpvs",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    }
+}
