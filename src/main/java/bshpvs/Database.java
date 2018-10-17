@@ -150,7 +150,7 @@ public class Database {
      * MAKE SURE NOT TO BE RUNNING H2 CONSOLE AT THE SAME TIME:
      * 
      * Run the command "SHUTDOWN" in the console before disconnecting,
-     * it will say that has done so already but for some reason running
+     * it will say that it has done so already but for some reason running
      * this method will still throw an exception complaining about other
      * connections
      * 
@@ -164,8 +164,7 @@ public class Database {
             System.out.println(e.getMessage());
         }
         try {
-            dbConnection = DriverManager.getConnection(DB_CONNECTION, DB_USER,
-                    DB_PASSWORD);
+            dbConnection = DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
             return dbConnection;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
