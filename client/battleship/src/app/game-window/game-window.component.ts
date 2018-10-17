@@ -22,6 +22,7 @@ import { Component, OnInit } from '@angular/core';
 import { timer } from 'rxjs';
 
 import { DarkModeService } from '../settings/darkmode.service';
+import { AuthService } from '../auth.service';
 import { Http, Jsonp } from '@angular/http';
 import { WebService } from '../web.service';
 
@@ -34,7 +35,7 @@ export class GameWindowComponent implements OnInit {
 
   darkMode:boolean;
   timer:boolean;
-    
+  user_id:string;
 
   public ships: Ship[] = new Array<Ship>();
 
@@ -44,7 +45,7 @@ export class GameWindowComponent implements OnInit {
   lastY : number = 0;
 
 
-  constructor(private http: Http, private dm: DarkModeService, private stomp: WebService) { 
+  constructor(private http: Http, private dm: DarkModeService, private stomp: WebService, private auth: AuthService) { 
     /*this.http.get('http://www.mocky.io/v2/5babd5cb310000550065455a').subscribe((res) => {
       let result = res.json() as GameResponse;
       this.loadShips(result);
@@ -133,6 +134,7 @@ export class GameWindowComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.auth.currentid.subscribe(user_id => this.user_id = user_id);
     this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
     this.dm.currentTimer.subscribe(timer => this.timer = timer);
     var tmr = timer(0,1000);
