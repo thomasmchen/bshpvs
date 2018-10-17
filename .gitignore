@@ -7,7 +7,7 @@ target/
 .idea/
 \.DS_Store
 node_modules/
-
+.vscode/launch.json
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/
