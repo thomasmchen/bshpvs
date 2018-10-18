@@ -31,6 +31,7 @@ public class Database {
      * Adds a user to the database using their GoogleID as their ID
      * 
      * @param GoogleID based on Google Sign-In ID
+     * @param email Google gmail account //TODO decide if this is necessary
      * @return true on success, false otherwise
      * 
      * @throws SQLException part of establising connection with DB
@@ -195,6 +196,154 @@ public class Database {
         return count;
     }
 
+    /**
+     * Function only for working with H2 DB
+     * 
+     * Since H2 DB only exists locally to the user's machine,
+     * we need to make sure it exists first before attempting to 
+     * perform any commands
+     * 
+     * This function will try to send a query to the DB, and if an
+     * SQLException is thrown, then we assume it is because the DB
+     * has not been created on that machine yet
+     * 
+     * @return true if it does exist, false if not
+     */
+    private boolean checkH2Exists(){
+        Connection connection = getDBConnection();
+        Statement s = null;
+        try{
+            connection.setAutoCommit(false);
+            s = connection.createStatement();
+
+            //attempt to execute query, if exception is thrown then H2 DB does not exist
+            s.executeQuery("SELECT * FROM USERS");
+            s.close();
+            connection.commit();
+
+        }catch(SQLException e){
+            System.out.println("No Users were found, DB must not exist!");
+            return false;
+        }
+        //if no SQLException was thrown, then DB must exist
+        return true;
+    }
+
+    /**
+     * Function only for working with H2 DB
+     * 
+     * If H2 DB on local machine hasn't been created, this method
+     * will pass along the queries to create the necessary tables
+     * 
+     * @return true if successful, false otherwise
+     */
+    private boolean createH2Database(){
+        //establish connection
+        Connection connection = getDBConnection();
+        
+        Statement s1 = null;
+
+        try{
+            connection.setAutoCommit(false);
+            s1 = connection.createStatement();
+
+            //create user table
+            s1.execute("CREATE TABLE USERS(" +
+                "ID varchar(255)," +
+                "EMAIL varchar(255) NOT NULL," +
+                "PRIMARY KEY (ID));"
+            );
+            s1.close();
+            connection.commit();
+        } catch (SQLException e){
+            System.out.println("Error creating USERS Table: " + e.getLocalizedMessage());
+            return false;
+        }
+
+        Statement s2 = null;
+
+        try{
+            connection.setAutoCommit(false);
+            s2 = connection.createStatement();
+
+            //create game stats table
+            s2.execute("CREATE TABLE GAMESTATS (" +
+                "ID int NOT NULL," +
+                "USER_ID varchar(255)," +
+                "NUM_PLAYERS int," +
+                "NUM_HITS int," +
+                "NUM_MISSES int," +
+                "TOTAL_TURNS int," + 
+                "TIME long," +
+                "WINNER varchar(255)," + 
+                "PLAYER_TYPES varchar(255)," +
+                "PRIMARY KEY (ID)," + 
+                "FOREIGN KEY (USER_ID) REFERENCES USERS(ID));"
+            );
+            s2.close();
+            connection.commit();
+        } catch (SQLException e){
+            System.out.println("Error creating GAMESTATS Table: " + e.getLocalizedMessage());
+            return false;
+        }
+
+        System.out.println("Users and GameStats Tables were created succesfully created.");
+        return true;
+    }
+
+
+    /**
+     * Another H2 Function
+     * 
+     * This function will send the SQL Queries to DROP 
+     * the two tables in DB.
+     * 
+     * Mainly for making tests easier to run
+     * 
+     * @return true on success, false otherwise
+     */
+    private boolean clearH2Database(){
+        if(!checkH2Exists()){ //if tables don't exist, return
+            return false;
+        }
+
+        //establish connection
+        Connection connection = getDBConnection();
+        
+        Statement s1 = null;
+
+        try{
+            connection.setAutoCommit(false);
+            s1 = connection.createStatement();
+
+            //create user table
+            s1.execute("DROP TABLE GAMESTATS");
+            s1.close();
+            connection.commit();
+        } catch (SQLException e){
+            System.out.println("Error Dropping GAMESTATS Table: " + e.getLocalizedMessage());
+            return false;
+        }
+
+        Statement s2 = null;
+
+        try{
+            connection.setAutoCommit(false);
+            s2 = connection.createStatement();
+
+            //create user table
+            s2.execute("DROP TABLE USERS");
+            s2.close();
+            connection.commit();
+        } catch (SQLException e){
+            System.out.println("Error Dropping USERS Table: " + e.getLocalizedMessage());
+            return false;
+        }
+        
+        System.out.println("Users and GameStats Tables were succesffully dropped.");
+        return true;
+    }
+
 
     /**
      * Function for testing ability to write to the database, will most likely separate into its own test
@@ -283,17 +432,22 @@ public class Database {
         
         return true;
     }
-/*
+
+
     
     public static void main(String[] args){
         Database db = new Database();
+        if(!db.checkH2Exists())
+            db.createH2Database();
+
+        //attempt to add fake data to DB
         try{
             db.addFakeData();
-        }catch (SQLException e){
-            System.out.println("OOF Exception Message: " + e.getLocalizedMessage());
+        }catch(SQLException e){
+            System.out.println("OOF: " + e.getLocalizedMessage());
         }
 
-        System.out.println("Done.");
+        //attempt to empty DB
+        db.clearH2Database();
     }
-    */
 }
