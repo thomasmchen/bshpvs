@@ -35,6 +35,7 @@ export class GameWindowComponent implements OnInit {
 
   darkMode:boolean;
   timer:boolean;
+  won: boolean = false;
     
 
   public ships: Ship[] = new Array<Ship>();
@@ -66,6 +67,13 @@ export class GameWindowComponent implements OnInit {
       this.renderShips();
     });
 
+    let that = this;
+    this.stomp.stompClient.subscribe('/topic/endGame', (res) => {
+      let r = JSON.parse(res.body) as EndGameResponse;
+      alert(r.won + "    " + r.victoryMessage);
+      that.won = true;
+    });
+
     this.stomp.stompClient.subscribe('/topic/turnResponse', (res) => {
       console.log(res);
       let r = JSON.parse(res.body) as AttackResponse;
@@ -74,6 +82,8 @@ export class GameWindowComponent implements OnInit {
       } else if (r.yourMove == "water") {
         this.markEnemyGrid(this.lastX, this.lastY, false);
       } else if (r.yourMove.substring(0,3) == "sunk") {
+        this.markEnemyGrid(this.lastX, this.lastY, true);
+      } else if (r.yourMove.substring(0, 2) == "won") {
         this.markEnemyGrid(this.lastX, this.lastY, true);
       } else {
         this.markEnemyGrid(this.lastX, this.lastY, true);
@@ -86,6 +96,8 @@ export class GameWindowComponent implements OnInit {
       
       } else if (r.theirMove.substring(0, 4) == "sunk") {
         this.markUserGrid(r.x, r.y, true);
+      } else if (r.theirMove.substring(0, 3) == "won") {
+        this.markUserGrid(r.x, r.y, true);
       } else {
         this.markUserGrid(r.x, r.y, false);
       }
@@ -93,10 +105,13 @@ export class GameWindowComponent implements OnInit {
       this.snackBar.open(r.message, 'Ok', {
         duration: 2000
       });
+
+      this.stomp.checkWin();
     });
     this.stomp.sendGameWindowInit();
 
   }
+
 
   markUserGrid(x, y, hit) {
     var id = y * this.gridSize + x;
@@ -182,7 +197,9 @@ export class GameWindowComponent implements OnInit {
   }
 
   onCellClicked(event: Cell) {
-    this.makePlayerAttack(event.col, event.row);
+    if (!this.won) {
+      this.makePlayerAttack(event.col, event.row);
+    }
   }
 
   makePlayerAttack(_x, _y) {
@@ -256,6 +273,11 @@ interface MoveRequest {
   x: number,
   y: number,
   direction: number
+}
+
+interface EndGameResponse {
+  won: string,
+  victoryMessage: string
 }
 
 

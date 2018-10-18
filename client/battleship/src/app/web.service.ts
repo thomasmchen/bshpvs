@@ -12,6 +12,7 @@ export class WebService {
   private messageUrl = '/app/placeShips';
   private windowInitUrl = '/app/windowInit';
   private turnUrl = '/app/turn';
+  private checkWinUrl = '/app/checkWin';
   public stompClient = null;
   public connected = false;
 
@@ -48,5 +49,9 @@ export class WebService {
 
   sendMove(attack) {
     this.stompClient.send(this.turnUrl, {}, attack);
+  }
+
+  checkWin() {
+    this.stompClient.send(this.checkWinUrl, {}, "");
   }
 }

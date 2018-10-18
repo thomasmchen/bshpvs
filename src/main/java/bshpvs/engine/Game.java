@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.Random;
 
 public class Game {
-    Player firstPlayer;
-    Player secondPlayer;
+    public Player firstPlayer;
+    public Player secondPlayer;
     Player current;
 
     private static final String ANSI_RESET = "\u001B[0m";
@@ -64,6 +64,16 @@ public class Game {
 
         if (a.getType().getGroup().equals(CellGroup.SHIP) && firstPlayer.isShipSunk(a.getType())) {
             theirMove = "sunk " + a.getType();
+        }
+
+        if (this.firstPlayer.isDefeated()) {
+            yourMove = "lost";
+            theirMove = "won";
+        }
+
+        if (this.secondPlayer.isDefeated()) {
+            theirMove = "lost";
+            yourMove = "won";
         }
 
         String message = "You: " + yourMove + "          Them: " + theirMove;
