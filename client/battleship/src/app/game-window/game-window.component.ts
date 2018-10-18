@@ -66,6 +66,10 @@ export class GameWindowComponent implements OnInit {
       this.renderShips();
     });
 
+    this.stomp.stompClient.subscribe('/topic/getID', (res) => {
+      console.log(res.body);
+    });
+
     this.stomp.stompClient.subscribe('/topic/turnResponse', (res) => {
       console.log(res);
       let r = JSON.parse(res.body) as AttackResponse;
@@ -82,7 +86,6 @@ export class GameWindowComponent implements OnInit {
       }
     });
     this.stomp.sendGameWindowInit();
-
   }
 
   markUserGrid(x, y, hit) {
@@ -135,6 +138,8 @@ export class GameWindowComponent implements OnInit {
 
   ngOnInit() {
     this.auth.currentid.subscribe(user_id => this.user_id = user_id);
+    alert(this.user_id);
+    this.stomp.sendID(this.user_id);
     this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
     this.dm.currentTimer.subscribe(timer => this.timer = timer);
     var tmr = timer(0,1000);

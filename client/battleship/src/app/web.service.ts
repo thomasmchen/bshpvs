@@ -12,6 +12,7 @@ export class WebService {
   private messageUrl = '/app/placeShips';
   private windowInitUrl = '/app/windowInit';
   private turnUrl = '/app/turn';
+  private idURL = '/app/id';
   public stompClient = null;
   public connected = false;
 
@@ -48,5 +49,10 @@ export class WebService {
 
   sendMove(attack) {
     this.stompClient.send(this.turnUrl, {}, attack);
+  }
+
+  sendID(id) {
+    alert("id="+id);
+    this.stompClient.send(this.idURL, {}, id);
   }
 }

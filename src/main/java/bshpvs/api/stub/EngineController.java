@@ -11,6 +11,7 @@ import bshpvs.api.core.NewGameResponse.Coordinate;
 import bshpvs.api.core.NewGameResponse.ShipObject;
 import bshpvs.model.Player;
 import bshpvs.model.Ship;
+import bshpvs.api.core.ReceiveUserID;
 
 import org.jboss.logging.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -89,7 +90,15 @@ public class EngineController {
         return this.turn(p);
     }
 
-
+    @CrossOrigin
+    @MessageMapping("/id")
+    @SendTo("/topic/getID")
+    public ReceiveUserID id(String json) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        ReceiveUserID res = mapper.readValue(json, ReceiveUserID.class);
+        System.out.println(res.getID());
+        return res;
+    }
 
     public void initializePlayers() {
         this.playerOne = new Player(10);
