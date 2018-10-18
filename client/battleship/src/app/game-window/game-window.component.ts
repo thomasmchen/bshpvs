@@ -24,6 +24,7 @@ import { timer } from 'rxjs';
 import { DarkModeService } from '../settings/darkmode.service';
 import { Http, Jsonp } from '@angular/http';
 import { WebService } from '../web.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-game-window',
@@ -44,7 +45,7 @@ export class GameWindowComponent implements OnInit {
   lastY : number = 0;
 
 
-  constructor(private http: Http, private dm: DarkModeService, private stomp: WebService) { 
+  constructor(private http: Http, private dm: DarkModeService, private stomp: WebService, public snackBar: MatSnackBar) { 
     /*this.http.get('http://www.mocky.io/v2/5babd5cb310000550065455a').subscribe((res) => {
       let result = res.json() as GameResponse;
       this.loadShips(result);
@@ -68,17 +69,30 @@ export class GameWindowComponent implements OnInit {
     this.stomp.stompClient.subscribe('/topic/turnResponse', (res) => {
       console.log(res);
       let r = JSON.parse(res.body) as AttackResponse;
-      if (r.yourMove == "hit") {
+      if (r.yourMove.substring(0, 2) == "hit") {
+        this.markEnemyGrid(this.lastX, this.lastY, true);
+      } else if (r.yourMove == "water") {
+        this.markEnemyGrid(this.lastX, this.lastY, false);
+      } else if (r.yourMove.substring(0,3) == "sunk") {
         this.markEnemyGrid(this.lastX, this.lastY, true);
       } else {
-        this.markEnemyGrid(this.lastX, this.lastY, false);
+        this.markEnemyGrid(this.lastX, this.lastY, true);
       }
 
-      if (r.theirMove == "hit") {
+      
+
+      if (r.theirMove.substring(0, 3) == "hit") {
+        this.markUserGrid(r.x, r.y, true);
+      
+      } else if (r.theirMove.substring(0, 4) == "sunk") {
         this.markUserGrid(r.x, r.y, true);
       } else {
         this.markUserGrid(r.x, r.y, false);
       }
+
+      this.snackBar.open(r.message, 'Ok', {
+        duration: 2000
+      });
     });
     this.stomp.sendGameWindowInit();
 
@@ -216,6 +230,7 @@ interface Ship {
 interface AttackResponse {
   yourMove: string,
   theirMove: string,
+  message: string,
   x: number,
   y: number
 }
