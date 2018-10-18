@@ -283,7 +283,7 @@ public class Database {
         
         return true;
     }
-
+/*
     
     public static void main(String[] args){
         Database db = new Database();
@@ -295,4 +295,5 @@ public class Database {
 
         System.out.println("Done.");
     }
+    */
 }

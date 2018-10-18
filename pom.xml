@@ -69,7 +69,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>bshpvs.engine.Game</mainClass>
+                    <mainClass>bshpvs.engine.TextGame</mainClass>
                 </configuration>
             </plugin>
         </plugins>
