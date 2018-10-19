@@ -100,7 +100,7 @@ public class EngineController {
             String message = "Congrats " + newGameRequest.getUserName() + " you won!";
             return new EndGameResponse(message, this.newGameRequest.getVictoryMessage());
         } else if (this.game.firstPlayer.isDefeated()) {
-            String message = newGameRequest.getUserName() + "lost";
+            String message = newGameRequest.getUserName() + " lost";
             return new EndGameResponse(message, "Good fight!");
         }
 
