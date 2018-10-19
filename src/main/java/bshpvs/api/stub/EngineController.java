@@ -5,6 +5,7 @@ import bshpvs.api.core.AttackResponse;
 import bshpvs.api.core.NewGameRequest;
 import bshpvs.engine.Game;
 import bshpvs.api.core.NewGameResponse;
+import bshpvs.api.core.EndGameResponse;
 import bshpvs.api.core.NewGameRequest.UserShip;
 import bshpvs.api.core.NewGameRequest._Point;
 import bshpvs.api.core.NewGameResponse.Coordinate;
@@ -86,10 +87,25 @@ public class EngineController {
         ObjectMapper objectMapper = new ObjectMapper();
         AttackRequest req = objectMapper.readValue(json, AttackRequest.class);
         Point p = new Point(req.x, req.y);
-        return this.turn(p);
+        AttackResponse response = this.game.turn(p);
+        return response;
     }
 
+    @CrossOrigin
+    @MessageMapping("/checkWin")
+    @SendTo("/topic/endGame")
+    public EndGameResponse endGame() throws Exception {
+        System.out.println("Here");
+        if (this.game.secondPlayer.isDefeated()) {
+            String message = "Congrats " + newGameRequest.getUserName() + " you won!";
+            return new EndGameResponse(message, this.newGameRequest.getVictoryMessage());
+        } else if (this.game.firstPlayer.isDefeated()) {
+            String message = newGameRequest.getUserName() + "lost";
+            return new EndGameResponse(message, "Good fight!");
+        }
 
+        return null;
+    }
 
     public void initializePlayers() {
         this.playerOne = new Player(10);
