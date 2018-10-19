@@ -42,6 +42,7 @@ public class EngineController {
     @MessageMapping("/placeShips")
     @SendTo("/topic/confirmPlacement")
     public NewGameRequest newGame(String json) throws Exception {
+        this.reset();
         ObjectMapper objectMapper = new ObjectMapper();
         NewGameRequest req = objectMapper.readValue(json, NewGameRequest.class);
         req.convertShips();
@@ -97,15 +98,25 @@ public class EngineController {
     @MessageMapping("/checkWin")
     @SendTo("/topic/endGame")
     public EndGameResponse endGame() throws Exception {
+        
         if (this.game.secondPlayer.isDefeated()) {
             String message = "Congrats " + newGameRequest.getUserName() + " you won!";
+            this.reset();
             return new EndGameResponse(message, this.newGameRequest.getVictoryMessage());
         } else if (this.game.firstPlayer.isDefeated()) {
             String message = newGameRequest.getUserName() + "lost";
+            this.reset();
             return new EndGameResponse(message, "Good fight!");
         }
 
         return null;
+    }
+
+    public void reset() {
+        this.game = null;
+        this.newGameRequest = null;
+        this.playerOne = null;
+        this.playerTwo = null;
     }
 
     public void initializePlayers() {
