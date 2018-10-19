@@ -138,8 +138,9 @@ export class GameWindowComponent implements OnInit {
 
   ngOnInit() {
     this.auth.currentid.subscribe(user_id => this.user_id = user_id);
-    alert(this.user_id);
-    this.stomp.sendID(this.user_id);
+    let sendFormat = "{\"id\":\""+this.user_id+"\"}";
+    alert(sendFormat);
+    this.stomp.sendID(sendFormat);
     this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
     this.dm.currentTimer.subscribe(timer => this.timer = timer);
     var tmr = timer(0,1000);
