@@ -11,6 +11,18 @@
           <label for="victoryMessage">Victory Message</label>
           <input type="text" class="form-control" id="message" [(ngModel)]="victoryMessage" name="victoryMessage">
         </div> 
+
+        <div class="form-group">
+            <mat-form-field>
+                <label for="selectedAI">Select AI</label>
+
+                <mat-select [(ngModel)]="selectedAI" name="selectedAI">
+                  <mat-option *ngFor="let curr of availableAI" [value]="curr">
+                    {{curr}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+        </div>
         <button id="submit" type="submit" class="btn btn-success" (click)="onSubmit()" disabled>Begin Game</button>
       </form>
       <div class="prompt">
