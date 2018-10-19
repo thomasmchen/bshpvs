@@ -183,6 +183,10 @@ export class NewGameMenuComponent implements OnInit {
     }
   }
 
+  checkShipDiagnol() {
+    
+  }
+
 
   onSubmit() {
     if (this.victoryMessage == "" || this.username == "") {

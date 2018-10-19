@@ -95,7 +95,6 @@ public class EngineController {
     @MessageMapping("/checkWin")
     @SendTo("/topic/endGame")
     public EndGameResponse endGame() throws Exception {
-        System.out.println("Here");
         if (this.game.secondPlayer.isDefeated()) {
             String message = "Congrats " + newGameRequest.getUserName() + " you won!";
             return new EndGameResponse(message, this.newGameRequest.getVictoryMessage());
