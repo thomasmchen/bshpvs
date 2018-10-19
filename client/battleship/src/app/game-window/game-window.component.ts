@@ -72,6 +72,8 @@ export class GameWindowComponent implements OnInit {
       let r = JSON.parse(res.body) as EndGameResponse;
       alert(r.won + "    " + r.victoryMessage);
       that.won = true;
+      this.stomp.stompClient.disconnect();
+
     });
 
     this.stomp.stompClient.subscribe('/topic/turnResponse', (res) => {
@@ -112,6 +114,11 @@ export class GameWindowComponent implements OnInit {
 
   }
 
+  ngOnDestroy() {
+    console.log("called");
+    this.stomp.stompClient.disconnect();
+    this.ships = [];
+  }
 
   markUserGrid(x, y, hit) {
     var id = y * this.gridSize + x;
@@ -133,6 +140,7 @@ export class GameWindowComponent implements OnInit {
   }
 
   loadShips(result: GameResponse) {
+    this.ships = [];
     let _ships = result.ships;
     for (var i = 0; i < result.ships.length; i++) {
       var curr = _ships[i];
