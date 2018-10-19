@@ -62,8 +62,10 @@ public class Database {
 
         } catch(SQLException e){
             System.out.println("User Exception Message: " + e.getLocalizedMessage());
+            connection.close();
             return false;
         }
+        connection.close();
 
         return true;
     }
@@ -220,11 +222,12 @@ public class Database {
             s.executeQuery("SELECT * FROM USERS");
             s.close();
             connection.commit();
-
+            connection.close();
         }catch(SQLException e){
             System.out.println("No Users were found, DB must not exist!");
             return false;
         }
+
         //if no SQLException was thrown, then DB must exist
         return true;
     }
@@ -282,6 +285,7 @@ public class Database {
             );
             s2.close();
             connection.commit();
+            connection.close();
         } catch (SQLException e){
             System.out.println("Error creating GAMESTATS Table: " + e.getLocalizedMessage());
             return false;
@@ -345,40 +349,90 @@ public class Database {
     }
 
 
+    private ResultSet pullGameData(String User_ID) throws SQLException {
+        //establish connection
+        Connection connection = getDBConnection();
+
+        //declare/init variables
+        Statement s = null;
+        ResultSet rs = null;
+
+        try{
+            connection.setAutoCommit(false);
+            s = connection.createStatement();
+        
+            //SQL query to retreive ResultSet of all GameStats associated with that User_ID
+            rs = s.executeQuery("SELECT * FROM GAMESTATS WHERE USER_ID='" + User_ID + "';");
+
+            //close statement
+            s.close();
+            connection.commit();
+            connection.close();
+        }catch(SQLException e){
+            System.out.println("Print error Exception Message " + e.getLocalizedMessage());
+            return null;
+        }
+
+
+        return rs;
+    }
+
     /**
-     * Function for testing ability to write to the database, will most likely separate into its own test
+     * Function for testing add user functionality with DB
      * 
-     * Change ID field inputs to test multiple users
      * 
-     * @return true upon success, false otherwise
-     * @throws SQLException part of establishing connection with DB
+     * 
+     *  @return true upon success, false otherwise
      */
-    private boolean addFakeData() throws SQLException{
+    private boolean addFakeUserData(String ID) {
         Connection connection = getDBConnection(); //connect with H2 DB
         
-        PreparedStatement insertPreparedStatement = null;
         PreparedStatement insertUserStatement = null;
-
-        String InsertQuery = "INSERT INTO GAMESTATS" + 
-                             "(id, user_id, num_players, num_hits, num_misses, total_turns, time, winner, player_types) " + 
-                             "values(?,?,?,?,?,?,?,?,?)";
+       
         String FakeUserQuery = "INSERT INTO USERS" +
-                                "(id, email)" +
-                                "values(?,?)";
+                                "(id)" +
+                                "values(?)";
 
         try{
             connection.setAutoCommit(false);
             insertUserStatement = connection.prepareStatement(FakeUserQuery);
-            insertUserStatement.setString(1, "steve");
-            insertUserStatement.setString(2, "fake2@email.com");
+            insertUserStatement.setString(1, "joe");
 
             insertUserStatement.executeUpdate();
             insertUserStatement.close();
 
             connection.commit();
+            connection.close();
         }catch(SQLException e){
             System.out.println("User Exception Message: " + e.getLocalizedMessage());
+            return false;
         }
+
+        return true;
+    }
+
+    /**
+     * Method for testing push functionality for Game Data
+     * 
+     * @param User_ID String
+     * @param num_players int
+     * @param num_hits int 
+     * @param num_misses int 
+     * @param total_turns int 
+     * @param time long
+     * @param winner String 
+     * @param playerTypes String, comma separated list i.e. "playertype1,playertype2,..."
+     * @return true on success, false otherwise
+     */
+    private boolean addFakeGameData(String User_ID, int num_players, int num_hits, int num_misses, int total_turns, long time, String winner, String playerTypes){
+        Connection connection = getDBConnection();
+
+        PreparedStatement insertPreparedStatement = null;
+
+        String InsertQuery = "INSERT INTO GAMESTATS" + 
+                             "(id, user_id, num_players, num_hits, num_misses, total_turns, time, winner, player_types) " + 
+                             "values(?,?,?,?,?,?,?,?,?)";
+
         try{
             //get number of rows to give unique ID to GameStats
             int count1 = getRowCount(connection);
@@ -387,15 +441,15 @@ public class Database {
 
             connection.setAutoCommit(false);
             insertPreparedStatement = connection.prepareStatement(InsertQuery);         
-            insertPreparedStatement.setInt(1, count1+1);                                       //id
-            insertPreparedStatement.setString(2, "steve");                                //user_id
-            insertPreparedStatement.setInt(3, 3);                                       //num_players
-            insertPreparedStatement.setInt(4, 14);                                      //num_hits
-            insertPreparedStatement.setInt(5, 52);                                      //num_misses
-            insertPreparedStatement.setInt(6, 70);                                      //total_turns
-            insertPreparedStatement.setLong(7, 10000);                                  //time
-            insertPreparedStatement.setString(8, "steve");                       //winner
-            insertPreparedStatement.setString(9, "playerType1,playerType2,playerType3");           //playertypes
+            insertPreparedStatement.setInt(1, count1+1);                                    
+            insertPreparedStatement.setString(2, User_ID);                                
+            insertPreparedStatement.setInt(3, num_players);                                    
+            insertPreparedStatement.setInt(4, num_hits);                                     
+            insertPreparedStatement.setInt(5, num_misses);                                    
+            insertPreparedStatement.setInt(6, total_turns);                                  
+            insertPreparedStatement.setLong(7, time);                                
+            insertPreparedStatement.setString(8, winner);                      
+            insertPreparedStatement.setString(9, playerTypes);           
 
             insertPreparedStatement.executeUpdate();
             insertPreparedStatement.close();
@@ -407,27 +461,13 @@ public class Database {
 
             System.out.println("2nd count from db: " + count2);
 
+            connection.close();
         }catch(SQLException e){
             System.out.println("Game Stat Execption Message " + e.getLocalizedMessage());
+            return false;
         }catch(Exception e){
             e.printStackTrace();
-        }
-        
-        Statement s = null;
-        try{
-            connection.setAutoCommit(false);
-            s = connection.createStatement();
-
-            ResultSet rs = s.executeQuery("SELECT * FROM USERS");
-            System.out.println("H2 Database Users");
-            while(rs.next()){
-                System.out.println("ID: " + rs.getString("ID") + " email: " + rs.getString("EMAIL"));
-            }
-            s.close();
-            connection.commit();
-
-        }catch(SQLException e){
-            System.out.println("Print error Exception Message " + e.getLocalizedMessage());
+            return false;
         }
         
         return true;
@@ -435,19 +475,26 @@ public class Database {
 
 
     
-    public static void main(String[] args){
+    public static void main(String[] args){ //mainly for quick testing
         Database db = new Database();
         if(!db.checkH2Exists())
             db.createH2Database();
 
         //attempt to add fake data to DB
+        /*
         try{
-            db.addFakeData();
+            db.addFakeUserData();
+            db.addFakeGameData();
         }catch(SQLException e){
             System.out.println("OOF: " + e.getLocalizedMessage());
         }
-
+*/
+        try{
+            db.pullGameData("joe");
+        }catch (SQLException e){
+            System.out.println("OOF: " + e.getLocalizedMessage());
+        }
         //attempt to empty DB
-        db.clearH2Database();
+        //db.clearH2Database();
     }
 }
