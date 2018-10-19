@@ -11,6 +11,8 @@ import bshpvs.api.core.NewGameRequest._Point;
 import bshpvs.api.core.NewGameResponse.Coordinate;
 import bshpvs.api.core.NewGameResponse.ShipObject;
 import bshpvs.model.Player;
+import bshpvs.ai.HunterPlayer;
+
 import bshpvs.model.Ship;
 
 import org.jboss.logging.Message;
@@ -108,8 +110,19 @@ public class EngineController {
 
     public void initializePlayers() {
         this.playerOne = new Player(10);
-        this.playerTwo = new Player(10);
+        if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("normal")) {
+            System.out.println("Normal ai");
+            this.playerTwo = new Player(10);
+
+        } else if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("hunter")) {
+            System.out.println("Hunter ai");
+            this.playerTwo = new HunterPlayer();
+        } else {
+            this.playerTwo = new Player(10);
+        }
     }
+
+    
 
     public void initializeGame() {
         game = new Game(this.playerOne, this.playerTwo);

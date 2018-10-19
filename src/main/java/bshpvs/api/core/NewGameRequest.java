@@ -25,6 +25,8 @@ public class NewGameRequest
 
     private String victoryMessage;
 
+    private String selectedAI;
+
     public String getUserId ()
     {
         return userId;
@@ -33,6 +35,14 @@ public class NewGameRequest
     public void setUserId (String userId)
     {
         this.userId = userId;
+    }
+
+    public String getSelectedAI() {
+        return this.selectedAI;
+    }
+
+    public void setSelectedAI(String ai) {
+        this.selectedAI = ai;
     }
 
     public String getUserName ()

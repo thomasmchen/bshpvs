@@ -203,6 +203,7 @@ export class NewGameMenuComponent implements OnInit {
   }
 
 
+  // Action where view sends information back to the backend
   onSubmit() {
     if (this.victoryMessage == "" || this.username == "") {
       this.snackbar.open("Enter a victory message/username", 'Ok', {
@@ -229,7 +230,8 @@ export class NewGameMenuComponent implements OnInit {
         userId: 0,
         userName: this.username,
         victoryMessage: this.victoryMessage,
-        ships: reqs
+        ships: reqs,
+        selectedAI: this.selectedAI
       };
       //this.router.navigateByUrl('/gameWindow');
 
@@ -274,5 +276,6 @@ interface GameRequest {
   userId: number,
   userName: string,
   victoryMessage: string,
-  ships: ShipReq[]
+  ships: ShipReq[],
+  selectedAI: string
 }
