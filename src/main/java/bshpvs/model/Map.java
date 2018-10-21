@@ -116,47 +116,4 @@ public class Map {
         }
         System.out.println();
     }
-
-    /**
-     * Pretty printing of Map object blindly (Only hit objects are revealed)
-     */
-    public void prettyPrintBlindMap() {
-        String border = StringUtils.repeat("-", grid.length * 4 + 3);
-        final String ANSI_PURPLE = "\u001B[35m";
-        final String ANSI_RED = "\u001B[31m";
-        final String ANSI_RESET = "\u001B[0m";
-
-
-        System.out.print(ANSI_PURPLE +  "  | " + ANSI_RESET);
-        for (int i = 0; i < grid.length; i++) {
-            int pos = i + 'A';
-            char c = (char) pos;
-            System.out.print(ANSI_PURPLE + c + " | " + ANSI_RESET);
-        }
-        System.out.println();
-
-
-        for (int i = 0; i < grid.length; i++) {
-            if (i == 0) {
-                System.out.println(ANSI_PURPLE + border + ANSI_RESET);
-            } else
-                System.out.println(border);
-            System.out.print(ANSI_PURPLE + i +  " | " + ANSI_RESET);
-            for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j].getType().getValue() == 0)
-                    if (grid[i][j].isHit())
-                        System.out.print(ANSI_RED + grid[i][j] +  ANSI_RESET + " | ");
-                    else
-                        System.out.print("? | ");
-                else
-                if (grid[i][j].isHit())
-                    System.out.print(ANSI_RED + grid[i][j] + ANSI_RESET + " | ");
-                else
-                    System.out.print("? | ");
-
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
 }

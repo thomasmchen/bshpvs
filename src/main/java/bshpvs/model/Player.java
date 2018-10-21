@@ -12,7 +12,7 @@ import java.util.UUID;
 /**
  * Player class.
  */
-public class Player implements Playable {
+public class Player implements Playable{
     private UUID id;
     private Map board;
     private Map targetBoard;
@@ -174,6 +174,18 @@ public class Player implements Playable {
     }
 
     /**
+     * Implement Playable Interface
+     * @param pl player to move against
+     * @return point moved upon
+     */
+    @Override
+    public Point move(Player pl) {
+        Point tgt = genRandomTarget(pl);
+        this.hitOppCell(tgt, pl);
+        return tgt;
+    }
+
+    /**
      * Custom Exception class for overlap of two ships
      */
     private class ShipOverlapException extends Exception {
@@ -231,17 +243,6 @@ public class Player implements Playable {
      */
     public boolean isValidPoint(Point p) {
         return (p.x < targetBoard.getLength() && p.y < targetBoard.getLength() && p.x >= 0 && p.y >= 0 && !targetBoard.getCell(p).isHit());
-    }
-
-    /**
-     * Implements playable interface with most naive algorithm:
-     * Random selection of a valid move
-     * @return the Cell that was hit by the move
-     */
-    public Point move(Player opp) {
-        Point tgt = genRandomTarget(opp);
-        this.hitOppCell(tgt, opp);
-        return tgt;
     }
 
     /**

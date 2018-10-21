@@ -1,6 +1,8 @@
 package bshpvs.engine;
 
+import bshpvs.ai.HumanTextPlayer;
 import bshpvs.ai.HunterPlayer;
+import bshpvs.ai.NaivePlayer;
 import bshpvs.model.*;
 
 import java.awt.*;
@@ -9,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import static bshpvs.engine.Game.promptShips;
-import static bshpvs.engine.Game.ptConv;
 import static bshpvs.engine.Game.randomPromptShips;
 
 public class TextGame {
@@ -37,7 +38,7 @@ public class TextGame {
                 "╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝       ╚═══╝  ╚══════╝\n" +
                 "                                                 \n");
 
-        Player one = new Player(10);
+        HumanTextPlayer one = new HumanTextPlayer(10);
         Player two;
 
         System.out.println("Please select AI Difficulty:\n" +
@@ -51,7 +52,7 @@ public class TextGame {
         }
 
         if (Integer.parseInt(difficulty) == 1) {
-            two = new Player();
+            two = new NaivePlayer();
         } else {
             two = new HunterPlayer();
         }
@@ -79,20 +80,15 @@ public class TextGame {
         // While neither player has lost
         while (!one.isDefeated() && !two.isDefeated()) {
             if (current == one) {
-                System.out.println("Type in Target Coordinate: ");
-                String target = reader.readLine().toUpperCase();
-                if (!target.matches("[A-J][0-9]")) {
-                    System.out.println("Invalid Target, Please Try Again:"); //TODO: Real input validation function
-                    continue;
-                }
-                Point targPt = ptConv(target);
-                Cell c = one.hitOppCell(targPt, two);
+
+                Point targPt = one.move(two);
+                Cell c = one.getCell(targPt);
 
                 System.out.println("Hit target: " + c.getType().getText());
                 if (c.getType().getGroup().equals(CellGroup.SHIP) && two.isShipSunk(c.getType()))
                     System.out.println("You sunk your opponents: " + c.getType().getText());
                 System.out.println("Target Map: ");
-                one.getTargetBoard().prettyPrintBlindMap();
+                one.getTargetBoard().prettyPrintMap();
                 current = two;
             } else {
                 Point tgt = two.move(one);

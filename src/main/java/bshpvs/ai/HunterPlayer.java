@@ -9,10 +9,6 @@ import java.util.Stack;
 
 public class HunterPlayer extends Player implements Playable{
     private Stack<Point> targets;
-    //private Point target;
-    private static final String ANSI_YELLOW = "\u001B[33m";
-    private static final String ANSI_RESET = "\u001B[0m";
-
 
     public HunterPlayer() {
         super();
@@ -25,23 +21,17 @@ public class HunterPlayer extends Player implements Playable{
     }
 
     public Point move(Player opp) {
-        //System.out.println(ANSI_YELLOW + "HUNTER MOVE" + ANSI_RESET);
 
         Point target = null;
         // First move or no more targets
         if (targets.empty()) {
-            //System.out.println("No Targets");
             target = genRandomTarget(opp);
-            //System.out.println(ANSI_YELLOW + "Calculating Target: (" + target.x + ", " + target.y + ")" + ANSI_RESET);
             Cell c = this.hitOppCell(target, opp);
             this.updateTargets(c, target);
             
             return target;
         }  else {
-            //System.out.println("Has Targets");
-            //System.out.println(target.toString());
             target = targets.pop();
-            //System.out.println(ANSI_YELLOW + "Calculating Target: (" + target.x + ", " + target.y + ")" + ANSI_RESET);
             Cell c = this.hitOppCell(target, opp);
             this.updateTargets(c, target);
 
@@ -55,14 +45,11 @@ public class HunterPlayer extends Player implements Playable{
      */
     private void updateTargets(Cell c, Point p) {
         if (c.isShip()) {
-            //System.out.println(ANSI_YELLOW + "Target Hit! Adding new Candidate Targets: " + ANSI_RESET);
             ArrayList<Point> candidates = huntPts(p);
             if (candidates.size() == 0) {
-                //System.out.println(ANSI_YELLOW + "No Suitable Targets!" + ANSI_RESET);
                 return;
             }
             for (Point pt : candidates) {
-                //System.out.println(ANSI_YELLOW + pt + ANSI_RESET);
                 targets.push(pt);
             }
         }
