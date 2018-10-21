@@ -5,11 +5,14 @@ import bshpvs.api.core.AttackResponse;
 import bshpvs.api.core.NewGameRequest;
 import bshpvs.engine.Game;
 import bshpvs.api.core.NewGameResponse;
+import bshpvs.api.core.EndGameResponse;
 import bshpvs.api.core.NewGameRequest.UserShip;
 import bshpvs.api.core.NewGameRequest._Point;
 import bshpvs.api.core.NewGameResponse.Coordinate;
 import bshpvs.api.core.NewGameResponse.ShipObject;
 import bshpvs.model.Player;
+import bshpvs.ai.HunterPlayer;
+
 import bshpvs.model.Ship;
 
 import org.jboss.logging.Message;
@@ -39,6 +42,7 @@ public class EngineController {
     @MessageMapping("/placeShips")
     @SendTo("/topic/confirmPlacement")
     public NewGameRequest newGame(String json) throws Exception {
+        this.reset();
         ObjectMapper objectMapper = new ObjectMapper();
         NewGameRequest req = objectMapper.readValue(json, NewGameRequest.class);
         req.convertShips();
@@ -86,15 +90,50 @@ public class EngineController {
         ObjectMapper objectMapper = new ObjectMapper();
         AttackRequest req = objectMapper.readValue(json, AttackRequest.class);
         Point p = new Point(req.x, req.y);
-        return this.turn(p);
+        AttackResponse response = this.game.turn(p);
+        return response;
     }
 
+    @CrossOrigin
+    @MessageMapping("/checkWin")
+    @SendTo("/topic/endGame")
+    public EndGameResponse endGame() throws Exception {
+        
+        if (this.game.secondPlayer.isDefeated()) {
+            String message = "Congrats " + newGameRequest.getUserName() + " you won!";
+            this.reset();
+            return new EndGameResponse(message, this.newGameRequest.getVictoryMessage());
+        } else if (this.game.firstPlayer.isDefeated()) {
+            String message = newGameRequest.getUserName() + "lost";
+            this.reset();
+            return new EndGameResponse(message, "Good fight!");
+        }
 
+        return null;
+    }
+
+    public void reset() {
+        this.game = null;
+        this.newGameRequest = null;
+        this.playerOne = null;
+        this.playerTwo = null;
+    }
 
     public void initializePlayers() {
         this.playerOne = new Player(10);
-        this.playerTwo = new Player(10);
+        if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("normal")) {
+            System.out.println("Normal ai");
+            this.playerTwo = new Player(10);
+
+        } else if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("hunter")) {
+            System.out.println("Hunter ai");
+            this.playerTwo = new HunterPlayer();
+        } else {
+            this.playerTwo = new Player(10);
+        }
     }
+
+    
 
     public void initializeGame() {
         game = new Game(this.playerOne, this.playerTwo);

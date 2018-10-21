@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.Random;
 
 public class Game {
-    Player firstPlayer;
-    Player secondPlayer;
+    public Player firstPlayer;
+    public Player secondPlayer;
     Player current;
 
     private static final String ANSI_RESET = "\u001B[0m";
@@ -43,19 +43,41 @@ public class Game {
 
     public AttackResponse turn(Point coordinate) {
         String yourMove = "water";
-        String theirMove = "miss";
+        String theirMove = "water";
         Cell c = firstPlayer.hitOppCell(coordinate, secondPlayer);
         if (c.getType().getGroup().equals(CellGroup.SHIP)) {
-            yourMove = "hit";
+            yourMove = "hit " + c.getType();
         } else if (c.getType() == CellType.LAND) {
             yourMove = "land";
         }
+
+        
         Point tgt = secondPlayer.move(firstPlayer);
         Cell a = firstPlayer.getCell(tgt);
         if (a.getType().getGroup().equals(CellGroup.SHIP)) {
-            theirMove = "hit";
+            theirMove = "hit " + a.getType();
         }
-        return new AttackResponse(tgt.y, tgt.x, yourMove, theirMove);
+
+        if (c.getType().getGroup().equals(CellGroup.SHIP) && secondPlayer.isShipSunk(c.getType())) {
+            yourMove = "sunk " + c.getType();
+        }
+
+        if (a.getType().getGroup().equals(CellGroup.SHIP) && firstPlayer.isShipSunk(a.getType())) {
+            theirMove = "sunk " + a.getType();
+        }
+
+        if (this.firstPlayer.isDefeated()) {
+            yourMove = "lost";
+            theirMove = "won";
+        }
+
+        if (this.secondPlayer.isDefeated()) {
+            theirMove = "lost";
+            yourMove = "won";
+        }
+
+        String message = "You: " + yourMove + "          Them: " + theirMove;
+        return new AttackResponse(tgt.y, tgt.x, yourMove, theirMove, message);
     }
 
     /**

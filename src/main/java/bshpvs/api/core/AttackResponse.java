@@ -10,14 +10,16 @@ public class AttackResponse
 {
     @JsonProperty public String yourMove;
     @JsonProperty public String theirMove;
+    @JsonProperty public String message;
     @JsonProperty public int y;
     @JsonProperty public int x;
 
-    public AttackResponse(@JsonProperty  int y, @JsonProperty  int x, @JsonProperty String yourMove, @JsonProperty String theirMove) {
+    public AttackResponse(@JsonProperty  int y, @JsonProperty  int x, @JsonProperty String yourMove, @JsonProperty String theirMove, @JsonProperty String message) {
         this.y = y;
         this.x = x;
         this.yourMove = yourMove;
         this.theirMove = theirMove;
+        this.message = message;
     }
 
     public int getY ()
