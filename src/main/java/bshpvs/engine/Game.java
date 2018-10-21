@@ -52,7 +52,7 @@ public class Game {
         }
 
         
-        Point tgt = secondPlayer.move(firstPlayer);
+        Point tgt = secondPlayer.attack(firstPlayer);
         Cell a = firstPlayer.getCell(tgt);
         if (a.getType().getGroup().equals(CellGroup.SHIP)) {
             theirMove = "hit " + a.getType();
@@ -176,4 +176,6 @@ public class Game {
             genShip(constraint, ct, pl);
         }
     }
+
+
 }
