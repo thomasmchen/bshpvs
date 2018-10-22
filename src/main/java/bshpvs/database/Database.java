@@ -63,6 +63,7 @@ public class Database {
         }
         connection.close();
 
+        System.out.println("User was successfully created");
         return true;
     }
 
@@ -81,8 +82,8 @@ public class Database {
         
         PreparedStatement insertPreparedStatement = null;
 
-        String InsertQuery = "INSERT INTO GAMEDATA" + 
-                             "(id, user_id, num_players, num_hits, num_misses, total_turns, time, winner, player_types) " + 
+        String InsertQuery = "INSERT INTO GAMESTATS" + 
+                             "(id, user_id, num_players, hit_perc, miss_perc, total_turns, time, winner, player_types) " + 
                              "values(?,?,?,?,?,?,?,?,?)";
 
         //get number of games in GameStats Table, use it to determine a unique ID for GameStat being added
@@ -94,11 +95,11 @@ public class Database {
             insertPreparedStatement.setInt(1, count+1);                                 //ID
             insertPreparedStatement.setString(2, GoogleID);                             //User_ID [VITAL]
             insertPreparedStatement.setInt(3, gs.getNumPlayers());                      //Num_Players
-            insertPreparedStatement.setInt(4, ps.getHits());                            //Num_Hits
-            insertPreparedStatement.setInt(5, ps.getMisses());                          //Num_Misses
+            insertPreparedStatement.setDouble(4, ps.getHitPerc());                      //Hit_Perc
+            insertPreparedStatement.setDouble(5, ps.getMissPerc());                     //Miss_Perc
             insertPreparedStatement.setInt(6, gs.getTotalTurns());                      //Total_Turns
             insertPreparedStatement.setLong(7, gs.getTime());                           //Time
-            insertPreparedStatement.setString(8, gs.getWinner().getId().toString());    //Winner
+            insertPreparedStatement.setString(8, gs.getWinner().getPlayerType());    //Winner
             insertPreparedStatement.setString(9, parsePlayerTypes(gs));                 //Player_Types
 
             insertPreparedStatement.executeUpdate();
@@ -261,7 +262,6 @@ public class Database {
             connection.commit();
             connection.close();
         }catch(SQLException e){
-            System.out.println("No Users were found, DB must not exist!");
             return false;
         }
 
@@ -310,8 +310,8 @@ public class Database {
                 "ID int NOT NULL," +
                 "USER_ID varchar(255)," +
                 "NUM_PLAYERS int," +
-                "NUM_HITS int," +
-                "NUM_MISSES int," +
+                "HIT_PERC double," +
+                "MISS_PERC double," +
                 "TOTAL_TURNS int," + 
                 "TIME long," +
                 "WINNER varchar(255)," + 
