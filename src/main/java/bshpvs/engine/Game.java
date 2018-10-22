@@ -29,6 +29,7 @@ public class Game {
         this.firstPlayer = first;
         this.secondPlayer = second;
         this.current = firstPlayer;
+        randomPromptShips(this.secondPlayer);
     }
 
     public void initAi(int difficulty) {
@@ -38,7 +39,11 @@ public class Game {
             secondPlayer = new HunterPlayer();
         }
         randomPromptShips(secondPlayer);
-        System.out.println("We are ready to play!");
+    }
+
+    public void setOpponents() {
+        this.firstPlayer.addOpponent(this.secondPlayer);
+        this.secondPlayer.addOpponent(this.firstPlayer);
     }
 
     public AttackResponse turn(Point coordinate) {

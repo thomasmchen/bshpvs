@@ -298,6 +298,7 @@ public class Player implements Playable{
      */
     public Point genRandomTarget(Player opp) {
         Random gen = new Random();
+        System.out.println("Value of target board " + targetBoard.get(opp));
         Point tgt = new Point(gen.nextInt(targetBoard.get(opp).getLength()), gen.nextInt(targetBoard.get(opp).getLength()));
         if (opp.getCell(tgt).isHit()) {
             for (int i = 0; i < opp.getMap().getLength(); i++) {

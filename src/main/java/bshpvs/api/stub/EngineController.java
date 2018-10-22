@@ -12,7 +12,7 @@ import bshpvs.api.core.NewGameResponse.Coordinate;
 import bshpvs.api.core.NewGameResponse.ShipObject;
 import bshpvs.model.Player;
 import bshpvs.ai.HunterPlayer;
-
+import bshpvs.ai.NaivePlayer;
 import bshpvs.model.Ship;
 
 import org.jboss.logging.Message;
@@ -55,7 +55,6 @@ public class EngineController {
     @MessageMapping("/windowInit")
     @SendTo("/topic/windowInitResponse")
     public String gameInit() throws Exception {
-        this.initializePlayers();
         this.initializeGame();
         int userId = 0;
         String userName = newGameRequest.getUserName();
@@ -119,32 +118,42 @@ public class EngineController {
         this.playerTwo = null;
     }
 
-    public void initializePlayers() {
+    public void initializeUserPlayer() {
         this.playerOne = new Player(10, playerTwo);
-        if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("normal")) {
-            System.out.println("Normal ai");
-            this.playerTwo = new Player(10, playerOne);
-
-        } else if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("hunter")) {
-            System.out.println("Hunter ai");
-            this.playerTwo = new HunterPlayer();
-        } else {
-            this.playerTwo = new Player(10, playerOne);
-        }
-    }
-
-    
-
-    public void initializeGame() {
-        game = new Game(this.playerOne, this.playerTwo);
-        game.initAi(1);
-
         for (int i = 0; i < newGameRequest.getShips().length; i++) {
             this.playerOne.addShip(newGameRequest.getShips()[i]);
         }
     }
 
+    public void initializeEnemy() {
+        if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("normal")) {
+            System.out.println("Normal ai");
+            playerTwo = new NaivePlayer();
+        } else if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("hunter")) {
+            System.out.println("Hunter ai");
+            playerTwo = new HunterPlayer();
+        } else {
+            playerTwo = new NaivePlayer();
+        }
+    }
+
+    public void setOpponents() {
+        this.playerOne.addOpponent(this.playerTwo);
+        this.playerTwo.addOpponent(this.playerOne);
+    }
+
+    public void initializeGame() {
+        this.initializeUserPlayer();
+        this.initializeEnemy();
+        this.setOpponents();
+        game = new Game(this.playerOne, this.playerTwo);
+      
+
+
+   }
+
     public AttackResponse turn(Point p) {
         return this.game.turn(p);
     }
+    
 }
