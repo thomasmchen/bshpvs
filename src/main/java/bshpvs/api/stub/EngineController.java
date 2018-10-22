@@ -70,8 +70,25 @@ public class EngineController {
             for (int j = 0; j < points.length; j++) {
                 pts[j] = new Coordinate(points[j].x, points[j].y);
             }
-
-            ShipObject obj = new ShipObject(s.getType().getValue(), pts.length, pts);
+        int shipId = 0;
+        switch (s.getType()) {
+            case CARRIER:
+            shipId = 0;
+            break;
+            case BATTLESHIP:
+            shipId = 1;
+            break;
+            case CRUISER:
+            shipId = 2;
+            break;
+            case SUBMARINE:
+            shipId = 3;
+            break;
+            case DESTROYER:
+            shipId = 4;
+            break;
+        }
+        ShipObject obj = new ShipObject(shipId, pts.length, pts);
             ships[i] = obj;
 
         }
