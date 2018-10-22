@@ -111,6 +111,10 @@ export class GameWindowComponent implements OnInit {
 
   }
 
+  handleSignal(event: string) {
+    this.turnShipColor(0, 0);
+  }
+
   endGame() {
     this.won = true;
     this.stomp.stompClient.disconnect();
@@ -236,6 +240,16 @@ export class GameWindowComponent implements OnInit {
     }
 
     console.log(request);
+  }
+
+  turnAllShipsColor(color) {
+
+  }
+
+  turnShipColor(color, id) {
+    for (var i = 0; i < this.ships.length; i++) {
+      console.log(this.ships[i].identifier);
+    }
   }
 
   
