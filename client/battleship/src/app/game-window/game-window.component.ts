@@ -263,10 +263,9 @@ export class GameWindowComponent implements OnInit {
     console.log(request);
   }
 
-  makePlayerMove(_x, _y, _direction) {
+  makePlayerMove(id, _direction) {
     let request : MoveRequest = {
-      x: _x,
-      y: _y, 
+      shipId: id,
       direction: _direction
     }
 
@@ -353,8 +352,7 @@ interface AttackRequest {
 }
 
 interface MoveRequest {
-  x: number,
-  y: number,
+  shipId: number,
   direction: number
 }
 

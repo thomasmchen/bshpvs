@@ -4,9 +4,7 @@ public class MoveRequest
 {
     private String direction;
 
-    private String y;
-
-    private String x;
+    private int shipId;
 
     public String getDirection ()
     {
@@ -18,29 +16,14 @@ public class MoveRequest
         this.direction = direction;
     }
 
-    public String getY ()
-    {
-        return y;
+    public void setShipId(int shipId) {
+        this.shipId = shipId;
     }
 
-    public void setY (String y)
-    {
-        this.y = y;
-    }
-
-    public String getX ()
-    {
-        return x;
-    }
-
-    public void setX (String x)
-    {
-        this.x = x;
-    }
 
     @Override
     public String toString()
     {
-        return "MoveRequest [direction = "+direction+", y = "+y+", x = "+x+"]";
+        return "MoveRequest [direction = "+direction+", shipId = " + this.shipId;
     }
 }
