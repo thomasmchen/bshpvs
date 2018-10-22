@@ -30,6 +30,16 @@ public enum CellType implements TypeInterface {
         this.group = group;
     }
 
+    public static boolean contains(String in) {
+        for (CellType ct : CellType.values()) {
+            if (ct.getText().equals(in)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Retrieve integer value of cell type.
      * @return the integer corresponding to the cell type

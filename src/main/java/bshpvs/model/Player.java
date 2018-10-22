@@ -4,18 +4,16 @@ import bshpvs.ai.Playable;
 import bshpvs.statistics.PlayerStat;
 
 import java.awt.Point;
-import java.util.EnumMap;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
-import java.util.UUID;
 
 /**
  * Player class.
  */
-public class Player implements Playable {
+public class Player implements Playable{
     private UUID id;
     private Map board;
-    private Map targetBoard;
+    private HashMap<Player, Map> targetBoard;
     private EnumMap<CellType, Ship> ships;
     private EnumMap<CellType, Boolean> statuses;
     private PlayerStat stat;
@@ -23,12 +21,27 @@ public class Player implements Playable {
     private static final int DEFAULT_GRID_SIZE = 10;
 
 
+    //TODO: Massive input validation overhaul for Player constructors
+    // Automatic size checking
     /**
      * Default constructor for Player.
      */
     public Player() {
         board = new Map(DEFAULT_GRID_SIZE);
-        targetBoard = new Map(DEFAULT_GRID_SIZE);
+        targetBoard = new HashMap<>();
+        id = UUID.randomUUID();
+        ships = new EnumMap<CellType, Ship>(CellType.class);
+        statuses = new EnumMap<CellType, Boolean>(CellType.class);
+        stat = new PlayerStat(this);
+    }
+
+    /**
+     * Default constructor for board size, no opponents
+     * @param size the size of the board
+     */
+    public Player(int size) {
+        board = new Map(size);
+        targetBoard = new HashMap<>();
         id = UUID.randomUUID();
         ships = new EnumMap<CellType, Ship>(CellType.class);
         statuses = new EnumMap<CellType, Boolean>(CellType.class);
@@ -39,13 +52,41 @@ public class Player implements Playable {
      * Constructor for Player specifying board size.
      * @param size the size of the board
      */
-    public Player(int size) {
+    public Player(int size, Player opp) {
         board = new Map(size);
-        targetBoard = new Map(size);
         id = UUID.randomUUID();
         ships = new EnumMap<CellType, Ship>(CellType.class);
         statuses = new EnumMap<CellType, Boolean>(CellType.class);
         stat = new PlayerStat(this);
+
+        targetBoard = new HashMap<>();
+        targetBoard.put(opp, new Map(size));
+    }
+
+    /**
+     * Constructor for multiple Players specifying board size
+     * @param size size of the boards
+     * @param opps opponents
+     */
+    public Player(int size, List<Player> opps) {
+        board = new Map(size);
+        id = UUID.randomUUID();
+        ships = new EnumMap<CellType, Ship>(CellType.class);
+        statuses = new EnumMap<CellType, Boolean>(CellType.class);
+        stat = new PlayerStat(this);
+
+        targetBoard = new HashMap<>();
+        for (Player opp : opps) {
+            targetBoard.put(opp, new Map(size));
+        }
+    }
+
+    /**
+     * Adds a new opponent to the Player
+     * @param opp the opposing player to be added
+     */
+    public void addOpponent(Player opp) {
+        targetBoard.put(opp, new Map(opp.getMap().getLength()));
     }
 
     /**
@@ -75,6 +116,20 @@ public class Player implements Playable {
     }
 
     /**
+     * Removes a ship from the board
+     * @param ct the ship type to be removed
+     */
+    public void removeShip(CellType ct) {
+        // Verify ship exists on Player's board
+        if (ships.containsKey(ct)) {
+            throw new IllegalArgumentException("Ship: " + ct.toString() + " does not exist.");
+        }
+
+        // Remove Ship coordinates from Player's board
+        unsetShip(ct);
+    }
+
+    /**
      * Set ship function places ships on map.
      * @param shp the ship to be placed
      */
@@ -88,6 +143,17 @@ public class Player implements Playable {
 
         for (Point pt : shp.getPoints()) {
             board.setCell(pt, shp.getType());
+        }
+    }
+
+    /**
+     * Unsets a ship on map
+     * @param ct the ship type to be unset
+     */
+    private void unsetShip(CellType ct) {
+        for (Point pt : ships.get(ct).getPoints()) {
+            board.setCell(pt, CellType.WATER);
+            board.getCell(pt).unhit();
         }
     }
 
@@ -120,6 +186,11 @@ public class Player implements Playable {
      * @return the Cell that was hit
      */
     public Cell hitOppCell(Point pt, Player player) {
+        // Check if Player exists
+        if (!targetBoard.containsKey(player)) {
+            throw new IllegalArgumentException("Player does not exist in current Player's records.");
+        }
+
         // Hit the opposing player
         Cell c = player.getHit(pt);
 
@@ -132,9 +203,11 @@ public class Player implements Playable {
             this.getPlayerStat().incrementMisses();
         }
 
-        // Update player record of move
-        this.targetBoard.setCell(pt, c.getType());
-        this.targetBoard.getCell(pt).hit();
+        // Update player record of attack
+        this.targetBoard.get(player).setCell(pt, c.getType());
+        this.targetBoard.get(player).getCell(pt).hit();
+        //this.targetBoard.setCell(pt, c.getType());
+        //this.targetBoard.getCell(pt).hit();
         return c;
     }
 
@@ -174,17 +247,25 @@ public class Player implements Playable {
     }
 
     /**
-     * Custom Exception class for overlap of two ships
+     * Implement Playable Interface
+     * @param pl player to attack against
+     * @return point moved upon
      */
-    private class ShipOverlapException extends Exception {
-        /**
-         * Custom Exception when two ships overlap
-         * @param errorMessage the message to be outputted
-         */
-        public ShipOverlapException(String errorMessage) {
-            //TODO: Provide additional functionality
-            super(errorMessage);
-        }
+    @Override
+    public Point attack(Player pl) {
+        Point tgt = genRandomTarget(pl);
+        this.hitOppCell(tgt, pl);
+        return tgt;
+    }
+
+    @Override
+    public void move() {
+
+    }
+
+    @Override
+    public void turn() {
+
     }
 
     /**
@@ -199,8 +280,16 @@ public class Player implements Playable {
      * Accessor for targetBoard
      * @return the current players view of the board of the player's opponents
      */
-    public Map getTargetBoard() {
-        return this.targetBoard;
+    public Map getTargetBoard(Player opp) {
+        return this.targetBoard.get(opp);
+    }
+
+    /**
+     * Return list of a Player's opponents
+     * @return the current player's opponents
+     */
+    public ArrayList<Player> getOpponents() {
+        return new ArrayList<Player>(this.targetBoard.keySet());
     }
 
     /**
@@ -209,7 +298,7 @@ public class Player implements Playable {
      */
     public Point genRandomTarget(Player opp) {
         Random gen = new Random();
-        Point tgt = new Point(gen.nextInt(targetBoard.getLength()), gen.nextInt(targetBoard.getLength()));
+        Point tgt = new Point(gen.nextInt(targetBoard.get(opp).getLength()), gen.nextInt(targetBoard.get(opp).getLength()));
         if (opp.getCell(tgt).isHit()) {
             for (int i = 0; i < opp.getMap().getLength(); i++) {
                 for (int j = 0; j < opp.getMap().getLength(); j++) {
@@ -224,24 +313,36 @@ public class Player implements Playable {
     }
 
     /**
-     * Checks if a point is valid:
+     * Selects a random Player opponent from targets
+     * @return the randomly selected Player
+     */
+    public Player genRandomOpp() {
+        List<Player> players = new ArrayList<Player>(targetBoard.keySet());
+        Random gen = new Random();
+        int index = gen.nextInt(players.size());
+        return players.get(index);
+    }
+
+    /**
+     * Checks if an opponents point is valid on own target map:
      * 1) Is on the map
      * 2) Has not been hit already
      * @return true if valid false if invalid
      */
-    public boolean isValidPoint(Point p) {
-        return (p.x < targetBoard.getLength() && p.y < targetBoard.getLength() && p.x >= 0 && p.y >= 0 && !targetBoard.getCell(p).isHit());
+    public boolean isValidTgtPoint(Point p, Player opp) {
+        return (isValidPoint(p, opp.getMap()) && !targetBoard.get(opp).getCell(p).isHit());
     }
 
     /**
-     * Implements playable interface with most naive algorithm:
-     * Random selection of a valid move
-     * @return the Cell that was hit by the move
+     * Checks if a point falls inside a map
+     * @param p the point
+     * @param m the map
+     * @return true if valid, false if invalid
      */
-    public Point move(Player opp) {
-        Point tgt = genRandomTarget(opp);
-        this.hitOppCell(tgt, opp);
-        return tgt;
+    public static boolean isValidPoint(Point p, Map m) {
+        return (p.x < m.getLength() &&
+                p.y < m.getLength() &&
+                p.x >= 0 && p.y >= 0);
     }
 
     /**
@@ -268,5 +369,116 @@ public class Player implements Playable {
     public boolean equals(Player pl) {
         return this.id.equals(pl.getID());
     }
+
+
+    /**
+     * Checks if new point position of Ship of given CellType is possible (no overlapping, inside map)
+     * @param st new starting point
+     * @param end new ending point
+     * @param ct ship type
+     * @return true if valid, false if invalid
+     */
+    public boolean isMovementValid(Point st, Point end, CellType ct) {
+        // Validate that Ship will not overlap with any other Ship
+        Ship newShip = new Ship(st, end, ct);
+        if (isValidPoint(st, this.getMap()) && isValidPoint(end, this.getMap())) {
+            for (CellType s : ships.keySet()) {
+                if (ct.getValue() != s.getValue()) {
+                    if (ships.get(s).doesOverlap(newShip)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * Move a specific ship forward
+     * @param ct the ship to be moved
+     */
+    public void moveForward(CellType ct) throws ImmobileShipException{
+        Ship shipToBeMoved = ships.get(ct);
+
+        if (shipToBeMoved.checkHit(this.getMap())) {
+            throw new ImmobileShipException(shipToBeMoved.getType().getText() +
+                    "has been hit, and cannot be moved!");
+        }
+
+        Point newSt = shipToBeMoved.st;
+        Point newEnd = shipToBeMoved.end;
+
+        if (shipToBeMoved.isVertical()) {
+            newSt.y--;
+            newEnd.y++;
+        } else {
+            newSt.x++;
+            newEnd.x--;
+        }
+
+        if (isMovementValid(newSt, newEnd, ct)) {
+            ships.remove(ct);
+            this.addShip(new Ship(newSt, newEnd, ct));
+        }
+    }
+
+    /**
+     * Move a specific ship backward
+     * @param ct the ship to be moved
+     */
+    public void moveBackward(CellType ct) throws ImmobileShipException {
+        Ship shipToBeMoved = ships.get(ct);
+        Point newSt = shipToBeMoved.st;
+        Point newEnd = shipToBeMoved.end;
+
+        if (shipToBeMoved.checkHit(this.getMap())) {
+            throw new ImmobileShipException(shipToBeMoved.getType().getText() +
+                    "has been hit, and cannot be moved!");
+        }
+
+        if (shipToBeMoved.isVertical()) {
+            newSt.y++;
+            newEnd.y--;
+        } else {
+            newSt.x--;
+            newEnd.x++;
+        }
+
+        if (isMovementValid(newSt, newEnd, ct)) {
+            ships.remove(ct);
+            this.addShip(new Ship(newSt, newEnd, ct));
+        }
+    }
+
+
+    /**
+     * Custom Exception class for overlap of two ships
+     */
+    private class ShipOverlapException extends Exception {
+        /**
+         * Custom Exception when two ships overlap
+         * @param errorMessage the message to be outputted
+         */
+        public ShipOverlapException(String errorMessage) {
+            //TODO: Provide additional functionality
+            super(errorMessage);
+        }
+    }
+
+    /**
+     * Custom Exception class for overlap of two ships
+     */
+    public class ImmobileShipException extends Exception {
+        /**
+         * Custom Exception when two ships overlap
+         * @param errorMessage the message to be outputted
+         */
+        public ImmobileShipException(String errorMessage) {
+            //TODO: Provide additional functionality
+            super(errorMessage);
+        }
+    }
+
 
 }

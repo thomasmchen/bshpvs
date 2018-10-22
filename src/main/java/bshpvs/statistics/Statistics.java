@@ -48,12 +48,16 @@ public class Statistics {
             for (PlayerStat ps : playerStats) {
                 avgHitPerc += ps.getHitPerc();
                 avgMissPerc += ps.getMissPerc();
-                if (gs.getWinner().equals(ps)) {
-                    wins++;
-                } else {
-                    losses++;
-                }
             }
+
+            if (gs.getWinner().getPlayerType().equals(player)) {
+                wins++;
+            } else {
+                losses++;
+            }
+
+            avgHitPerc = avgHitPerc/playerStats.size();
+            avgMissPerc = avgMissPerc/playerStats.size();
         }
 
 
@@ -64,6 +68,8 @@ public class Statistics {
         System.out.println("Player: " + player +
                 "\nAverage Hit Percentage: " + avgHitPerc +
                 "\nAverage Miss Percentage: " + avgMissPerc +
+                "\nNumber of Wins: " + wins +
+                "\nNumber of Losses: " + losses +
                 "\nWin/Loss Ratio: " + winlossRatio);
     }
 

@@ -120,16 +120,16 @@ public class EngineController {
     }
 
     public void initializePlayers() {
-        this.playerOne = new Player(10);
+        this.playerOne = new Player(10, playerTwo);
         if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("normal")) {
             System.out.println("Normal ai");
-            this.playerTwo = new Player(10);
+            this.playerTwo = new Player(10, playerOne);
 
         } else if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("hunter")) {
             System.out.println("Hunter ai");
             this.playerTwo = new HunterPlayer();
         } else {
-            this.playerTwo = new Player(10);
+            this.playerTwo = new Player(10, playerOne);
         }
     }
 

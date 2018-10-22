@@ -39,6 +39,9 @@ class PlayerStatTest {
         Player pl2 = new Player();
         pl2.addShip(shp);
 
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
+
         pl1.hitOppCell(new Point(7,1), pl2);
         assertEquals(0.0, pl1.getPlayerStat().getHitPerc());
 
@@ -63,6 +66,9 @@ class PlayerStatTest {
         Player pl2 = new Player();
         pl2.addShip(shp);
 
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
+
         pl1.hitOppCell(new Point(2,1), pl2);
         pl1.hitOppCell(new Point(3,2), pl2);
         assertEquals(1.0, pl1.getPlayerStat().getMissPerc());
@@ -79,9 +85,12 @@ class PlayerStatTest {
         Player pl2 = new Player();
         pl2.addShip(shp);
 
-        pl1.move(pl2);
-        pl2.move(pl1);
-        pl1.move(pl2);
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
+
+        pl1.attack(pl2);
+        pl2.attack(pl1);
+        pl1.attack(pl2);
 
         assertEquals(2, pl1.getPlayerStat().getTurns());
         assertEquals(1, pl2.getPlayerStat().getTurns());
@@ -116,6 +125,9 @@ class PlayerStatTest {
         Player pl2 = new Player();
         pl2.addShip(shp);
 
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
+
         pl1.hitOppCell(new Point(7,1), pl2);
         pl1.hitOppCell(new Point(1,1), pl2);
         pl1.hitOppCell(new Point(1,2), pl2);
@@ -145,6 +157,9 @@ class PlayerStatTest {
         Player pl2 = new Player();
         pl2.addShip(shp);
 
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
+
         pl1.hitOppCell(new Point(6,1), pl2);
         pl1.hitOppCell(new Point(1,1), pl2);
         pl1.hitOppCell(new Point(1,2), pl2);
@@ -173,6 +188,9 @@ class PlayerStatTest {
         Player pl2 = new Player();
         pl2.addShip(shp);
 
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
+
         pl1.hitOppCell(new Point(6,1), pl2);
         pl1.hitOppCell(new Point(1,1), pl2);
         pl1.hitOppCell(new Point(1,2), pl2);
@@ -193,6 +211,9 @@ class PlayerStatTest {
 
         Player pl2 = new Player();
         pl2.addShip(shp);
+
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
 
         assertEquals(pl1.getPlayerStat(), pl1.getPlayerStat());
         assertNotEquals(pl1.getPlayerStat(), pl2.getPlayerStat());
@@ -217,6 +238,9 @@ class PlayerStatTest {
 
         Player pl2 = new Player();
         pl2.addShip(shp);
+
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
 
         assertEquals(pl1.getPlayerStat(), pl1.getPlayerStat());
         assertNotEquals(pl1.getPlayerStat(), pl2.getPlayerStat());
