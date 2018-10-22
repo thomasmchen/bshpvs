@@ -1,4 +1,4 @@
-package bshpvs;
+package bshpvs.database;
 
 import java.util.ArrayList;
 
