@@ -53,10 +53,9 @@ export class WebService {
   }
 
   sendID(id) {
-    alert("id="+id);
     this.stompClient.send(this.idURL, {}, id);
   }
-  
+
   checkWin() {
     this.stompClient.send(this.checkWinUrl, {}, "");
   }

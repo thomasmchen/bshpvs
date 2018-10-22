@@ -1,4 +1,6 @@
 package bshpvs.api.core;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -6,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ReceiveUserID
 {
     @JsonProperty("id") public String id;
@@ -19,7 +22,7 @@ public class ReceiveUserID
         return id;
     }
 
-    public void setY (String id)
+    public void setID (String id)
     {
         this.id = id;
     }

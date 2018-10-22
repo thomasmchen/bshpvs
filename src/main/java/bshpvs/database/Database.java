@@ -29,12 +29,11 @@ public class Database {
      * Adds a user to the database using their GoogleID as their ID
      * 
      * @param GoogleID based on Google Sign-In ID
-     * @param email Google gmail account //TODO decide if this is necessary
      * @return true on success, false otherwise
      * 
      * @throws SQLException part of establising connection with DB
      */
-    private boolean addUser(String GoogleID, String email) throws SQLException{
+    public boolean addUser(String GoogleID) throws SQLException{
         //establish connection
         Connection connection = getDBConnection();
 
@@ -43,14 +42,13 @@ public class Database {
 
         //SQL query for adding a user
         String UserQuery = "INSERT INTO USERS" +
-                            "(id, email)" +
-                            "values(?,?)";
+                            "(id)" +
+                            "values(?)";
 
         try{
             connection.setAutoCommit(false);
             insertUserStatement = connection.prepareStatement(UserQuery);
             insertUserStatement.setString(1, GoogleID);                 //UserID
-            insertUserStatement.setString(2, email);                    //User_Email
 
             insertUserStatement.executeUpdate();
             insertUserStatement.close();
@@ -78,7 +76,7 @@ public class Database {
      * @param ps PlayerStat object for User
      * @return true on success, false upon failure
      */
-    private boolean addGameData(String GoogleID, GameStat gs, PlayerStat ps) throws SQLException{
+    public boolean addGameData(String GoogleID, GameStat gs, PlayerStat ps) throws SQLException{
         Connection connection = getDBConnection(); //connect with H2 DB
         
         PreparedStatement insertPreparedStatement = null;
@@ -102,6 +100,11 @@ public class Database {
             insertPreparedStatement.setLong(7, gs.getTime());                           //Time
             insertPreparedStatement.setString(8, gs.getWinner().getId().toString());    //Winner
             insertPreparedStatement.setString(9, parsePlayerTypes(gs));                 //Player_Types
+
+            insertPreparedStatement.executeUpdate();
+            insertPreparedStatement.close();
+
+            connection.commit();
         }catch(SQLException e){
             System.out.println("Execption Occurred when adding GameStats, Message: " + e.getLocalizedMessage());
             return false;
@@ -113,6 +116,42 @@ public class Database {
         //close connection
         connection.close();
         return true;
+    }
+
+    public boolean doesUserExist(String GoogleID){
+        Connection connection = getDBConnection(); //connect with H2 DB
+        
+        ResultSet rs = null;
+        Statement s = null;
+
+        boolean ret = false;
+        try{
+            s = connection.createStatement();
+
+            rs = s.executeQuery("SELECT * FROM USERS WHERE ID='" + GoogleID + "';");
+
+       
+            if(rs.first()){
+                ret = true; //user must exist!
+            }
+            else{
+                ret = false; //user must not exist!
+            }
+            
+            //close statement
+            s.close();
+            connection.commit();
+            connection.close();     
+            
+        }catch(SQLException e){
+            System.out.println("Error checking User: " + e.getLocalizedMessage());
+            return false;
+        }catch(NullPointerException e){
+            System.out.println("Error checking User: " + e.getLocalizedMessage());
+            return false;
+        }
+    
+        return ret;
     }
 
     /**
@@ -209,7 +248,7 @@ public class Database {
      * 
      * @return true if it does exist, false if not
      */
-    private boolean checkH2Exists(){
+    public boolean checkH2Exists(){
         Connection connection = getDBConnection();
         Statement s = null;
         try{
@@ -238,7 +277,7 @@ public class Database {
      * 
      * @return true if successful, false otherwise
      */
-    private boolean createH2Database(){
+    public boolean createH2Database(){
         //establish connection
         Connection connection = getDBConnection();
         
@@ -251,7 +290,6 @@ public class Database {
             //create user table
             s1.execute("CREATE TABLE USERS(" +
                 "ID varchar(255)," +
-                "EMAIL varchar(255) NOT NULL," +
                 "PRIMARY KEY (ID));"
             );
             s1.close();
@@ -347,7 +385,7 @@ public class Database {
     }
 
 
-    private ResultSet pullGameData(String User_ID) throws SQLException {
+    public ResultSet pullGameData(String User_ID) throws SQLException {
         //establish connection
         Connection connection = getDBConnection();
 
@@ -471,7 +509,7 @@ public class Database {
         return true;
     }
 
-
+/*
     
     public static void main(String[] args){ //mainly for quick testing
         Database db = new Database();
@@ -487,6 +525,7 @@ public class Database {
             System.out.println("OOF: " + e.getLocalizedMessage());
         }
 */
+/*
         try{
             db.pullGameData("joe");
         }catch (SQLException e){
@@ -495,4 +534,5 @@ public class Database {
         //attempt to empty DB
         //db.clearH2Database();
     }
+    */
 }
