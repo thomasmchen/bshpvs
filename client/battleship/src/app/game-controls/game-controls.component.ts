@@ -26,4 +26,26 @@ export class GameControlsComponent implements OnInit {
     this.event.emit('move');
   }
 
+  onForwardPressed() {
+    this.event.emit('forward');
+  }
+
+  onBackwardPressed() {
+    this.event.emit('backward');
+  }
+
+  showDirectionalButtons() {
+    document.getElementById('forward').style.visibility = 'visible';
+    document.getElementById('backward').style.visibility = 'visible';
+  }
+
+  hideDirectionalButtons() {
+    document.getElementById('forward').style.visibility = 'hidden';
+    document.getElementById('backward').style.visibility = 'hidden';
+  }
+
+  setMessage(mes) {
+    this.message = mes;
+  }
+
 }

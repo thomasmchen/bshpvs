@@ -18,13 +18,14 @@
 
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { timer } from 'rxjs';
 
 import { DarkModeService } from '../settings/darkmode.service';
 import { Http, Jsonp } from '@angular/http';
 import { WebService } from '../web.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { GameControlsComponent } from '../game-controls/game-controls.component';
 
 @Component({
   selector: 'app-game-window',
@@ -33,6 +34,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class GameWindowComponent implements OnInit {
 
+  @ViewChild(GameControlsComponent) gameControls;
   darkMode:boolean;
   timer:boolean;
   won: boolean = false;
@@ -44,6 +46,8 @@ export class GameWindowComponent implements OnInit {
 
   lastX : number = 0;
   lastY : number = 0;
+
+  movingShip: boolean = false;
 
 
   constructor(private http: Http, private dm: DarkModeService, private stomp: WebService, public snackBar: MatSnackBar) { 
@@ -112,7 +116,16 @@ export class GameWindowComponent implements OnInit {
   }
 
   handleSignal(event: string) {
-    this.turnShipColor(0, 0);
+    console.log(event);
+    this.movingShip = true;
+    if (event == "move") {
+      this.turnAllShipsColor("blue");
+    } else if (event == "forward") {
+      console.log("Player wants to move ships forward");
+    } else if (event == "backward") {
+      console.log("Player wants to move ship backwards.")
+
+    }
   }
 
   endGame() {
@@ -166,10 +179,10 @@ export class GameWindowComponent implements OnInit {
   renderShips() {
     for (var i = 0; i < this.ships.length; i++) {
       for (var j = 0; j < this.ships[i].spaces.length; j++) {
+        
         let x = this.ships[i].spaces[j].x;
         let y = this.ships[i].spaces[j].y;
         var id = y * this.gridSize + x;
-
         document.getElementById("user_"+id).style.backgroundColor = "red";
       }
     }
@@ -211,8 +224,26 @@ export class GameWindowComponent implements OnInit {
   }
 
   onCellClicked(event: Cell) {
-    if (!this.won) {
+    if (!this.won && !this.movingShip) {
       this.makePlayerAttack(event.col, event.row);
+    } else if (this.movingShip) {
+      console.log('we are here');
+      var shipId = 0;
+      for (var i = 0; i < this.ships.length; i++) {
+        var s = this.ships[i];
+        if (this.shipContainsPoint(s, event.col, event.row)) {
+          this.turnShipColor("yellow", s.identifier);
+          this.changeCellColor(s.spaces[0].x, s.spaces[0].y, "pink", "user_");
+          this.changeCellColor(s.spaces[s.numSpaces - 1].x, s.spaces[s.numSpaces - 1].y, "darkred", "user_");
+          this.gameControls.setMessage("Move the selected ship forward or backward. Pink represents the back of the boat, while dark red represents the front of the boat.");
+        }
+
+        
+      }
+
+      this.turnShipColor(shipId, "black");
+      this.gameControls.showDirectionalButtons();
+
     }
   }
 
@@ -243,13 +274,41 @@ export class GameWindowComponent implements OnInit {
   }
 
   turnAllShipsColor(color) {
+    for (var i = 0; i < this.ships.length; i++) {
+      this.turnShipColor(color, this.ships[i].identifier);
+    }
 
+  }
+
+  shipContainsPoint(s: Ship, x: number, y: number) {
+    for (var i = 0; i < s.spaces.length; i++) {
+      let point = s.spaces[i];
+      if (point.x == x && point.y == y) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   turnShipColor(color, id) {
     for (var i = 0; i < this.ships.length; i++) {
-      console.log(this.ships[i].identifier);
+      if (i == id) {
+        let ship = this.ships[i];
+        for (var j = 0; j < ship.spaces.length; j++) {
+          var x = ship.spaces[j].x;
+          var y = ship.spaces[j].y;
+          var domId = y * this.gridSize + x;
+          document.getElementById("user_"+domId).style.backgroundColor = color;
+        }
+      }
     }
+  }
+
+  changeCellColor(x, y, color, prefix) {
+    var id = y * this.gridSize + x;
+    document.getElementById(prefix+id).style.backgroundColor = color;
+
   }
 
   

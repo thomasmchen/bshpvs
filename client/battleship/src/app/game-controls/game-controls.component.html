@@ -10,4 +10,11 @@
 
 <p id="message">{{message}}</p>
 
+<div class="row">
+    <button id="forward" mat-button (click)="onForwardPressed()" style="visibility: hidden;">Move forward</button>
+ </div>
+ <div class="row">
+    <button id="backward" mat-button (click)="onBackwardPressed()" style="visibility: hidden;">Move backward</button>
+ </div>
+
 </mat-card>
