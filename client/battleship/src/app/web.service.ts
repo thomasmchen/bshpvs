@@ -13,6 +13,7 @@ export class WebService {
   private windowInitUrl = '/app/windowInit';
   private turnUrl = '/app/turn';
   private idURL = '/app/id';
+  private checkWinUrl = '/app/checkWin';
   public stompClient = null;
   public connected = false;
 
@@ -54,5 +55,9 @@ export class WebService {
   sendID(id) {
     alert("id="+id);
     this.stompClient.send(this.idURL, {}, id);
+  }
+  
+  checkWin() {
+    this.stompClient.send(this.checkWinUrl, {}, "");
   }
 }
