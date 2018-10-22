@@ -67,15 +67,8 @@ export class GameWindowComponent implements OnInit {
       this.renderShips();
     });
 
+  
     let that = this;
-    this.stomp.stompClient.subscribe('/topic/endGame', (res) => {
-      let r = JSON.parse(res.body) as EndGameResponse;
-      alert(r.won + "    " + r.victoryMessage);
-      that.won = true;
-      this.stomp.stompClient.disconnect();
-
-    });
-
     this.stomp.stompClient.subscribe('/topic/turnResponse', (res) => {
       console.log(res);
       let r = JSON.parse(res.body) as AttackResponse;
@@ -86,9 +79,13 @@ export class GameWindowComponent implements OnInit {
       } else if (r.yourMove.substring(0,3) == "sunk") {
         this.markEnemyGrid(this.lastX, this.lastY, true);
       } else if (r.yourMove.substring(0, 2) == "won") {
+        window.alert("You won!")
         this.markEnemyGrid(this.lastX, this.lastY, true);
+        that.won = true;
+        that.endGame();
+
       } else {
-        this.markEnemyGrid(this.lastX, this.lastY, true);
+        this.markEnemyGrid(this.lastX, this.lastY, false);
       }
 
       
@@ -99,7 +96,9 @@ export class GameWindowComponent implements OnInit {
       } else if (r.theirMove.substring(0, 4) == "sunk") {
         this.markUserGrid(r.x, r.y, true);
       } else if (r.theirMove.substring(0, 3) == "won") {
+        window.alert("Enemy won!")
         this.markUserGrid(r.x, r.y, true);
+        that.endGame();
       } else {
         this.markUserGrid(r.x, r.y, false);
       }
@@ -107,11 +106,14 @@ export class GameWindowComponent implements OnInit {
       this.snackBar.open(r.message, 'Ok', {
         duration: 2000
       });
-
-      this.stomp.checkWin();
     });
     this.stomp.sendGameWindowInit();
 
+  }
+
+  endGame() {
+    this.won = true;
+    this.stomp.stompClient.disconnect();
   }
 
   ngOnDestroy() {
