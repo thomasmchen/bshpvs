@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { DarkModeService } from '../settings/darkmode.service';
 import { AuthService } from '../auth.service';
 import { WebService } from '../web.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-statistics',
@@ -14,6 +15,8 @@ export class StatisticsComponent implements OnInit {
   darkMode:boolean;
   user_id:string;
   stats:DBStat[];
+  sub:Subscription;
+  stat:DBStat;
 
   constructor(private dm: DarkModeService, private stomp: WebService, private auth: AuthService) { 
     stomp.initializeConnection();
@@ -34,14 +37,20 @@ export class StatisticsComponent implements OnInit {
     this.stomp.setConnected();
     this.stomp.getStats();
     //subscribe to stats response
-    this.stomp.stompClient.subscribe('/topic/getStats', (res) => {
+    this.sub = this.stomp.stompClient.subscribe('/topic/getStats', (res) => {
       let r = JSON.parse(res.body) as StatsResponse;
       console.log(r);
       this.stats = r.statsList;
+      return this.stats
+      .map(indv => {
+          return this.stat = indv;
+      });
+  
     }); 
 
+    //for testing if data was received 
     var count = 0;
-    while(this.stats[count+1] != null){
+    while(this.stats[count] != null){
       alert(this.stats[count].numTurns);
       count++;
     }

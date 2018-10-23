@@ -42,7 +42,6 @@ export class MainMenuComponent implements OnInit {
     this.stomp.setConnected();
     this.auth.currentid.subscribe(user_id => this.user_id = user_id);
     let sendFormat = "{\"id\":\""+this.user_id+"\"}";
-    alert(sendFormat);
     this.stomp.sendID(sendFormat);
 
     this.router.navigateByUrl('/statistics');

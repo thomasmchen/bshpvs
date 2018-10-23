@@ -141,14 +141,14 @@ public class EngineController {
             
             //add game data to database for that users game data
             Database db = new Database();
-            db.addGameData(newGameRequest.getUserId(), this.game.gameStat, this.playerOne.getPlayerStat()); //TODO get gamestats/playerstats to fill in null parameters
+            db.addGameData(newGameRequest.getUserId(), this.game.gameStat, this.playerOne.getPlayerStat()); 
         } else if (this.game.firstPlayer.isDefeated()) {
             String message = newGameRequest.getUserName() + " lost";
             egr = new EndGameResponse(message, "Good fight!");
             
             //add game data to database for that users game data
             Database db = new Database();
-            db.addGameData(newGameRequest.getUserId(), this.game.gameStat, this.playerOne.getPlayerStat()); //TODO get gamestats/playerstats to fill in null parameters
+            db.addGameData(newGameRequest.getUserId(), this.game.gameStat, this.playerOne.getPlayerStat()); 
         }
         
         return egr;

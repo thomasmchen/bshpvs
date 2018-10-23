@@ -61,7 +61,7 @@ export class WebService {
     this.stompClient.send(this.checkWinUrl, {}, "");
   }
 
-  getStats(){
+  getStats() {
     this.stompClient.send(this.statURL, {}, "");
   }
 }
