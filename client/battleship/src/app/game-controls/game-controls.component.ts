@@ -22,7 +22,7 @@ export class GameControlsComponent implements OnInit {
 
   onMovedPressed() {
     document.getElementById('message').style.fontWeight = '900';
-    this.message = 'Select a ship you would like to move';
+    this.message = 'Select a ship you would like to move. If the ship is hit (contains a black cell), your move will be invalid and you will waste a turn.';
     this.event.emit('move');
   }
 
@@ -42,6 +42,22 @@ export class GameControlsComponent implements OnInit {
   hideDirectionalButtons() {
     document.getElementById('forward').style.visibility = 'hidden';
     document.getElementById('backward').style.visibility = 'hidden';
+  }
+
+  hideMoveButton() {
+    document.getElementById('move').style.visibility = 'hidden';
+  }
+
+  hideSurrenderButton() {
+    document.getElementById('surrender').style.visibility = 'hidden';
+  }
+
+  showMoveButton() {
+    document.getElementById('move').style.visibility = 'visible';
+  }
+
+  showSurrenderButton() {
+    document.getElementById('surrender').style.visibility = 'visible';
   }
 
   setMessage(mes) {

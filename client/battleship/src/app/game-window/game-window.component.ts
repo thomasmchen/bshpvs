@@ -49,6 +49,7 @@ export class GameWindowComponent implements OnInit {
 
   movingShip: boolean = false;
   selectedShipId: number = -1;
+  attackResponses: AttackResponse[] = [];
 
 
   constructor(private http: Http, private dm: DarkModeService, private stomp: WebService, public snackBar: MatSnackBar) { 
@@ -90,6 +91,8 @@ export class GameWindowComponent implements OnInit {
       this.movingShip = false;
       this.selectedShipId = -1;
       this.gameControls.hideDirectionalButtons();
+      this.gameControls.showMoveButton();
+      this.gameControls.showSurrenderButton();
       this.gameControls.setMessage("Select a cell to attack");
       this.makePlayerAttack(-1, -1);
     });
@@ -99,6 +102,7 @@ export class GameWindowComponent implements OnInit {
     this.stomp.stompClient.subscribe('/topic/turnResponse', (res) => {
       console.log(res);
       let r = JSON.parse(res.body) as AttackResponse;
+      this.attackResponses.push(r);
       if (r.yourMove.substring(0, 2) == "hit") {
         this.markEnemyGrid(this.lastX, this.lastY, true);
       } else if (r.yourMove == "water") {
@@ -159,12 +163,14 @@ export class GameWindowComponent implements OnInit {
   endGame() {
     this.won = true;
     this.stomp.stompClient.disconnect();
+    this.attackResponses = [];
+    this.ships = [];
   }
 
   ngOnDestroy() {
     console.log("called");
     this.stomp.stompClient.disconnect();
-    this.ships = [];
+    this.ships = []; this.attackResponses = [];
   }
 
   markUserGrid(x, y, hit) {
@@ -214,6 +220,8 @@ export class GameWindowComponent implements OnInit {
         document.getElementById("user_"+id).style.backgroundColor = "red";
       }
     }
+
+    this.renderAllAttackResponsesRecieved();
   }
 
   clearBoard() {
@@ -263,9 +271,18 @@ export class GameWindowComponent implements OnInit {
       for (var i = 0; i < this.ships.length; i++) {
         var s = this.ships[i];
         if (this.shipContainsPoint(s, event.col, event.row)) {
+          let st = s.spaces[0];
+          let end = s.spaces[s.spaces.length - 1];
+          // chcek to see if the ship is vertical or horizontal
           this.turnShipColor("yellow", s.identifier);
-          this.changeCellColor(s.spaces[0].x, s.spaces[0].y, "pink", "user_");
-          this.changeCellColor(s.spaces[s.numSpaces - 1].x, s.spaces[s.numSpaces - 1].y, "darkred", "user_");
+
+          if (st.x == end.x) {
+            this.changeCellColor(s.spaces[0].x, s.spaces[0].y, "darkred", "user_");
+            this.changeCellColor(s.spaces[s.numSpaces - 1].x, s.spaces[s.numSpaces - 1].y, "pink", "user_");
+          } else {
+            this.changeCellColor(s.spaces[0].x, s.spaces[0].y, "pink", "user_");
+            this.changeCellColor(s.spaces[s.numSpaces - 1].x, s.spaces[s.numSpaces - 1].y, "darkred", "user_");
+          }
           this.gameControls.setMessage("Move the selected ship forward or backward. Pink represents the back of the boat, while dark red represents the front of the boat.");
           this.selectedShipId = s.identifier;
           break;
@@ -275,6 +292,8 @@ export class GameWindowComponent implements OnInit {
 
       this.turnShipColor(shipId, "black");
       this.gameControls.showDirectionalButtons();
+      this.gameControls.hideMoveButton();
+      this.gameControls.hideSurrenderButton();
 
     }
   }
@@ -310,7 +329,6 @@ export class GameWindowComponent implements OnInit {
     for (var i = 0; i < this.ships.length; i++) {
       this.turnShipColor(color, this.ships[i].identifier);
     }
-
   }
 
   shipContainsPoint(s: Ship, x: number, y: number) {
@@ -336,12 +354,27 @@ export class GameWindowComponent implements OnInit {
         }
       }
     }
+
+    this.renderAllAttackResponsesRecieved();
+
   }
 
   changeCellColor(x, y, color, prefix) {
     var id = y * this.gridSize + x;
     document.getElementById(prefix+id).style.backgroundColor = color;
 
+  }
+
+  renderAllAttackResponsesRecieved() {
+    for (var i = 0; i < this.attackResponses.length; i++) {
+      console.log("iterate");
+      let r = this.attackResponses[i];
+      if (r.theirMove.substring(0,3) == "hit") {
+        this.markUserGrid(r.x, r.y, true);
+      } else {
+        this.markUserGrid(r.x, r.y, false);
+      }
+    }
   }
 
   
