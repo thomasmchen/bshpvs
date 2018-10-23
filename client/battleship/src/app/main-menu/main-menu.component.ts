@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { DarkModeService } from '../settings/darkmode.service';
+import { AuthService } from '../auth.service';
+import { WebService } from '../web.service';
 
 @Component({
   selector: 'app-main-menu',
@@ -11,8 +13,12 @@ import { DarkModeService } from '../settings/darkmode.service';
 export class MainMenuComponent implements OnInit {
 
   darkMode:boolean;
+  user_id:String;
 
-  constructor(private router: Router, private dm: DarkModeService) { }
+  constructor(private router: Router, private dm: DarkModeService, private auth: AuthService, private stomp: WebService) { 
+    stomp.initializeConnection();
+
+  }
 
   ngOnInit() {
     this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
@@ -30,10 +36,15 @@ export class MainMenuComponent implements OnInit {
 
   settingsClicked() {
     this.router.navigateByUrl('/settings');
-
   }
 
   statisticsClicked() {
+    this.stomp.setConnected();
+    this.auth.currentid.subscribe(user_id => this.user_id = user_id);
+    let sendFormat = "{\"id\":\""+this.user_id+"\"}";
+    alert(sendFormat);
+    this.stomp.sendID(sendFormat);
+
     this.router.navigateByUrl('/statistics');
 
   }

@@ -61,7 +61,7 @@ export class GameWindowComponent implements OnInit {
       console.log("Not connected");
     }
 
-
+    
     this.stomp.stompClient.subscribe('/topic/windowInitResponse', (res) => {
       let r = JSON.parse(res.body) as GameResponse;
       console.log(r);

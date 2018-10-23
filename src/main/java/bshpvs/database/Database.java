@@ -14,6 +14,7 @@ import javax.xml.crypto.Data;
 import org.apache.commons.lang3.ObjectUtils.Null;
 import org.h2.result.ResultExternal;
 
+import bshpvs.statistics.DBStat;
 import bshpvs.statistics.GameStat;
 import bshpvs.statistics.PlayerStat;
 
@@ -385,13 +386,14 @@ public class Database {
     }
 
 
-    public ResultSet pullGameData(String User_ID) throws SQLException {
+    public DBStat[] pullGameData(String User_ID) throws SQLException {
         //establish connection
         Connection connection = getDBConnection();
 
         //declare/init variables
         Statement s = null;
         ResultSet rs = null;
+        ArrayList<DBStat> statlist = new ArrayList<DBStat>();
 
         try{
             connection.setAutoCommit(false);
@@ -399,7 +401,13 @@ public class Database {
         
             //SQL query to retreive ResultSet of all GameStats associated with that User_ID
             rs = s.executeQuery("SELECT * FROM GAMESTATS WHERE USER_ID='" + User_ID + "';");
-
+            while(rs.next()){
+                //get values from result set and create DBStat object
+                DBStat stat = new DBStat(rs.getInt("NUM_PLAYERS"), rs.getDouble("HIT_PERC"), rs.getDouble("MISS_PERC"), rs.getInt("TOTAL_TURNS"), rs.getLong("TIME"), rs.getString("WINNER"), rs.getString("PLAYER_TYPES"));
+                statlist.add(stat);
+            }
+            
+                
             //close statement
             s.close();
             connection.commit();
@@ -409,8 +417,10 @@ public class Database {
             return null;
         }
 
-
-        return rs;
+        //move arraylist contents into static array so we can send it as a JSON
+        DBStat array[] = new DBStat[statlist.size()];
+        array = statlist.toArray(array);
+        return array;
     }
 
     /**

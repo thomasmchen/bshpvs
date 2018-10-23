@@ -13,7 +13,11 @@ import bshpvs.api.core.NewGameResponse.ShipObject;
 import bshpvs.database.Database;
 import bshpvs.model.Player;
 import bshpvs.model.Ship;
+import bshpvs.statistics.DBStat;
+import bshpvs.statistics.GameStat;
 import bshpvs.api.core.ReceiveUserID;
+import bshpvs.api.core.StatsRequest;
+import bshpvs.api.core.StatsResponse;
 
 import org.apache.commons.lang3.ObjectUtils.Null;
 import org.jboss.logging.Message;
@@ -23,6 +27,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.awt.Point;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -143,11 +150,32 @@ public class EngineController {
             Database db = new Database();
             db.addGameData(newGameRequest.getUserId(), this.game.gameStat, this.playerOne.getPlayerStat()); //TODO get gamestats/playerstats to fill in null parameters
         }
-
         
         return egr;
 
     }
+
+    @CrossOrigin
+    @MessageMapping("/stats")
+    @SendTo("/topic/getStats")
+    public StatsResponse getGameStats() {
+        System.out.println("Attempting to retreive GameStats...");
+        StatsResponse statsRes = null;
+        Database db = new Database();
+
+        if(this.receiveUserID == null){
+            System.out.println("recieveUserID object was null");
+            return null;
+        }
+
+        try{
+            statsRes = new StatsResponse(db.pullGameData(this.receiveUserID.getID()));
+        }catch(SQLException e){
+            System.out.println("ERROR could not retreive GameStats, Message: " + e.getLocalizedMessage());
+        }
+        return statsRes;
+    }
+    
 
     public void initializePlayers() {
         this.playerOne = new Player(10);
