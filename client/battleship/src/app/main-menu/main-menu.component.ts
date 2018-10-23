@@ -1,15 +1,11 @@
 import { Component, OnInit, NgZone} from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth.service';
 
 import { DarkModeService } from '../settings/darkmode.service';
-<<<<<<< HEAD
 import { AuthService } from '../auth.service';
 import { WebService } from '../web.service';
 
-=======
 declare var gapi : any;
->>>>>>> logout
 @Component({
   selector: 'app-main-menu',
   templateUrl: './main-menu.component.html',
