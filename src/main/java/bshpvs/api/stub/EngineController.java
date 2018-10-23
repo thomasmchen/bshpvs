@@ -5,6 +5,8 @@ import bshpvs.api.core.AttackResponse;
 import bshpvs.api.core.NewGameRequest;
 import bshpvs.engine.Game;
 import bshpvs.api.core.NewGameResponse;
+import bshpvs.api.core.MoveResponse;
+import bshpvs.api.core.MoveRequest;
 import bshpvs.api.core.EndGameResponse;
 import bshpvs.api.core.NewGameRequest.UserShip;
 import bshpvs.api.core.NewGameRequest._Point;
@@ -100,7 +102,7 @@ public class EngineController {
     }  
 
     @CrossOrigin
-    @MessageMapping("/turn")
+    @MessageMapping("/attackTurn")
     @SendTo("/topic/turnResponse")
     public AttackResponse turn(String json) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -109,6 +111,22 @@ public class EngineController {
         AttackResponse response = this.game.turn(p);
         return response;
     }
+
+    @CrossOrigin
+    @MessageMapping("/moveTurn")
+    @SendTo("/topic/moveResponse")
+    public MoveResponse moveTurn(String json) throws Exception{
+        ObjectMapper objectMapper = new ObjectMapper();
+        MoveRequest req = objectMapper.readValue(json, MoveRequest.class);
+        int shipId = req.getShipId();
+        String direction = req.getDirection();
+        MoveResponse response = this.game.moveTurn(shipId, direction);
+        return response;
+
+
+       
+    }
+    
 
     @CrossOrigin
     @MessageMapping("/checkWin")

@@ -48,6 +48,7 @@ export class GameWindowComponent implements OnInit {
   lastY : number = 0;
 
   movingShip: boolean = false;
+  selectedShipId: number = -1;
 
 
   constructor(private http: Http, private dm: DarkModeService, private stomp: WebService, public snackBar: MatSnackBar) { 
@@ -71,6 +72,28 @@ export class GameWindowComponent implements OnInit {
       this.renderShips();
     });
 
+    this.stomp.stompClient.subscribe('/topic/moveResponse', (res) => {
+      this.clearBoard();
+      let r = JSON.parse(res.body) as MoveResponse;
+      if (r.shipId == -1) {
+        this.gameControls.setMessage("Invalid move. Lost turn.");
+      } else {
+        for (var i = 0; i < this.ships.length; i++) {
+          if (this.ships[i].identifier == r.shipId) {
+            this.ships[i].spaces = r.spaces;
+            break;
+          }
+        }
+      }
+      
+      this.renderShips();
+      this.movingShip = false;
+      this.selectedShipId = -1;
+      this.gameControls.hideDirectionalButtons();
+      this.gameControls.setMessage("Select a cell to attack");
+      this.makePlayerAttack(-1, -1);
+    });
+
   
     let that = this;
     this.stomp.stompClient.subscribe('/topic/turnResponse', (res) => {
@@ -88,6 +111,8 @@ export class GameWindowComponent implements OnInit {
         that.won = true;
         that.endGame();
 
+      } else if (r.yourMove == "move") {
+        
       } else {
         this.markEnemyGrid(this.lastX, this.lastY, false);
       }
@@ -121,10 +146,13 @@ export class GameWindowComponent implements OnInit {
     if (event == "move") {
       this.turnAllShipsColor("blue");
     } else if (event == "forward") {
-      console.log("Player wants to move ships forward");
+      if (this.selectedShipId == -1) {
+        console.log("Something concerning just happend in handleSignal()");
+      }
+      this.makePlayerMove(this.selectedShipId, 'forward');
     } else if (event == "backward") {
       console.log("Player wants to move ship backwards.")
-
+      this.makePlayerMove(this.selectedShipId, 'backward');
     }
   }
 
@@ -188,6 +216,10 @@ export class GameWindowComponent implements OnInit {
     }
   }
 
+  clearBoard() {
+    this.turnAllShipsColor("lightblue");
+  }
+
   ngOnInit() {
     this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
     this.dm.currentTimer.subscribe(timer => this.timer = timer);
@@ -226,8 +258,7 @@ export class GameWindowComponent implements OnInit {
   onCellClicked(event: Cell) {
     if (!this.won && !this.movingShip) {
       this.makePlayerAttack(event.col, event.row);
-    } else if (this.movingShip) {
-      console.log('we are here');
+    } else if (this.movingShip && this.selectedShipId == -1) {
       var shipId = 0;
       for (var i = 0; i < this.ships.length; i++) {
         var s = this.ships[i];
@@ -236,10 +267,11 @@ export class GameWindowComponent implements OnInit {
           this.changeCellColor(s.spaces[0].x, s.spaces[0].y, "pink", "user_");
           this.changeCellColor(s.spaces[s.numSpaces - 1].x, s.spaces[s.numSpaces - 1].y, "darkred", "user_");
           this.gameControls.setMessage("Move the selected ship forward or backward. Pink represents the back of the boat, while dark red represents the front of the boat.");
+          this.selectedShipId = s.identifier;
+          break;
         }
-
-        
       }
+
 
       this.turnShipColor(shipId, "black");
       this.gameControls.showDirectionalButtons();
@@ -258,7 +290,7 @@ export class GameWindowComponent implements OnInit {
     let j = JSON.stringify(request);
 
 
-    this.stomp.sendMove(j);
+    this.stomp.sendAttack(j);
 
     console.log(request);
   }
@@ -268,8 +300,10 @@ export class GameWindowComponent implements OnInit {
       shipId: id,
       direction: _direction
     }
+    let j = JSON.stringify(request);
 
-    console.log(request);
+    this.stomp.sendMove(j);
+
   }
 
   turnAllShipsColor(color) {
@@ -353,7 +387,12 @@ interface AttackRequest {
 
 interface MoveRequest {
   shipId: number,
-  direction: number
+  direction: String
+}
+
+interface MoveResponse {
+  shipId: number,
+  spaces: Coordinate[]
 }
 
 interface EndGameResponse {
