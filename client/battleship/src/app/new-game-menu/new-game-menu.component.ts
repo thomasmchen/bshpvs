@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { DarkModeService } from '../settings/darkmode.service';
 import { WebService } from '../web.service';
 import { Config } from 'protractor';
+import {FormControl} from '@angular/forms';
 
 
 
@@ -28,6 +29,8 @@ export class NewGameMenuComponent implements OnInit {
   submarine: Ship = {identifier: 3, numSpaces: 3, spaces: new Array<Coordinate>()}
   destroyer : Ship = {identifier: 4, numSpaces: 2, spaces: new Array<Coordinate>()};
 
+  availableAI : string[] = ["Normal", "Hunter"];
+
   message: string = "Place your carrier (5 spaces left)";
   wsConf : Config = {
     host:'localhost:8080/battleship',
@@ -39,6 +42,7 @@ export class NewGameMenuComponent implements OnInit {
 
   username: string = "";
   victoryMessage: string = "";
+  selectedAI: string = this.availableAI[0];
 
   constructor(public snackbar: MatSnackBar, private stomp: WebService, private router: Router, private dm: DarkModeService) { 
     // initialize connection to backend
@@ -183,7 +187,23 @@ export class NewGameMenuComponent implements OnInit {
     }
   }
 
+  checkShipDiagnol(ship: Ship, coordinate: Coordinate) {
+    if (ship.spaces.length < 2) {
+      return true;
+    } else {
+      var tempSpaces = new Array<Coordinate>();
 
+      for (var i = 0; i < ship.spaces.length; i++) {
+        let tempSpace = {x : ship.spaces[i].x, y: ship.spaces[i].y};
+        tempSpaces.push(tempSpace);
+      }
+
+      tempSpaces.push(coordinate);
+    }
+  }
+
+
+  // Action where view sends information back to the backend
   onSubmit() {
     if (this.victoryMessage == "" || this.username == "") {
       this.snackbar.open("Enter a victory message/username", 'Ok', {
@@ -210,7 +230,8 @@ export class NewGameMenuComponent implements OnInit {
         userId: 0,
         userName: this.username,
         victoryMessage: this.victoryMessage,
-        ships: reqs
+        ships: reqs,
+        selectedAI: this.selectedAI
       };
       //this.router.navigateByUrl('/gameWindow');
 
@@ -255,5 +276,6 @@ interface GameRequest {
   userId: number,
   userName: string,
   victoryMessage: string,
-  ships: ShipReq[]
+  ships: ShipReq[],
+  selectedAI: string
 }
