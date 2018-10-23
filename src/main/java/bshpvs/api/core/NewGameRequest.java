@@ -69,6 +69,14 @@ public class NewGameRequest
         this._ships = ships;
     }
 
+    public int getNumOpponents() {
+        return Integer.parseInt(numberOfOpponents);
+    }
+
+    public void setNumOpponents(String numOpponents) {
+        this.numberOfOpponents = numOpponents;
+    }
+
     public void convertShips () {
         ships = new Ship[this._ships.length];
         for (int i = 0; i < this._ships.length; i++) {

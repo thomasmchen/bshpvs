@@ -95,8 +95,8 @@ public class EngineController {
 
         }
         ObjectMapper mapper = new ObjectMapper();
-
-        NewGameResponse response = new NewGameResponse(userId, userName, victoryMessage, ships);
+        int numOpponents = newGameRequest.getNumOpponents();
+        NewGameResponse response = new NewGameResponse(userId, userName, victoryMessage, ships, numOpponents);
         String json = mapper.writeValueAsString(response);
         return json;
     }  

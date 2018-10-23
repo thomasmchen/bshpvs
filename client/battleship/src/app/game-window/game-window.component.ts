@@ -69,6 +69,7 @@ export class GameWindowComponent implements OnInit {
     this.stomp.stompClient.subscribe('/topic/windowInitResponse', (res) => {
       let r = JSON.parse(res.body) as GameResponse;
       console.log(r);
+      this.setBoards(r.numOpponents);
       this.loadShips(r);
       this.renderShips();
     });
@@ -222,6 +223,16 @@ export class GameWindowComponent implements OnInit {
     }
 
     this.renderAllAttackResponsesRecieved();
+  }
+
+  setBoards(numOpponents: number) {
+    if (numOpponents == 1) {
+    } else if (numOpponents == 2) {
+      document.getElementById('e2').style.visibility = 'visible';
+    } else if (numOpponents == 3) {
+      document.getElementById('e2').style.visibility = 'visible';
+      document.getElementById('e3').style.visibility = 'visible';
+    }
   }
 
   clearBoard() {
@@ -405,7 +416,8 @@ interface GameResponse {
   userId: number,
   userName: string,
   victoryMessage: string,
-  ships: Ship[]
+  ships: Ship[],
+  numOpponents: number
 }
 
 interface Coordinate {
