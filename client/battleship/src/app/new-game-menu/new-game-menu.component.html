@@ -23,6 +23,17 @@
                 </mat-select>
               </mat-form-field>
         </div>
+
+        <div class="form-group">
+          <mat-form-field>
+            <label for="numberOfOpponents"># of opponents</label>
+            <mat-select [(ngModel)]="numberOfOpponents" name="numberOfOpponents">
+              <mat-option *ngFor="let curr of availableNumOpponents" [value]="curr">
+                {{curr}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
         <button id="submit" type="submit" class="btn btn-success" (click)="onSubmit()" disabled>Begin Game</button>
       </form>
       <div class="prompt">

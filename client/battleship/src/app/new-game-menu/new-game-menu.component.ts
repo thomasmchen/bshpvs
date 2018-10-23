@@ -30,19 +30,14 @@ export class NewGameMenuComponent implements OnInit {
   destroyer : Ship = {identifier: 4, numSpaces: 2, spaces: new Array<Coordinate>()};
 
   availableAI : string[] = ["Normal", "Hunter"];
-
+  availableNumOpponents : string[] = ["1", "2", "3"];
   message: string = "Place your carrier (5 spaces left)";
-  wsConf : Config = {
-    host:'localhost:8080/battleship',
-    debug:true,
-    queue:{'init':false}
-  }
-
   temp: any = "";
 
   username: string = "";
   victoryMessage: string = "";
   selectedAI: string = this.availableAI[0];
+  numberOfOpponents: string = '1';
 
   constructor(public snackbar: MatSnackBar, private stomp: WebService, private router: Router, private dm: DarkModeService) { 
     // initialize connection to backend
@@ -231,7 +226,8 @@ export class NewGameMenuComponent implements OnInit {
         userName: this.username,
         victoryMessage: this.victoryMessage,
         ships: reqs,
-        selectedAI: this.selectedAI
+        selectedAI: this.selectedAI,
+        numberOfOpponents: this.numberOfOpponents
       };
       //this.router.navigateByUrl('/gameWindow');
 
@@ -277,5 +273,6 @@ interface GameRequest {
   userName: string,
   victoryMessage: string,
   ships: ShipReq[],
-  selectedAI: string
+  selectedAI: string,
+  numberOfOpponents: string
 }

@@ -27,6 +27,10 @@ public class NewGameRequest
 
     private String selectedAI;
 
+    @JsonProperty("numberOfOpponents") 
+    private String numberOfOpponents;
+
+
     public String getUserId ()
     {
         return userId;
