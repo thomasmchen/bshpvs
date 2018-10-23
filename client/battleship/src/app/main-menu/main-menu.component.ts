@@ -1,15 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone} from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 import { DarkModeService } from '../settings/darkmode.service';
+<<<<<<< HEAD
 import { AuthService } from '../auth.service';
 import { WebService } from '../web.service';
 
+=======
+declare var gapi : any;
+>>>>>>> logout
 @Component({
   selector: 'app-main-menu',
   templateUrl: './main-menu.component.html',
   styleUrls: ['./main-menu.component.css']
+
 })
+
 export class MainMenuComponent implements OnInit {
 
   darkMode:boolean;
@@ -55,5 +62,17 @@ export class MainMenuComponent implements OnInit {
   aboutClicked() {
     this.router.navigateByUrl('/about');
   }
+  logOutClicked() {
+    //declare var gapi : any;
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+
+
+    this.router.navigateByUrl('/login');
+    //onSignIn(auth2);
+  }
+
 
 }
