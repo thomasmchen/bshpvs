@@ -3,6 +3,7 @@ package bshpvs.engine;
 import bshpvs.ai.HunterPlayer;
 import bshpvs.ai.NaivePlayer;
 import bshpvs.api.core.AttackResponse;
+import bshpvs.api.core.MoveResponse;
 import bshpvs.model.*;
 
 import java.awt.*;
@@ -29,6 +30,7 @@ public class Game {
         this.firstPlayer = first;
         this.secondPlayer = second;
         this.current = firstPlayer;
+        randomPromptShips(this.secondPlayer);
     }
 
     public void initAi(int difficulty) {
@@ -38,29 +40,92 @@ public class Game {
             secondPlayer = new HunterPlayer();
         }
         randomPromptShips(secondPlayer);
-        System.out.println("We are ready to play!");
+    }
+
+    public void setOpponents() {
+        this.firstPlayer.addOpponent(this.secondPlayer);
+        this.secondPlayer.addOpponent(this.firstPlayer);
+    }
+
+    public MoveResponse moveTurn(int shipId, String direction) {
+        CellType type = CellType.DESTROYER;
+        
+            switch (shipId) {
+                case 0:
+                    type = CellType.CARRIER;
+                break;
+                case 1:
+                    type = CellType.BATTLESHIP;
+                break;
+                case 2:
+                    type = CellType.CRUISER;
+                break;
+                case 3:
+                    type = CellType.SUBMARINE;
+                break;
+                case 4:
+                    type = CellType.DESTROYER;
+                break;
+            }
+
+
+           
+          try {
+              Point p  = new Point(1, 1);
+              Point[] points = {p};
+            if (direction.equals("forward")) {
+                Ship result = this.firstPlayer.moveForward(type);
+                firstPlayer.getMap().prettyPrintMap();
+                if (result == null) {
+                    return new MoveResponse(-1, points);
+                }
+                Point[] spaces = result.getPoints();
+                return new MoveResponse(shipId, spaces);
+            } else {
+                Ship result = this.firstPlayer.moveBackward(type);
+                firstPlayer.getMap().prettyPrintMap();
+                if (result == null) {
+                    return new MoveResponse(-1, points);
+                }
+                Point[] spaces = result.getPoints();
+                return new MoveResponse(shipId, spaces);
+            }
+
+            
+          } catch (Exception e) {
+            Point p  = new Point(1, 1);
+            Point[] points = {p};
+            return new MoveResponse(-1, points);
+        }
+        
     }
 
     public AttackResponse turn(Point coordinate) {
+        
         String yourMove = "water";
         String theirMove = "water";
-        Cell c = firstPlayer.hitOppCell(coordinate, secondPlayer);
-        if (c.getType().getGroup().equals(CellGroup.SHIP)) {
-            yourMove = "hit " + c.getType();
-        } else if (c.getType() == CellType.LAND) {
-            yourMove = "land";
+        if (coordinate.x != -1) {
+            Cell c = firstPlayer.hitOppCell(coordinate, secondPlayer);
+            if (c.getType().getGroup().equals(CellGroup.SHIP)) {
+                yourMove = "hit " + c.getType();
+            } else if (c.getType() == CellType.LAND) {
+                yourMove = "land";
+            }
+
+            if (c.getType().getGroup().equals(CellGroup.SHIP) && secondPlayer.isShipSunk(c.getType())) {
+                yourMove = "sunk " + c.getType();
+            }
+        }  else {
+            yourMove = "move";
         }
 
-        
-        Point tgt = secondPlayer.move(firstPlayer);
+        Point tgt = secondPlayer.attack(firstPlayer);
         Cell a = firstPlayer.getCell(tgt);
         if (a.getType().getGroup().equals(CellGroup.SHIP)) {
             theirMove = "hit " + a.getType();
         }
 
-        if (c.getType().getGroup().equals(CellGroup.SHIP) && secondPlayer.isShipSunk(c.getType())) {
-            yourMove = "sunk " + c.getType();
-        }
+        
 
         if (a.getType().getGroup().equals(CellGroup.SHIP) && firstPlayer.isShipSunk(a.getType())) {
             theirMove = "sunk " + a.getType();
@@ -176,4 +241,6 @@ public class Game {
             genShip(constraint, ct, pl);
         }
     }
+
+
 }

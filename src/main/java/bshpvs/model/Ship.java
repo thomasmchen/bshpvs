@@ -11,6 +11,7 @@ public class Ship {
     public Point end;
     private CellType type;
     private Point[] points;
+    private boolean isVertical;
 
     /**
      * Constructor for Ship Class.
@@ -33,7 +34,6 @@ public class Ship {
         }
 
         this.points = calcShipPoints();
-
     }
 
     /**
@@ -48,6 +48,7 @@ public class Ship {
         int i = 0;
 
         if (this.st.x == this.end.x) {
+            this.isVertical = true;
             if (this.st.y < this.end.y) {
                 while (y != (this.end.y + 1)) {
                     pts[i] = new Point(this.st.x, y);
@@ -62,6 +63,7 @@ public class Ship {
                 }
             }
         } else {
+            this.isVertical = false;
             if (this.st.x < this.end.x) {
                 while ((x != this.end.x + 1)) {
                     pts[i] = new Point(x, this.st.y);
@@ -79,7 +81,13 @@ public class Ship {
         return pts;
     }
 
-
+    /**
+     * Returns whether the ship is vertical (all x values of points are identical)
+     * @return isVertical field
+     */
+    public boolean isVertical() {
+        return this.isVertical;
+    }
 
     /**
      * Checks if given Ship is sunk on a given board
@@ -98,6 +106,22 @@ public class Ship {
     }
 
     /**
+     * Check if any part of the ship has been hit
+     * @param board the board the ship is on
+     * @return whether any part of the ship is hit
+     */
+    public boolean checkHit(Map board) {
+        Cell[][] map = board.getMap();
+        for (Point p : points) {
+            if (map[p.y][p.x].isHit()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Accessor function for type of Ship object.
      * @return the type of the ship
      */
@@ -112,6 +136,26 @@ public class Ship {
     public Point[] getPoints() {
         this.calcShipPoints();
         return this.points;
+    }
+
+    /**
+     * Updates the ship points based on new starting/ending points
+     * @param st new start point
+     * @param end new end point
+     */
+    public void updatePoints(Point st, Point end) {
+        // Validate that new set of Points is equivalent in length to ShipType
+        int length = (int) st.distance(end);
+        if (length != type.getValue()) {
+            throw new IllegalArgumentException("Length from " +
+                    st.toString() + " to " + end.toString() + " of " + length +
+                    " does not match length of " + type.toString() + " of " + type.getValue());
+        }
+
+        // Update Points
+        this.st = st;
+        this.end = end;
+        this.points = calcShipPoints();
     }
 
     /**

@@ -1,12 +1,18 @@
 package bshpvs.api.core;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class MoveRequest
 {
+    @JsonProperty("direction")
     private String direction;
 
-    private String y;
-
-    private String x;
+    @JsonProperty("shipId")
+    private int shipId;
 
     public String getDirection ()
     {
@@ -18,29 +24,19 @@ public class MoveRequest
         this.direction = direction;
     }
 
-    public String getY ()
-    {
-        return y;
+    public void setShipId(int shipId) {
+        this.shipId = shipId;
     }
 
-    public void setY (String y)
-    {
-        this.y = y;
+    
+    public int getShipId() {
+        return shipId;
     }
 
-    public String getX ()
-    {
-        return x;
-    }
-
-    public void setX (String x)
-    {
-        this.x = x;
-    }
 
     @Override
     public String toString()
     {
-        return "MoveRequest [direction = "+direction+", y = "+y+", x = "+x+"]";
+        return "MoveRequest [direction = "+direction+", shipId = " + this.shipId;
     }
 }

@@ -11,6 +11,7 @@ export class CellComponent implements OnInit {
   @Input()
   n: string;
 
+
   @Input()
   numcols;
 
@@ -42,6 +43,7 @@ export class CellComponent implements OnInit {
     });
 
   }
+
   /*styleObject(): Object {
     if (true){
         return {'height': this.height + 'px',

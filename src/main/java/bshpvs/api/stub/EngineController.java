@@ -5,6 +5,8 @@ import bshpvs.api.core.AttackResponse;
 import bshpvs.api.core.NewGameRequest;
 import bshpvs.engine.Game;
 import bshpvs.api.core.NewGameResponse;
+import bshpvs.api.core.MoveResponse;
+import bshpvs.api.core.MoveRequest;
 import bshpvs.api.core.EndGameResponse;
 import bshpvs.api.core.NewGameRequest.UserShip;
 import bshpvs.api.core.NewGameRequest._Point;
@@ -12,7 +14,7 @@ import bshpvs.api.core.NewGameResponse.Coordinate;
 import bshpvs.api.core.NewGameResponse.ShipObject;
 import bshpvs.model.Player;
 import bshpvs.ai.HunterPlayer;
-
+import bshpvs.ai.NaivePlayer;
 import bshpvs.model.Ship;
 
 import org.jboss.logging.Message;
@@ -55,7 +57,6 @@ public class EngineController {
     @MessageMapping("/windowInit")
     @SendTo("/topic/windowInitResponse")
     public String gameInit() throws Exception {
-        this.initializePlayers();
         this.initializeGame();
         int userId = 0;
         String userName = newGameRequest.getUserName();
@@ -71,8 +72,25 @@ public class EngineController {
             for (int j = 0; j < points.length; j++) {
                 pts[j] = new Coordinate(points[j].x, points[j].y);
             }
-
-            ShipObject obj = new ShipObject(s.getType().getValue(), pts.length, pts);
+        int shipId = 0;
+        switch (s.getType()) {
+            case CARRIER:
+            shipId = 0;
+            break;
+            case BATTLESHIP:
+            shipId = 1;
+            break;
+            case CRUISER:
+            shipId = 2;
+            break;
+            case SUBMARINE:
+            shipId = 3;
+            break;
+            case DESTROYER:
+            shipId = 4;
+            break;
+        }
+        ShipObject obj = new ShipObject(shipId, pts.length, pts);
             ships[i] = obj;
 
         }
@@ -84,7 +102,7 @@ public class EngineController {
     }  
 
     @CrossOrigin
-    @MessageMapping("/turn")
+    @MessageMapping("/attackTurn")
     @SendTo("/topic/turnResponse")
     public AttackResponse turn(String json) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -93,6 +111,22 @@ public class EngineController {
         AttackResponse response = this.game.turn(p);
         return response;
     }
+
+    @CrossOrigin
+    @MessageMapping("/moveTurn")
+    @SendTo("/topic/moveResponse")
+    public MoveResponse moveTurn(String json) throws Exception{
+        ObjectMapper objectMapper = new ObjectMapper();
+        MoveRequest req = objectMapper.readValue(json, MoveRequest.class);
+        int shipId = req.getShipId();
+        String direction = req.getDirection();
+        MoveResponse response = this.game.moveTurn(shipId, direction);
+        return response;
+
+
+       
+    }
+    
 
     @CrossOrigin
     @MessageMapping("/checkWin")
@@ -119,32 +153,42 @@ public class EngineController {
         this.playerTwo = null;
     }
 
-    public void initializePlayers() {
-        this.playerOne = new Player(10);
-        if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("normal")) {
-            System.out.println("Normal ai");
-            this.playerTwo = new Player(10);
-
-        } else if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("hunter")) {
-            System.out.println("Hunter ai");
-            this.playerTwo = new HunterPlayer();
-        } else {
-            this.playerTwo = new Player(10);
-        }
-    }
-
-    
-
-    public void initializeGame() {
-        game = new Game(this.playerOne, this.playerTwo);
-        game.initAi(1);
-
+    public void initializeUserPlayer() {
+        this.playerOne = new Player(10, playerTwo);
         for (int i = 0; i < newGameRequest.getShips().length; i++) {
             this.playerOne.addShip(newGameRequest.getShips()[i]);
         }
     }
 
+    public void initializeEnemy() {
+        if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("normal")) {
+            System.out.println("Normal ai");
+            playerTwo = new NaivePlayer();
+        } else if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("hunter")) {
+            System.out.println("Hunter ai");
+            playerTwo = new HunterPlayer();
+        } else {
+            playerTwo = new NaivePlayer();
+        }
+    }
+
+    public void setOpponents() {
+        this.playerOne.addOpponent(this.playerTwo);
+        this.playerTwo.addOpponent(this.playerOne);
+    }
+
+    public void initializeGame() {
+        this.initializeUserPlayer();
+        this.initializeEnemy();
+        this.setOpponents();
+        game = new Game(this.playerOne, this.playerTwo);
+      
+
+
+   }
+
     public AttackResponse turn(Point p) {
         return this.game.turn(p);
     }
+    
 }

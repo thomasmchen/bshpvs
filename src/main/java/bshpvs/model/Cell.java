@@ -56,6 +56,11 @@ public class Cell {
     }
 
     /**
+     * Unhit a cell (used for movement)
+     */
+    public void unhit() { this.hit = false; }
+
+    /**
      * ToString method for Cell Class.
      * @return string version of Cell
      */

@@ -57,6 +57,9 @@ public class TextGame {
             two = new HunterPlayer();
         }
 
+        one.addOpponent(two);
+        two.addOpponent(one);
+
         Player current = one;
 
 
@@ -81,17 +84,17 @@ public class TextGame {
         while (!one.isDefeated() && !two.isDefeated()) {
             if (current == one) {
 
-                Point targPt = one.move(two);
+                Point targPt = one.attack(two);
                 Cell c = one.getCell(targPt);
 
                 System.out.println("Hit target: " + c.getType().getText());
                 if (c.getType().getGroup().equals(CellGroup.SHIP) && two.isShipSunk(c.getType()))
                     System.out.println("You sunk your opponents: " + c.getType().getText());
                 System.out.println("Target Map: ");
-                one.getTargetBoard().prettyPrintMap();
+                one.getTargetBoard(two).prettyPrintMap();
                 current = two;
             } else {
-                Point tgt = two.move(one);
+                Point tgt = two.attack(one);
                 Cell c = one.getCell(tgt);
                 System.out.println("Opponent hit " + c.getType().getText() + " at " + tgt.x + "," +  tgt.y);
                 System.out.println("Your map: ");
