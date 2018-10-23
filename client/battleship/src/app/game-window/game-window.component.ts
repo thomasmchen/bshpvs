@@ -122,8 +122,6 @@ export class GameWindowComponent implements OnInit {
         this.markEnemyGrid(this.lastX, this.lastY, false);
       }
 
-      
-
       if (r.theirMove.substring(0, 3) == "hit") {
         this.markUserGrid(r.x, r.y, true);
       

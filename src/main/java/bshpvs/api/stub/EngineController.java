@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.awt.Point;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,6 +36,7 @@ public class EngineController {
 
     public Player playerOne;
     public Player playerTwo;
+    public ArrayList<Player> players = new ArrayList<Player>();
     public Game game;
 
     NewGameRequest newGameRequest;
@@ -161,11 +163,18 @@ public class EngineController {
     }
 
     public void initializeEnemy() {
+
         if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("normal")) {
-            System.out.println("Normal ai");
+            for (int i = 0; i < this.newGameRequest.getNumOpponents(); i++) {
+                Player p = new NaivePlayer();
+                this.players.add(p);
+            }
             playerTwo = new NaivePlayer();
         } else if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("hunter")) {
-            System.out.println("Hunter ai");
+            for (int i = 0; i < this.newGameRequest.getNumOpponents(); i++) {
+                Player p = new NaivePlayer();
+                this.players.add(p);
+            }
             playerTwo = new HunterPlayer();
         } else {
             playerTwo = new NaivePlayer();
