@@ -172,7 +172,10 @@ public class EngineController {
             statsRes = new StatsResponse(db.pullGameData(this.receiveUserID.getID()));
         }catch(SQLException e){
             System.out.println("ERROR could not retreive GameStats, Message: " + e.getLocalizedMessage());
+            return null;
         }
+        System.out.println("GameStats Retreived.");
+
         return statsRes;
     }
     
