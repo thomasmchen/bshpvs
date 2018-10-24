@@ -103,43 +103,32 @@ export class GameWindowComponent implements OnInit {
     this.stomp.stompClient.subscribe('/topic/turnResponse', (res) => {
       console.log(res);
       let r = JSON.parse(res.body) as AttackResponse;
-      this.attackResponses.push(r);
-      if (r.yourMove.substring(0, 2) == "hit") {
-        this.markEnemyGrid(this.lastX, this.lastY, true);
-      } else if (r.yourMove == "water") {
-        this.markEnemyGrid(this.lastX, this.lastY, false);
-      } else if (r.yourMove.substring(0,3) == "sunk") {
-        this.markEnemyGrid(this.lastX, this.lastY, true);
-      } else if (r.yourMove.substring(0, 2) == "won") {
-        window.alert("You won!")
-        this.markEnemyGrid(this.lastX, this.lastY, true);
-        that.won = true;
-        that.endGame();
+      for (var i = 0; i < r.coors.length; i++) {
+        let coor : CoordinateWithInfo = r.coors[i];
+        var prefix = "";
+        switch(coor.playerPos) {
+          case -1:
+          prefix = "user_";
+          break;
+          case 0:
+          prefix = "enemy_";
+          break;
+          case 1:
+          prefix = "enemya_";
+          break;
+          case 2: 
+          prefix = "enemyb_"
+          break;
+        }
 
-      } else if (r.yourMove == "move") {
-        
-      } else {
-        this.markEnemyGrid(this.lastX, this.lastY, false);
+        if (coor.info == "hit") {
+          this.changeCellColor(coor.x, coor.y, "black", prefix);
+        } else if (coor.info == "miss") {
+          this.changeCellColor(coor.x, coor.y, "yellow", prefix);
+
+        }
       }
-
-      
-
-      if (r.theirMove.substring(0, 3) == "hit") {
-        this.markUserGrid(r.x, r.y, true);
-      
-      } else if (r.theirMove.substring(0, 4) == "sunk") {
-        this.markUserGrid(r.x, r.y, true);
-      } else if (r.theirMove.substring(0, 3) == "won") {
-        window.alert("Enemy won!")
-        this.markUserGrid(r.x, r.y, true);
-        that.endGame();
-      } else {
-        this.markUserGrid(r.x, r.y, false);
-      }
-
-      this.snackBar.open(r.message, 'Ok', {
-        duration: 2000
-      });
+            
     });
     this.stomp.sendGameWindowInit();
 
@@ -280,10 +269,10 @@ export class GameWindowComponent implements OnInit {
         if (event.id.substring(0, 6) == 'enemy_') {
           this.makePlayerAttack(event.col, event.row, 0);
 
-        } else if (event.id.substring(0, 6) == 'enemy2') {
+        } else if (event.id.substring(0, 6) == 'enemya') {
           this.makePlayerAttack(event.col, event.row, 1);
 
-        } else if (event.id.substring(0, 6) == 'enemy3') {
+        } else if (event.id.substring(0, 6) == 'enemyb') {
           this.makePlayerAttack(event.col, event.row, 2);
 
         }
@@ -392,9 +381,9 @@ export class GameWindowComponent implements OnInit {
       console.log("iterate");
       let r = this.attackResponses[i];
       if (r.theirMove.substring(0,3) == "hit") {
-        this.markUserGrid(r.x, r.y, true);
+        //this.markUserGrid(r.x, r.y, true);
       } else {
-        this.markUserGrid(r.x, r.y, false);
+        //this.markUserGrid(r.x, r.y, false);
       }
     }
   }
@@ -420,8 +409,7 @@ interface AttackResponse {
   yourMove: string,
   theirMove: string,
   message: string,
-  x: number,
-  y: number
+  coors: CoordinateWithInfo[]
 }
 
 interface GameResponse {
@@ -435,6 +423,13 @@ interface GameResponse {
 interface Coordinate {
   x: number,
   y: number
+}
+
+interface CoordinateWithInfo {
+  x: number,
+  y: number,
+  playerPos: number,
+  info: string
 }
 
 interface AttackRequest {

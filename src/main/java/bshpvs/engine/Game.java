@@ -4,17 +4,18 @@ import bshpvs.ai.HunterPlayer;
 import bshpvs.ai.NaivePlayer;
 import bshpvs.api.core.AttackResponse;
 import bshpvs.api.core.MoveResponse;
+import bshpvs.api.core.AttackResponse.CoordinateWithInfo;
 import bshpvs.model.*;
 
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Game {
     public Player firstPlayer;
-    public Player secondPlayer;
-    Player current;
+    public Player[] opponents;
 
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_BLACK = "\u001B[30m";
@@ -26,25 +27,12 @@ public class Game {
     private static final String ANSI_CYAN = "\u001B[36m";
     private static final String ANSI_WHITE = "\u001B[37m";
 
-    public Game(Player first, Player second) {
+    public Game(Player first, Player[] players) {
         this.firstPlayer = first;
-        this.secondPlayer = second;
-        this.current = firstPlayer;
-        randomPromptShips(this.secondPlayer);
-    }
-
-    public void initAi(int difficulty) {
-        if (difficulty == 1) {
-            secondPlayer = new NaivePlayer();
-        } else {
-            secondPlayer = new HunterPlayer();
+        this.opponents = players;
+        for (int i = 0; i < this.opponents.length; i++) {
+            randomPromptShips(this.opponents[i]);
         }
-        randomPromptShips(secondPlayer);
-    }
-
-    public void setOpponents() {
-        this.firstPlayer.addOpponent(this.secondPlayer);
-        this.secondPlayer.addOpponent(this.firstPlayer);
     }
 
     public MoveResponse moveTurn(int shipId, String direction) {
@@ -100,11 +88,60 @@ public class Game {
         
     }
 
-    public AttackResponse turn(Point coordinate) {
-        
+    public AttackResponse turn(Point coordinate, int playerPos) {
+        ArrayList<CoordinateWithInfo> coors = new ArrayList<CoordinateWithInfo>();
         String yourMove = "water";
         String theirMove = "water";
-        if (coordinate.x != -1) {
+         if (coordinate.x != -1) {
+            if (playerPos > firstPlayer.getOpponents().size() - 1) {
+                System.out.println("Player not reflected in arrays");
+                return null;
+            }
+
+            Player opp = opponents[playerPos];
+            Cell c = firstPlayer.hitOppCell(coordinate, opp);
+            if (c.getType().getGroup().equals(CellGroup.SHIP)) {
+                yourMove = "hit " + c.getType();
+                CoordinateWithInfo info = new CoordinateWithInfo(coordinate.x, coordinate.y, playerPos, "hit");
+                coors.add(info);
+            } else {
+                CoordinateWithInfo info = new CoordinateWithInfo(coordinate.x, coordinate.y, playerPos, "miss");
+                coors.add(info);
+            }
+
+            if (c.getType().getGroup().equals(CellGroup.SHIP) && opp.isShipSunk(c.getType())) {
+                yourMove = "sunk " + c.getType();
+            }
+         } else {
+            yourMove = "move";
+         }
+
+         for (int i = 0; i < opponents.length; i++) {
+             Player p = opponents[i];
+             Player opp = p.genRandomOpp();
+             Point tgt = p.attack(opp);
+            Cell a = opp.getCell(tgt);
+            int pos = -1;
+            for (int j = 0; j < opponents.length; j++) {
+                if (this.opponents[j].getID() == opp.getID()) {
+                    pos = j;
+                }
+            }
+            if (a.getType().getGroup().equals(CellGroup.SHIP)) {
+                CoordinateWithInfo info = new CoordinateWithInfo(tgt.x, tgt.y, pos, "hit");
+                coors.add(info);
+            } else {
+                CoordinateWithInfo info = new CoordinateWithInfo(tgt.x, tgt.y, pos, "miss");
+                coors.add(info);
+            }
+             
+
+         }
+        
+        String message = "You: " + yourMove + "          Them: " + theirMove;
+
+        return new AttackResponse(yourMove, theirMove, message, coors.toArray(new CoordinateWithInfo[coors.size()]));
+        /*if (coordinate.x != -1) {
             Cell c = firstPlayer.hitOppCell(coordinate, secondPlayer);
             if (c.getType().getGroup().equals(CellGroup.SHIP)) {
                 yourMove = "hit " + c.getType();
@@ -142,7 +179,9 @@ public class Game {
         }
 
         String message = "You: " + yourMove + "          Them: " + theirMove;
-        return new AttackResponse(tgt.y, tgt.x, yourMove, theirMove, message);
+        CoordinateWithMap m = new CoordinateWithMap(1, 1, 1);
+        CoordinateWithMap[] coors = { m } ;
+        return new AttackResponse(tgt.y, tgt.x, yourMove, theirMove, message, coors);*/
     }
 
     /**

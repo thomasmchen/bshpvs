@@ -11,40 +11,31 @@ public class AttackResponse
     @JsonProperty public String yourMove;
     @JsonProperty public String theirMove;
     @JsonProperty public String message;
-    @JsonProperty public int y;
-    @JsonProperty public int x;
+    @JsonProperty public CoordinateWithInfo[] coors;
 
-    public AttackResponse(@JsonProperty  int y, @JsonProperty  int x, @JsonProperty String yourMove, @JsonProperty String theirMove, @JsonProperty String message) {
-        this.y = y;
-        this.x = x;
+    public AttackResponse(@JsonProperty String yourMove, @JsonProperty String theirMove, @JsonProperty String message, @JsonProperty CoordinateWithInfo[] coors) {
         this.yourMove = yourMove;
         this.theirMove = theirMove;
         this.message = message;
-    }
-
-    public int getY ()
-    {
-        return y;
-    }
-
-    public void setY (int y)
-    {
-        this.y = y;
-    }
-
-    public int getX ()
-    {
-        return x;
-    }
-
-    public void setX (int x)
-    {
-        this.x = x;
+        this.coors = coors;
     }
 
     @Override
     public String toString()
     {
-        return "MoveRequest [y = "+y+", x = "+x+"]";
+        return "AttackResponse";
+    }
+
+    public static class CoordinateWithInfo {
+        @JsonProperty int x;
+        @JsonProperty int y;
+        @JsonProperty int playerPos;
+        @JsonProperty String info;
+        public CoordinateWithInfo(@JsonProperty int x, @JsonProperty int y, @JsonProperty int playerPos, @JsonProperty String info) {
+            this.x = x;
+            this.y = y;
+            this.playerPos = playerPos;
+            this.info = info;
+        }
     }
 }

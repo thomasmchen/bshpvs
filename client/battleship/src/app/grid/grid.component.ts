@@ -10,7 +10,7 @@ export class GridComponent implements OnInit {
   // input to get number of columns
   @Input()
   numcols : string;
-
+ 
   @Input()
   prefix : string;
 

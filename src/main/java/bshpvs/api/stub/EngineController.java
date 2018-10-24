@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.awt.Point;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -34,7 +35,7 @@ public class EngineController {
 
 
     public Player playerOne;
-    public Player playerTwo;
+    public ArrayList<Player> opponents = new ArrayList<Player>();
     public Game game;
 
     NewGameRequest newGameRequest;
@@ -109,7 +110,7 @@ public class EngineController {
         AttackRequest req = objectMapper.readValue(json, AttackRequest.class);
         Point p = new Point(req.x, req.y);
         System.out.println("Attack request " + req.playerPos + " x: " + req.x + "y: " + req.y);
-        AttackResponse response = this.game.turn(p);
+        AttackResponse response = this.game.turn(p, req.playerPos);
         return response;
     }
 
@@ -122,74 +123,69 @@ public class EngineController {
         int shipId = req.getShipId();
         String direction = req.getDirection();
         MoveResponse response = this.game.moveTurn(shipId, direction);
-        return response;
-
-
-       
+        return response; 
     }
     
-
-    @CrossOrigin
-    @MessageMapping("/checkWin")
-    @SendTo("/topic/endGame")
-    public EndGameResponse endGame() throws Exception {
-        
-        if (this.game.secondPlayer.isDefeated()) {
-            String message = "Congrats " + newGameRequest.getUserName() + " you won!";
-            this.reset();
-            return new EndGameResponse(message, this.newGameRequest.getVictoryMessage());
-        } else if (this.game.firstPlayer.isDefeated()) {
-            String message = newGameRequest.getUserName() + "lost";
-            this.reset();
-            return new EndGameResponse(message, "Good fight!");
-        }
-
-        return null;
-    }
 
     public void reset() {
         this.game = null;
         this.newGameRequest = null;
         this.playerOne = null;
-        this.playerTwo = null;
+        this.opponents = new ArrayList<Player>();
     }
 
     public void initializeUserPlayer() {
-        this.playerOne = new Player(10, playerTwo);
+        this.playerOne = new Player(10, this.opponents);
         for (int i = 0; i < newGameRequest.getShips().length; i++) {
             this.playerOne.addShip(newGameRequest.getShips()[i]);
         }
-    }
 
-    public void initializeEnemy() {
-        if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("normal")) {
-            System.out.println("Normal ai");
-            playerTwo = new NaivePlayer();
-        } else if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("hunter")) {
-            System.out.println("Hunter ai");
-            playerTwo = new HunterPlayer();
-        } else {
-            playerTwo = new NaivePlayer();
+        // Tell all the bots that the user is an enemy to them
+        for (int i = 0; i < this.opponents.size(); i++) {
+            Player p = this.opponents.get(i);
+            p.addOpponent(this.playerOne);
         }
     }
 
-    public void setOpponents() {
-        this.playerOne.addOpponent(this.playerTwo);
-        this.playerTwo.addOpponent(this.playerOne);
+    public void initializeEnemies() {
+        // Check which AI is selected, then generate the appropriate amount of bots
+        if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("normal")) {
+            for (int i = 0; i < this.newGameRequest.getNumOpponents(); i++) {
+                Player p = new NaivePlayer();
+                opponents.add(p);
+            }
+        } else if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("hunter")) {
+            for (int i = 0; i < this.newGameRequest.getNumOpponents(); i++) {
+                Player p = new HunterPlayer();
+                opponents.add(p);
+            }
+        } else {
+            for (int i = 0; i < this.newGameRequest.getNumOpponents(); i++) {
+                Player p = new NaivePlayer();
+                opponents.add(p);
+            }
+        }
+
+        // Tell all the bots that they are enemies of each other
+        for (int i = 0; i < this.opponents.size() - 1; i++) {
+            Player p = this.opponents.get(i);
+            for (int j = i + 1; j < this.opponents.size(); j++) {
+                Player e = this.opponents.get(j);
+                p.addOpponent(e);
+                e.addOpponent(p);
+            }
+        }
     }
 
+    // initialize the battleship game model
     public void initializeGame() {
+        this.initializeEnemies();
         this.initializeUserPlayer();
-        this.initializeEnemy();
-        this.setOpponents();
-        game = new Game(this.playerOne, this.playerTwo);
-      
-
-
+        Player[] players = new Player[this.opponents.size()];
+        for (int i = 0; i < players.length; i++) {
+            players[i] = this.opponents.get(i);
+        }
+        game = new Game(this.playerOne, players);
    }
-
-    public AttackResponse turn(Point p) {
-        return this.game.turn(p);
-    }
     
 }
