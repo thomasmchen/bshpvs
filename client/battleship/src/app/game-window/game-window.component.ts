@@ -22,6 +22,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { timer } from 'rxjs';
 
 import { DarkModeService } from '../settings/darkmode.service';
+import { AuthService } from '../auth.service';
 import { Http, Jsonp } from '@angular/http';
 import { WebService } from '../web.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -37,6 +38,7 @@ export class GameWindowComponent implements OnInit {
   @ViewChild(GameControlsComponent) gameControls;
   darkMode:boolean;
   timer:boolean;
+  user_id:string;
   won: boolean = false;
     
 
@@ -52,7 +54,7 @@ export class GameWindowComponent implements OnInit {
   attackResponses: AttackResponse[] = [];
 
 
-  constructor(private http: Http, private dm: DarkModeService, private stomp: WebService, public snackBar: MatSnackBar) { 
+  constructor(private http: Http, private dm: DarkModeService, private stomp: WebService, private auth: AuthService, public snackBar: MatSnackBar) { 
     /*this.http.get('http://www.mocky.io/v2/5babd5cb310000550065455a').subscribe((res) => {
       let result = res.json() as GameResponse;
       this.loadShips(result);
@@ -65,7 +67,7 @@ export class GameWindowComponent implements OnInit {
       console.log("Not connected");
     }
 
-
+    
     this.stomp.stompClient.subscribe('/topic/windowInitResponse', (res) => {
       let r = JSON.parse(res.body) as GameResponse;
       console.log(r);
@@ -141,7 +143,6 @@ export class GameWindowComponent implements OnInit {
       });
     });
     this.stomp.sendGameWindowInit();
-
   }
 
   handleSignal(event: string) {
@@ -402,7 +403,7 @@ interface AttackResponse {
 }
 
 interface GameResponse {
-  userId: number,
+  userId: string,
   userName: string,
   victoryMessage: string,
   ships: Ship[]

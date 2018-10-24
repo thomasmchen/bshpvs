@@ -1,12 +1,14 @@
 .container{
     margin: auto;
     min-width: 720px;
-    border-style: solid;
+    min-height: 900px;
 }
 .option-btns-box {
     margin: 2%;
 /*    border-style: solid;  for checking div dimensions*/
     margin-bottom: 2%;
+    border-style: solid;
+
 }
 
 /* Setting option button properites */

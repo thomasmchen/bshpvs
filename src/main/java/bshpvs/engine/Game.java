@@ -5,15 +5,21 @@ import bshpvs.ai.NaivePlayer;
 import bshpvs.api.core.AttackResponse;
 import bshpvs.api.core.MoveResponse;
 import bshpvs.model.*;
+import bshpvs.statistics.GameStat;
+import bshpvs.statistics.PlayerStat;
 
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
 public class Game {
     public Player firstPlayer;
     public Player secondPlayer;
+    public GameStat gameStat;
+    public long startTime;
     Player current;
 
     private static final String ANSI_RESET = "\u001B[0m";
@@ -30,7 +36,7 @@ public class Game {
         this.firstPlayer = first;
         this.secondPlayer = second;
         this.current = firstPlayer;
-        randomPromptShips(this.secondPlayer);
+        this.startTime = System.nanoTime();
     }
 
     public void initAi(int difficulty) {
@@ -132,11 +138,31 @@ public class Game {
         }
 
         if (this.firstPlayer.isDefeated()) {
+            //get GameStats
+            ArrayList<PlayerStat> stats = new ArrayList<PlayerStat>();
+            stats.add(firstPlayer.getPlayerStat());
+            stats.add(secondPlayer.getPlayerStat());
+            long gameTime = System.nanoTime() - this.startTime;
+            PlayerStat winner = this.secondPlayer.getPlayerStat();
+
+            //create game stat object
+            this.gameStat = new GameStat(stats, gameTime / 1000000000, winner); //divide nano time by 1 bil to convert into second
+
             yourMove = "lost";
             theirMove = "won";
         }
 
         if (this.secondPlayer.isDefeated()) {
+            //get GameStats
+            ArrayList<PlayerStat> stats = new ArrayList<PlayerStat>();
+            stats.add(firstPlayer.getPlayerStat());
+            stats.add(secondPlayer.getPlayerStat());
+            long gameTime = System.nanoTime() - this.startTime;
+            PlayerStat winner = this.firstPlayer.getPlayerStat();
+
+            //create game stat object
+            this.gameStat = new GameStat(stats, gameTime / 1000000000, winner); //divide nano time by 1 bil to convert into second
+            
             theirMove = "lost";
             yourMove = "won";
         }
