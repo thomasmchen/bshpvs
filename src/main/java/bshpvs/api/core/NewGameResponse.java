@@ -15,13 +15,14 @@ public class NewGameResponse {
     @JsonProperty("userName") public String username;
     @JsonProperty("victoryMessage") public String victoryMessage;
     @JsonProperty("ships") public ShipObject[] ships;
-
+    @JsonProperty("numOpponents") public int numOpponents;
     
-    public NewGameResponse(@JsonProperty("userId") String userId, @JsonProperty("userName") String username, @JsonProperty("victoryMessage") String victoryMessage, @JsonProperty("ships")  ShipObject[] ships ) {
+    public NewGameResponse(@JsonProperty("userId") String userId, @JsonProperty("userName") String username, @JsonProperty("victoryMessage") String victoryMessage, @JsonProperty("ships")  ShipObject[] ships, @JsonProperty("numOpponents") int numOpponents ) {
         this.userId = userId;
         this.username = username;
         this.victoryMessage = victoryMessage;
         this.ships = ships;
+        this.numOpponents = numOpponents;
     }
 
     public static class ShipObject {

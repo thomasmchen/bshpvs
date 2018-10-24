@@ -19,7 +19,9 @@ export class WebService {
   public stompClient = null;
   public connected = false;
 
-  constructor() { }
+  constructor() { 
+    this.initializeConnection();
+  }
 
   initializeConnection() {
     let socket = new SockJS(this.backendUrl);
@@ -29,7 +31,12 @@ export class WebService {
         that.setConnected();
     });
   }
-  
+
+  reinitializeConnection() {
+    this.stompClient.disconnect();
+    this.initializeConnection();
+
+  }
   setConnected() {
     this.connected = true;
   }

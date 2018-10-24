@@ -23,7 +23,7 @@ export class CellComponent implements OnInit {
   ngOnInit() {
   }
 
-  onClick() {
+  onClick(id) {
     // convert inputs to numbers
     var temp = this.n.replace(/[^0-9]/gi, '')
     var index = +temp;
@@ -39,7 +39,8 @@ export class CellComponent implements OnInit {
     this.update.emit({
       row: row,
       col: col,
-      index: index
+      index: index,
+      id: this.n
     });
 
   }
