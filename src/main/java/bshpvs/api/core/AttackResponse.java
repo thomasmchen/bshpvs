@@ -27,10 +27,10 @@ public class AttackResponse
     }
 
     public static class CoordinateWithInfo {
-        @JsonProperty int x;
-        @JsonProperty int y;
-        @JsonProperty int playerPos;
-        @JsonProperty String info;
+        @JsonProperty public int x;
+        @JsonProperty public int y;
+        @JsonProperty public int playerPos;
+        @JsonProperty public String info;
         public CoordinateWithInfo(@JsonProperty int x, @JsonProperty int y, @JsonProperty int playerPos, @JsonProperty String info) {
             this.x = x;
             this.y = y;

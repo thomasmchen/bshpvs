@@ -13,6 +13,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material';
 import {MatSelectModule} from '@angular/material/select';
 
 
@@ -47,6 +48,7 @@ import { DarkModeService } from './settings/darkmode.service';
     BrowserAnimationsModule,
     FormsModule,
     MatToolbarModule,
+    MatTableModule,
     MatSelectModule,
     HttpModule,
     MatCardModule,

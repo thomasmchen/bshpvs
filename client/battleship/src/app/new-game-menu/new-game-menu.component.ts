@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { DarkModeService } from '../settings/darkmode.service';
 import { WebService } from '../web.service';
 import { Config } from 'protractor';
+import { AuthService } from '../auth.service';
 import {FormControl} from '@angular/forms';
 
 
@@ -22,6 +23,7 @@ export class NewGameMenuComponent implements OnInit {
   selectDestroyer: boolean = false;
   placementCounter: number = 0;
   darkMode: boolean;
+  user_id:string;
 
   carrier : Ship = {identifier: 0, numSpaces: 5, spaces: new Array<Coordinate>()};
   battleship: Ship = {identifier: 1, numSpaces: 4, spaces: new Array<Coordinate>()};
@@ -39,9 +41,9 @@ export class NewGameMenuComponent implements OnInit {
   selectedAI: string = this.availableAI[0];
   numberOfOpponents: string = '1';
 
-  constructor(public snackbar: MatSnackBar, private stomp: WebService, private router: Router, private dm: DarkModeService) { 
+  constructor(public snackbar: MatSnackBar, private stomp: WebService, private router: Router, private dm: DarkModeService, private auth: AuthService) { 
     // initialize connection to backend
-    stomp.initializeConnection();  
+    stomp.reinitializeConnection();  
   }
 
   ngOnInit() {
@@ -221,8 +223,14 @@ export class NewGameMenuComponent implements OnInit {
         reqs.push(req);
       }
 
+      this.auth.currentid.subscribe(user_id => this.user_id = user_id);
+      let sendFormat = "{\"id\":\""+this.user_id+"\"}";
+      //alert(sendFormat);
+
+      this.stomp.sendID(sendFormat);
+
       let request : GameRequest = {
-        userId: 0,
+        userId: this.user_id,
         userName: this.username,
         victoryMessage: this.victoryMessage,
         ships: reqs,
@@ -270,7 +278,7 @@ interface ShipReq {
 }
 
 interface GameRequest {
-  userId: number,
+  userId: string,
   userName: string,
   victoryMessage: string,
   ships: ShipReq[],

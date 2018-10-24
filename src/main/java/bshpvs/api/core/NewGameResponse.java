@@ -11,13 +11,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.awt.Point;
 
 public class NewGameResponse {
-    @JsonProperty("userId") public int userId;
+    @JsonProperty("userId") public String userId;
     @JsonProperty("userName") public String username;
     @JsonProperty("victoryMessage") public String victoryMessage;
     @JsonProperty("ships") public ShipObject[] ships;
     @JsonProperty("numOpponents") public int numOpponents;
     
-    public NewGameResponse(@JsonProperty("userId") int userId, @JsonProperty("userName") String username, @JsonProperty("victoryMessage") String victoryMessage, @JsonProperty("ships")  ShipObject[] ships, @JsonProperty("numOpponents") int numOpponents ) {
+    public NewGameResponse(@JsonProperty("userId") String userId, @JsonProperty("userName") String username, @JsonProperty("victoryMessage") String victoryMessage, @JsonProperty("ships")  ShipObject[] ships, @JsonProperty("numOpponents") int numOpponents ) {
         this.userId = userId;
         this.username = username;
         this.victoryMessage = victoryMessage;

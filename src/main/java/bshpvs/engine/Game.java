@@ -6,16 +6,22 @@ import bshpvs.api.core.AttackResponse;
 import bshpvs.api.core.MoveResponse;
 import bshpvs.api.core.AttackResponse.CoordinateWithInfo;
 import bshpvs.model.*;
+import bshpvs.statistics.GameStat;
+import bshpvs.statistics.PlayerStat;
 
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
 public class Game {
     public Player firstPlayer;
     public Player[] opponents;
+    public GameStat gameStat;
+    public long startTime;
 
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_BLACK = "\u001B[30m";
@@ -149,12 +155,43 @@ public class Game {
          if (won) {
             CoordinateWithInfo info = new CoordinateWithInfo(0, 0, -1, "won");
             coors.add(info);
+             //divide nano time by 1 bil to convert into second
+             //get GameStats
+            ArrayList<PlayerStat> stats = new ArrayList<PlayerStat>();
+            stats.add(firstPlayer.getPlayerStat());
+            PlayerStat winner = this.firstPlayer.getPlayerStat();
+            for (int i = 0; i < this.opponents.length; i++) {
+                Player p  = this.opponents[i];
+                stats.add(p.getPlayerStat());
+            }
+            long gameTime = System.nanoTime() - this.startTime;
+            
+
+            //create game stat object
+            this.gameStat = new GameStat(stats, gameTime / 1000000000, winner);
          }
+
 
          // check to see if the use has lost
          if (this.firstPlayer.isDefeated()) {
             CoordinateWithInfo info = new CoordinateWithInfo(0, 0, -1, "lost");
             coors.add(info);
+            //get GameStats
+            ArrayList<PlayerStat> stats = new ArrayList<PlayerStat>();
+            stats.add(firstPlayer.getPlayerStat());
+            PlayerStat winner = this.opponents[0].getPlayerStat();
+            for (int i = 0; i < this.opponents.length; i++) {
+                Player p  = this.opponents[i];
+                stats.add(p.getPlayerStat());
+                if (!p.isDefeated()) {
+                    winner = p.getPlayerStat();
+                }
+            }
+            long gameTime = System.nanoTime() - this.startTime;
+            
+
+            //create game stat object
+            this.gameStat = new GameStat(stats, gameTime / 1000000000, winner);
          }
         
         String message = "You: " + yourMove + "          Them: " + theirMove;
@@ -186,13 +223,25 @@ public class Game {
         if (a.getType().getGroup().equals(CellGroup.SHIP) && firstPlayer.isShipSunk(a.getType())) {
             theirMove = "sunk " + a.getType();
         }
-
-        if (this.firstPlayer.isDefeated()) {
+        */
+        
+        
+            /*
             yourMove = "lost";
             theirMove = "won";
         }
 
         if (this.secondPlayer.isDefeated()) {
+            //get GameStats
+            ArrayList<PlayerStat> stats = new ArrayList<PlayerStat>();
+            stats.add(firstPlayer.getPlayerStat());
+            stats.add(secondPlayer.getPlayerStat());
+            long gameTime = System.nanoTime() - this.startTime;
+            PlayerStat winner = this.firstPlayer.getPlayerStat();
+
+            //create game stat object
+            this.gameStat = new GameStat(stats, gameTime / 1000000000, winner); //divide nano time by 1 bil to convert into second
+            
             theirMove = "lost";
             yourMove = "won";
         }
