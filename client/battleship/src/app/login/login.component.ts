@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.stomp.setConnected();
-    var userID = googleUser.getUserID();
+    var userID = this.auth.user_id;
     let sendFormat = "{\"id\":\""+userID+"\"}";
     this.stomp.sendID(sendFormat);
 
