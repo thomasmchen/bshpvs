@@ -97,7 +97,8 @@ public class Game {
             PlayerStat winner = this.firstPlayer.getPlayerStat();
 
             //create game stat object
-            this.gameStat = new GameStat(stats, gameTime, winner);
+            this.gameStat = new GameStat(stats, gameTime / 1000000000, winner); //divide nano time by 1 bil to convert into second
+            
             theirMove = "lost";
             yourMove = "won";
         }

@@ -1,57 +1,47 @@
-<body>
+<mat-card>
+  <div class="container">
     <button id="refresh" type="button" (click)="onRefresh()">Refresh</button>
-<h1>Statistics</h1>
-  <div id="wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th># of Players</th>
-          <th># of hits</th>
-          <th># of misses</th>
-          <th>Total Turns</th>
-          <th>Time</th>
-          <th>Winner</th>
-          <th>Player Types</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>row1</td>
-          <td>row1</td>
-          <td>row1</td>
-          <td>row1</td>
-          <td>row1</td>
-          <td>row1</td>
-          <td>row1</td>
-        </tr>
-        <tr>
-          <td>row2</td>
-          <td>row2</td>
-          <td>row2</td>
-          <td>row2</td>
-          <td>row2</td>
-          <td>row2</td>
-          <td>row2</td>
-        </tr>
-        <tr>
-          <td>row3</td>
-          <td>row3</td>
-          <td>row3</td>
-          <td>row3</td>
-          <td>row3</td>
-          <td>row3</td>
-          <td>row3</td>
-        </tr>
-        <tr>
-          <td>row4</td>
-          <td>row4</td>
-          <td>row4</td>
-          <td>row4</td>
-          <td>row4</td>
-          <td>row4</td>
-          <td>row4</td>
-        </tr>
-      </tbody>
-    </table>
+    <h1 class="mat-h1">Statistics</h1>
+    <div class="table-box">
+      <table mat-table [dataSource]="stats" class="table">
+        <ng-container matColumnDef="numPlayers">
+          <th mat-header-cell *matHeaderCellDef># of Players</th>
+          <td mat-cell *matCellDef="let element"> {{element.numPlayer}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="hitPerc">
+          <th mat-header-cell *matHeaderCellDef> Hit Percentage </th>
+          <td mat-cell *matCellDef="let element"> {{element.hitPerc}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="missPerc">
+          <th mat-header-cell *matHeaderCellDef> Miss Percentage </th>
+          <td mat-cell *matCellDef="let element"> {{element.missPerc}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="numTurns">
+          <th mat-header-cell *matHeaderCellDef> Total Turns </th>
+          <td mat-cell *matCellDef="let element"> {{element.numTurns}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="time">
+          <th mat-header-cell *matHeaderCellDef> Time (sec) </th>
+          <td mat-cell *matCellDef="let element"> {{element.time}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="winner">
+          <th mat-header-cell *matHeaderCellDef> Winner </th>
+          <td mat-cell *matCellDef="let element"> {{element.winner}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="playerTypes">
+          <th mat-header-cell *matHeaderCellDef> Player Types </th>
+          <td mat-cell *matCellDef="let element"> {{element.playerTypes}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
   </div>
-</body>
+</mat-card>

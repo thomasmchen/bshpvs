@@ -52,9 +52,9 @@ export class SettingsComponent implements OnInit {
     this.dm.toggleFSmode(!this.fsMode);
     if(window.innerHeight != screen.height) { //if not already in fullscreen mode
       let elem = document.body;
-      let methodToBeInvoked = elem.requestFullscreen ||
-        elem.webkitRequestFullscreen || elem['mozRequestFullscreen'] ||
-        elem['msRequestFullscreen'];
+      let methodToBeInvoked = elem.requestFullscreen || 
+        elem.webkitRequestFullscreen() ||
+        elem['mozRequestFullscreen'] || elem['msRequestFullscreen'];
         if(methodToBeInvoked) methodToBeInvoked.call(elem);
     }
   }
