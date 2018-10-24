@@ -118,6 +118,9 @@ public class Game {
 
          for (int i = 0; i < opponents.length; i++) {
              Player p = opponents[i];
+             if (p.isDefeated()) {
+                 continue;
+             }
              Player opp = p.genRandomOpp();
              Point tgt = p.attack(opp);
             Cell a = opp.getCell(tgt);
@@ -134,8 +137,24 @@ public class Game {
                 CoordinateWithInfo info = new CoordinateWithInfo(tgt.x, tgt.y, pos, "miss");
                 coors.add(info);
             }
-             
+         }
 
+         // check to see if the user has won the game
+         boolean won = true;
+         for (int i = 0; i < opponents.length; i++) {
+            if (!opponents[i].isDefeated()) {
+                won = false;
+            }
+         }
+         if (won) {
+            CoordinateWithInfo info = new CoordinateWithInfo(0, 0, -1, "won");
+            coors.add(info);
+         }
+
+         // check to see if the use has lost
+         if (this.firstPlayer.isDefeated()) {
+            CoordinateWithInfo info = new CoordinateWithInfo(0, 0, -1, "lost");
+            coors.add(info);
          }
         
         String message = "You: " + yourMove + "          Them: " + theirMove;

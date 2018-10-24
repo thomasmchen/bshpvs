@@ -125,7 +125,12 @@ export class GameWindowComponent implements OnInit {
           this.changeCellColor(coor.x, coor.y, "black", prefix);
         } else if (coor.info == "miss") {
           this.changeCellColor(coor.x, coor.y, "yellow", prefix);
-
+        } else if (coor.info == "won") {
+          window.alert("Congrats, you won!");
+          this.won = true;
+        } else if (coor.info == "lost") {
+          window.alert("Sorry, you lost!");
+          this.won = true;
         }
       }
             
