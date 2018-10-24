@@ -11,9 +11,10 @@ export class WebService {
   private backendUrl = 'http://localhost:8080/battleship';
   private messageUrl = '/app/placeShips';
   private windowInitUrl = '/app/windowInit';
-  private turnUrl = '/app/turn';
   private idURL = '/app/id';
   private statURL = '/app/stats';
+  private turnUrl = '/app/attackTurn';
+  private moveUrl = '/app/moveTurn';
   private checkWinUrl = '/app/checkWin';
   public stompClient = null;
   public connected = false;
@@ -49,12 +50,16 @@ export class WebService {
     this.stompClient.send(this.windowInitUrl, {}, "window");
   }
 
-  sendMove(attack) {
+  sendAttack(attack) {
     this.stompClient.send(this.turnUrl, {}, attack);
   }
 
   sendID(id) {
     this.stompClient.send(this.idURL, {}, id);
+  }
+    
+  sendMove(move) {
+    this.stompClient.send(this.moveUrl, {}, move);
   }
 
   checkWin() {

@@ -53,6 +53,10 @@ class PlayerTest {
     void testHitOppCell() {
         Player pl1 = new Player(10);
         Player pl2 = new Player(10);
+
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
+
         pl1.hitOppCell(new Point(1,1), pl2);
         assertTrue(pl2.getCell(new Point(1,1)).isHit());
     }
@@ -64,6 +68,9 @@ class PlayerTest {
 
         Player pl2 = new Player();
         pl2.addShip(shp);
+
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
 
         pl1.hitOppCell(new Point(1,1), pl2);
         pl1.hitOppCell(new Point(1,2), pl2);
@@ -81,6 +88,9 @@ class PlayerTest {
 
         Player pl2 = new Player();
         pl2.addShip(shp);
+
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
 
         pl1.hitOppCell(new Point(1,1), pl2);
         pl1.hitOppCell(new Point(1,2), pl2);
@@ -104,6 +114,9 @@ class PlayerTest {
         Player pl2 = new Player();
         pl2.addShip(shp);
 
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
+
         pl1.hitOppCell(new Point(1,1), pl2);
         pl1.hitOppCell(new Point(1,2), pl2);
         pl1.hitOppCell(new Point(1,3), pl2);
@@ -122,10 +135,13 @@ class PlayerTest {
         Player pl2 = new Player();
         pl2.addShip(shp);
 
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
+
         pl1.hitOppCell(new Point(1,1), pl2);
 
-        Cell checkHitCell = pl1.getTargetBoard().getCell(new Point(1,1));
-        Cell unknownCell = pl1.getTargetBoard().getCell(new Point(1, 2));
+        Cell checkHitCell = pl1.getTargetBoard(pl2).getCell(new Point(1,1));
+        Cell unknownCell = pl1.getTargetBoard(pl2).getCell(new Point(1, 2));
 
 
         assertEquals(CellType.CARRIER, checkHitCell.getType());
@@ -146,6 +162,10 @@ class PlayerTest {
     @Test
     void testIsValidPoint() {
         Player pl1 = new Player(10);
+        Player pl2 = new Player(10);
+
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
 
         Point[] validPts = new Point[] {
                 new Point(0,0),
@@ -164,11 +184,11 @@ class PlayerTest {
         };
 
         for (Point p : validPts) {
-            assertTrue(pl1.isValidPoint(p));
+            assertTrue(pl2.isValidTgtPoint(p, pl1));
         }
 
         for (Point p : invalidPts) {
-            assertFalse(pl1.isValidPoint(p));
+            assertFalse(pl2.isValidTgtPoint(p, pl1));
         }
     }
 
@@ -187,10 +207,13 @@ class PlayerTest {
         Player pl2 = new Player();
         pl2.addShip(shp);
 
-        Point tgt = pl1.move(pl2);
+        pl1.addOpponent(pl2);
+        pl2.addOpponent(pl1);
+
+        Point tgt = pl1.attack(pl2);
 
         Cell pl2Cell = pl2.getMap().getCell(tgt);
-        Cell pl1TrackedCell = pl1.getTargetBoard().getCell(tgt);
+        Cell pl1TrackedCell = pl1.getTargetBoard(pl2).getCell(tgt);
 
         assertTrue(pl2Cell.isHit());
         assertTrue(pl1TrackedCell.isHit());
