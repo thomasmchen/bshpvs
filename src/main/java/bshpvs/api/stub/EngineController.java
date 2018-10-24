@@ -12,24 +12,19 @@ import bshpvs.api.core.NewGameResponse.Coordinate;
 import bshpvs.api.core.NewGameResponse.ShipObject;
 import bshpvs.database.Database;
 import bshpvs.model.Player;
+import bshpvs.ai.HunterPlayer;
+
 import bshpvs.model.Ship;
-import bshpvs.statistics.DBStat;
-import bshpvs.statistics.GameStat;
 import bshpvs.api.core.ReceiveUserID;
-import bshpvs.api.core.StatsRequest;
 import bshpvs.api.core.StatsResponse;
 
-import org.apache.commons.lang3.ObjectUtils.Null;
-import org.jboss.logging.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.awt.Point;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -50,6 +45,7 @@ public class EngineController {
     @MessageMapping("/placeShips")
     @SendTo("/topic/confirmPlacement")
     public NewGameRequest newGame(String json) throws Exception {
+        this.reset();
         ObjectMapper objectMapper = new ObjectMapper();
         NewGameRequest req = objectMapper.readValue(json, NewGameRequest.class);
         req.convertShips();
@@ -180,10 +176,28 @@ public class EngineController {
     }
     
 
+    public void reset() {
+        this.game = null;
+        this.newGameRequest = null;
+        this.playerOne = null;
+        this.playerTwo = null;
+    }
+
     public void initializePlayers() {
         this.playerOne = new Player(10);
-        this.playerTwo = new Player(10);
+        if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("normal")) {
+            System.out.println("Normal ai");
+            this.playerTwo = new Player(10);
+
+        } else if (this.newGameRequest.getSelectedAI().equalsIgnoreCase("hunter")) {
+            System.out.println("Hunter ai");
+            this.playerTwo = new HunterPlayer();
+        } else {
+            this.playerTwo = new Player(10);
+        }
     }
+
+    
 
     public void initializeGame() {
         game = new Game(this.playerOne, this.playerTwo);
