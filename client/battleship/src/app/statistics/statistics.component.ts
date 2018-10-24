@@ -42,7 +42,13 @@ export class StatisticsComponent implements OnInit {
   sub:Subscription;
 
   constructor(private dm: DarkModeService, private stomp: WebService, private auth: AuthService) { 
-    stomp.initializeConnection();
+    this.sub = this.stomp.stompClient.subscribe('/topic/getStats', (res) => {
+      let r = JSON.parse(res.body) as StatsResponse;
+      console.log(r);
+      this.stats = r.statsList;
+    });     
+    this.stomp.getStats();
+    //subscribe to stats response
     
   }
 

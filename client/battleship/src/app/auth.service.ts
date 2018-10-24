@@ -25,6 +25,7 @@ export class AuthService implements CanActivate {
     this.email = profile.getEmail();
     this.name = profile.getName();
     this.signedIn = true;
+    this.user_id = profile.getId();
     return true;
   }
 

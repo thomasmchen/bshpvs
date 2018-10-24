@@ -4,6 +4,7 @@ import bshpvs.ai.HunterPlayer;
 import bshpvs.ai.NaivePlayer;
 import bshpvs.api.core.AttackResponse;
 import bshpvs.api.core.MoveResponse;
+import bshpvs.api.core.AttackResponse.CoordinateWithInfo;
 import bshpvs.model.*;
 import bshpvs.statistics.GameStat;
 import bshpvs.statistics.PlayerStat;
@@ -11,16 +12,16 @@ import bshpvs.statistics.PlayerStat;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 
 public class Game {
     public Player firstPlayer;
-    public Player secondPlayer;
+    public Player[] opponents;
     public GameStat gameStat;
     public long startTime;
-    Player current;
 
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_BLACK = "\u001B[30m";
@@ -32,25 +33,12 @@ public class Game {
     private static final String ANSI_CYAN = "\u001B[36m";
     private static final String ANSI_WHITE = "\u001B[37m";
 
-    public Game(Player first, Player second) {
+    public Game(Player first, Player[] players) {
         this.firstPlayer = first;
-        this.secondPlayer = second;
-        this.current = firstPlayer;
-        this.startTime = System.nanoTime();
-    }
-
-    public void initAi(int difficulty) {
-        if (difficulty == 1) {
-            secondPlayer = new NaivePlayer();
-        } else {
-            secondPlayer = new HunterPlayer();
+        this.opponents = players;
+        for (int i = 0; i < this.opponents.length; i++) {
+            randomPromptShips(this.opponents[i]);
         }
-        randomPromptShips(secondPlayer);
-    }
-
-    public void setOpponents() {
-        this.firstPlayer.addOpponent(this.secondPlayer);
-        this.secondPlayer.addOpponent(this.firstPlayer);
     }
 
     public MoveResponse moveTurn(int shipId, String direction) {
@@ -106,11 +94,110 @@ public class Game {
         
     }
 
-    public AttackResponse turn(Point coordinate) {
-        
+    public AttackResponse turn(Point coordinate, int playerPos) {
+        ArrayList<CoordinateWithInfo> coors = new ArrayList<CoordinateWithInfo>();
         String yourMove = "water";
         String theirMove = "water";
-        if (coordinate.x != -1) {
+         if (coordinate.x != -1) {
+            if (playerPos > firstPlayer.getOpponents().size() - 1) {
+                System.out.println("Player not reflected in arrays");
+                return null;
+            }
+
+            Player opp = opponents[playerPos];
+            Cell c = firstPlayer.hitOppCell(coordinate, opp);
+            if (c.getType().getGroup().equals(CellGroup.SHIP)) {
+                yourMove = "hit " + c.getType();
+                CoordinateWithInfo info = new CoordinateWithInfo(coordinate.x, coordinate.y, playerPos, "hit");
+                coors.add(info);
+            } else {
+                CoordinateWithInfo info = new CoordinateWithInfo(coordinate.x, coordinate.y, playerPos, "miss");
+                coors.add(info);
+            }
+
+            if (c.getType().getGroup().equals(CellGroup.SHIP) && opp.isShipSunk(c.getType())) {
+                yourMove = "sunk " + c.getType();
+            }
+         } else {
+            yourMove = "move";
+         }
+
+         for (int i = 0; i < opponents.length; i++) {
+             Player p = opponents[i];
+             if (p.isDefeated()) {
+                 continue;
+             }
+             Player opp = p.genRandomOpp();
+             Point tgt = p.attack(opp);
+            Cell a = opp.getCell(tgt);
+            int pos = -1;
+            for (int j = 0; j < opponents.length; j++) {
+                if (this.opponents[j].getID() == opp.getID()) {
+                    pos = j;
+                }
+            }
+            if (a.getType().getGroup().equals(CellGroup.SHIP)) {
+                CoordinateWithInfo info = new CoordinateWithInfo(tgt.x, tgt.y, pos, "hit");
+                coors.add(info);
+            } else {
+                CoordinateWithInfo info = new CoordinateWithInfo(tgt.x, tgt.y, pos, "miss");
+                coors.add(info);
+            }
+         }
+
+         // check to see if the user has won the game
+         boolean won = true;
+         for (int i = 0; i < opponents.length; i++) {
+            if (!opponents[i].isDefeated()) {
+                won = false;
+            }
+         }
+         if (won) {
+            CoordinateWithInfo info = new CoordinateWithInfo(0, 0, -1, "won");
+            coors.add(info);
+             //divide nano time by 1 bil to convert into second
+             //get GameStats
+            ArrayList<PlayerStat> stats = new ArrayList<PlayerStat>();
+            stats.add(firstPlayer.getPlayerStat());
+            PlayerStat winner = this.firstPlayer.getPlayerStat();
+            for (int i = 0; i < this.opponents.length; i++) {
+                Player p  = this.opponents[i];
+                stats.add(p.getPlayerStat());
+            }
+            long gameTime = System.nanoTime() - this.startTime;
+            
+
+            //create game stat object
+            this.gameStat = new GameStat(stats, gameTime / 1000000000, winner);
+         }
+
+
+         // check to see if the use has lost
+         if (this.firstPlayer.isDefeated()) {
+            CoordinateWithInfo info = new CoordinateWithInfo(0, 0, -1, "lost");
+            coors.add(info);
+            //get GameStats
+            ArrayList<PlayerStat> stats = new ArrayList<PlayerStat>();
+            stats.add(firstPlayer.getPlayerStat());
+            PlayerStat winner = this.opponents[0].getPlayerStat();
+            for (int i = 0; i < this.opponents.length; i++) {
+                Player p  = this.opponents[i];
+                stats.add(p.getPlayerStat());
+                if (!p.isDefeated()) {
+                    winner = p.getPlayerStat();
+                }
+            }
+            long gameTime = System.nanoTime() - this.startTime;
+            
+
+            //create game stat object
+            this.gameStat = new GameStat(stats, gameTime / 1000000000, winner);
+         }
+        
+        String message = "You: " + yourMove + "          Them: " + theirMove;
+
+        return new AttackResponse(yourMove, theirMove, message, coors.toArray(new CoordinateWithInfo[coors.size()]));
+        /*if (coordinate.x != -1) {
             Cell c = firstPlayer.hitOppCell(coordinate, secondPlayer);
             if (c.getType().getGroup().equals(CellGroup.SHIP)) {
                 yourMove = "hit " + c.getType();
@@ -136,18 +223,10 @@ public class Game {
         if (a.getType().getGroup().equals(CellGroup.SHIP) && firstPlayer.isShipSunk(a.getType())) {
             theirMove = "sunk " + a.getType();
         }
-
-        if (this.firstPlayer.isDefeated()) {
-            //get GameStats
-            ArrayList<PlayerStat> stats = new ArrayList<PlayerStat>();
-            stats.add(firstPlayer.getPlayerStat());
-            stats.add(secondPlayer.getPlayerStat());
-            long gameTime = System.nanoTime() - this.startTime;
-            PlayerStat winner = this.secondPlayer.getPlayerStat();
-
-            //create game stat object
-            this.gameStat = new GameStat(stats, gameTime / 1000000000, winner); //divide nano time by 1 bil to convert into second
-
+        */
+        
+        
+            /*
             yourMove = "lost";
             theirMove = "won";
         }
@@ -168,7 +247,9 @@ public class Game {
         }
 
         String message = "You: " + yourMove + "          Them: " + theirMove;
-        return new AttackResponse(tgt.y, tgt.x, yourMove, theirMove, message);
+        CoordinateWithMap m = new CoordinateWithMap(1, 1, 1);
+        CoordinateWithMap[] coors = { m } ;
+        return new AttackResponse(tgt.y, tgt.x, yourMove, theirMove, message, coors);*/
     }
 
     /**

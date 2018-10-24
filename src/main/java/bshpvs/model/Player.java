@@ -321,10 +321,16 @@ public class Player implements Playable{
      * @return the randomly selected Player
      */
     public Player genRandomOpp() {
+        List<Player> alivePlayers = new ArrayList<Player>();
         List<Player> players = new ArrayList<Player>(targetBoard.keySet());
+        for (int i = 0; i < players.size(); i ++) {
+            if (!players.get(i).isDefeated()) {
+                alivePlayers.add(players.get(i));
+            }
+        }
         Random gen = new Random();
-        int index = gen.nextInt(players.size());
-        return players.get(index);
+        int index = gen.nextInt(alivePlayers.size());
+        return alivePlayers.get(index);
     }
 
     /**
