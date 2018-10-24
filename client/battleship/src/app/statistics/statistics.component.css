@@ -1,17 +1,21 @@
 .container {
-  margin: auto;
-  margin-top: 2%;
-  min-width: 900px;
-  min-height: 1000px;
+  
 }
 .table-box {
-  width: inherit;
+  overflow: auto;
+  height: 500px;
+  width: 100%;
+  border: solid;
+  border-width: 1px;
+  border-radius: 8px;
+}
+p {
+  font-weight: 400;
+  font-size: 11pt;
 }
 
 table {
-  border: 1px solid black;
-  width: 90%;
-  margin: 2%;
+  width: 100%;
   align-content: center;
 }
 
@@ -19,14 +23,12 @@ th{
   text-align: center;
   min-width: 80px;
   width: 10%;
-  border: 1px solid black;
   font-weight: bold;
-  font-size: 13pt;
+  font-size: 11pt;
 }
 td {
   text-align: center;
   min-width: 80px;
-  border: 1px solid black;
   font-size: 11pt;
 }
 

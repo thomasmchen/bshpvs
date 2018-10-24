@@ -1,13 +1,15 @@
 .container{
     margin: auto;
-    min-width: 720px;
-    min-height: 900px;
+    width: 80%;
+    height: 50%;
 }
 .option-btns-box {
     margin: 2%;
 /*    border-style: solid;  for checking div dimensions*/
     margin-bottom: 2%;
     border-style: solid;
+    border-width: 1px;
+    border-radius: 8px;
 
 }
 
@@ -16,12 +18,11 @@
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 5px;
-    font-size: 30px;
+    font-size: 20px;
 
     display: block;
-    padding: 35px 32px;
     width: 75%;
-    height: 100px;
+    height: 50px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 6%;
