@@ -258,7 +258,8 @@ interface Coordinate {
 interface Cell {
   row: number,
   col: number,
-  index: number
+  index: number,
+  id: string
 }
 
 interface ShipReq {

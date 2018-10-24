@@ -108,6 +108,7 @@ public class EngineController {
         ObjectMapper objectMapper = new ObjectMapper();
         AttackRequest req = objectMapper.readValue(json, AttackRequest.class);
         Point p = new Point(req.x, req.y);
+        System.out.println("Attack request " + req.playerPos + " x: " + req.x + "y: " + req.y);
         AttackResponse response = this.game.turn(p);
         return response;
     }

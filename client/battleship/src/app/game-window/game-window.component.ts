@@ -95,7 +95,7 @@ export class GameWindowComponent implements OnInit {
       this.gameControls.showMoveButton();
       this.gameControls.showSurrenderButton();
       this.gameControls.setMessage("Select a cell to attack");
-      this.makePlayerAttack(-1, -1);
+      this.makePlayerAttack(-1, -1, 1);
     });
 
   
@@ -275,8 +275,18 @@ export class GameWindowComponent implements OnInit {
   }
 
   onCellClicked(event: Cell) {
+    console.log(event.id.substring(0, 5));
     if (!this.won && !this.movingShip) {
-      this.makePlayerAttack(event.col, event.row);
+        if (event.id.substring(0, 6) == 'enemy_') {
+          this.makePlayerAttack(event.col, event.row, 0);
+
+        } else if (event.id.substring(0, 6) == 'enemy2') {
+          this.makePlayerAttack(event.col, event.row, 1);
+
+        } else if (event.id.substring(0, 6) == 'enemy3') {
+          this.makePlayerAttack(event.col, event.row, 2);
+
+        }
     } else if (this.movingShip && this.selectedShipId == -1) {
       var shipId = 0;
       for (var i = 0; i < this.ships.length; i++) {
@@ -309,12 +319,13 @@ export class GameWindowComponent implements OnInit {
     }
   }
 
-  makePlayerAttack(_x, _y) {
+  makePlayerAttack(_x, _y, _playerPos) {
     this.lastX = _x;
     this.lastY = _y;
     let request : AttackRequest = {
       x : _x,
-      y : _y
+      y : _y,
+      playerPos: _playerPos
     }
 
     let j = JSON.stringify(request);
@@ -396,6 +407,7 @@ interface Cell {
   row: number;
   col: number;
   index: string;
+  id: string;
 }
 
 interface Ship {
@@ -427,7 +439,8 @@ interface Coordinate {
 
 interface AttackRequest {
   x: number,
-  y: number
+  y: number,
+  playerPos: string
 }
 
 interface MoveRequest {
