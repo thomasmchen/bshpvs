@@ -12,9 +12,12 @@ public class AttackRequest
 
     @JsonProperty("x") public int x;
 
-    public AttackRequest(@JsonProperty("y") int y, @JsonProperty("x") int x) {
+    @JsonProperty("playerPos") public int playerPos;
+
+    public AttackRequest(@JsonProperty("y") int y, @JsonProperty("x") int x, @JsonProperty("playerPos") int playerPos) {
         this.y = y;
         this.x = x;
+        this.playerPos = playerPos;
     }
 
     public int getY ()
@@ -35,6 +38,10 @@ public class AttackRequest
     public void setX (int x)
     {
         this.x = x;
+    }
+
+    public int getPlayerPosition() {
+        return playerPos;
     }
 
     @Override

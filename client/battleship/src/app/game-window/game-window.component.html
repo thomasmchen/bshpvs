@@ -3,9 +3,9 @@
       <div class="timerContainer hidden"></div>
   </mat-card>
   
-  <div class="row" style="height: 100%;">
+  <div class="row">
     <div class="col-lg-2">
-      <app-game-controls></app-game-controls>
+      <app-game-controls (event)="handleSignal($event)"></app-game-controls>
     </div>
     
 
@@ -14,9 +14,23 @@
     </div>
 
     <div style="background-color: rgba(0, 0, 255, 0.082)" class="col-lg-4">
-        <app-grid  [prefix]="'enemy_'" [numcols]="'10'"(cellClicked)="onCellClicked($event)"></app-grid>
+        <app-grid  id = "enemyGrid" [prefix]="'enemy_'" [numcols]="'10'"(cellClicked)="onCellClicked($event)"></app-grid>
     </div>
 
+  </div>
+
+  <div style="margin-top: 5px;"></div>
+  
+  <div class="row" style="height: 100%;">
+    <div class="col-lg-2">
+    </div>
+    <div id="e2" style="background-color: rgba(255, 0, 0, 0.171); visibility: hidden;" class="col-lg-4">
+      <app-grid #userGrid [prefix]="'enemya_'" [numcols]="'10'" (cellClicked)="onCellClicked($event)"></app-grid>
+    </div>
+
+    <div id="e3" style="background-color: rgba(0, 0, 255, 0.082); visibility: hidden;" class="col-lg-4">
+        <app-grid  id = "enemyGrid" [prefix]="'enemyb_'" [numcols]="'10'"(cellClicked)="onCellClicked($event)"></app-grid>
+    </div>
   </div>
 
 </mat-card>

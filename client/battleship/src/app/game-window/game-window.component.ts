@@ -18,13 +18,15 @@
 
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { timer } from 'rxjs';
 
 import { DarkModeService } from '../settings/darkmode.service';
+import { AuthService } from '../auth.service';
 import { Http, Jsonp } from '@angular/http';
 import { WebService } from '../web.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { GameControlsComponent } from '../game-controls/game-controls.component';
 
 @Component({
   selector: 'app-game-window',
@@ -33,8 +35,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class GameWindowComponent implements OnInit {
 
+  @ViewChild(GameControlsComponent) gameControls;
   darkMode:boolean;
   timer:boolean;
+  user_id:string;
   won: boolean = false;
     
 
@@ -45,8 +49,12 @@ export class GameWindowComponent implements OnInit {
   lastX : number = 0;
   lastY : number = 0;
 
+  movingShip: boolean = false;
+  selectedShipId: number = -1;
+  attackResponses: AttackResponse[] = [];
 
-  constructor(private http: Http, private dm: DarkModeService, private stomp: WebService, public snackBar: MatSnackBar) { 
+
+  constructor(private http: Http, private dm: DarkModeService, private stomp: WebService, private auth: AuthService, public snackBar: MatSnackBar) { 
     /*this.http.get('http://www.mocky.io/v2/5babd5cb310000550065455a').subscribe((res) => {
       let result = res.json() as GameResponse;
       this.loadShips(result);
@@ -59,65 +67,106 @@ export class GameWindowComponent implements OnInit {
       console.log("Not connected");
     }
 
-
+    
     this.stomp.stompClient.subscribe('/topic/windowInitResponse', (res) => {
       let r = JSON.parse(res.body) as GameResponse;
       console.log(r);
+      this.setBoards(r.numOpponents);
       this.loadShips(r);
       this.renderShips();
     });
 
-    let that = this;
-    this.stomp.stompClient.subscribe('/topic/endGame', (res) => {
-      let r = JSON.parse(res.body) as EndGameResponse;
-      alert(r.won + "    " + r.victoryMessage);
-      that.won = true;
-      this.stomp.stompClient.disconnect();
-
+    this.stomp.stompClient.subscribe('/topic/moveResponse', (res) => {
+      this.clearBoard();
+      let r = JSON.parse(res.body) as MoveResponse;
+      if (r.shipId == -1) {
+        this.gameControls.setMessage("Invalid move. Lost turn.");
+      } else {
+        for (var i = 0; i < this.ships.length; i++) {
+          if (this.ships[i].identifier == r.shipId) {
+            this.ships[i].spaces = r.spaces;
+            break;
+          }
+        }
+      }
+      
+      this.renderShips();
+      this.movingShip = false;
+      this.selectedShipId = -1;
+      this.gameControls.hideDirectionalButtons();
+      this.gameControls.showMoveButton();
+      this.gameControls.showSurrenderButton();
+      this.gameControls.setMessage("Select a cell to attack");
+      this.makePlayerAttack(-1, -1, 1);
     });
 
+  
+    let that = this;
     this.stomp.stompClient.subscribe('/topic/turnResponse', (res) => {
       console.log(res);
       let r = JSON.parse(res.body) as AttackResponse;
-      if (r.yourMove.substring(0, 2) == "hit") {
-        this.markEnemyGrid(this.lastX, this.lastY, true);
-      } else if (r.yourMove == "water") {
-        this.markEnemyGrid(this.lastX, this.lastY, false);
-      } else if (r.yourMove.substring(0,3) == "sunk") {
-        this.markEnemyGrid(this.lastX, this.lastY, true);
-      } else if (r.yourMove.substring(0, 2) == "won") {
-        this.markEnemyGrid(this.lastX, this.lastY, true);
-      } else {
-        this.markEnemyGrid(this.lastX, this.lastY, true);
+      for (var i = 0; i < r.coors.length; i++) {
+        let coor : CoordinateWithInfo = r.coors[i];
+        var prefix = "";
+        switch(coor.playerPos) {
+          case -1:
+          prefix = "user_";
+          break;
+          case 0:
+          prefix = "enemy_";
+          break;
+          case 1:
+          prefix = "enemya_";
+          break;
+          case 2: 
+          prefix = "enemyb_"
+          break;
+        }
+
+        if (coor.info == "hit") {
+          this.changeCellColor(coor.x, coor.y, "black", prefix);
+        } else if (coor.info == "miss") {
+          this.changeCellColor(coor.x, coor.y, "yellow", prefix);
+        } else if (coor.info == "won") {
+          window.alert("Congrats, you won!");
+          this.won = true;
+        } else if (coor.info == "lost") {
+          window.alert("Sorry, you lost!");
+          this.won = true;
+        }
       }
-
-      
-
-      if (r.theirMove.substring(0, 3) == "hit") {
-        this.markUserGrid(r.x, r.y, true);
-      
-      } else if (r.theirMove.substring(0, 4) == "sunk") {
-        this.markUserGrid(r.x, r.y, true);
-      } else if (r.theirMove.substring(0, 3) == "won") {
-        this.markUserGrid(r.x, r.y, true);
-      } else {
-        this.markUserGrid(r.x, r.y, false);
-      }
-
-      this.snackBar.open(r.message, 'Ok', {
-        duration: 2000
-      });
-
-      this.stomp.checkWin();
+            
     });
     this.stomp.sendGameWindowInit();
+  }
 
+  handleSignal(event: string) {
+    console.log(event);
+    this.movingShip = true;
+    if (event == "move") {
+      this.turnAllShipsColor("blue");
+    } else if (event == "forward") {
+      if (this.selectedShipId == -1) {
+        console.log("Something concerning just happend in handleSignal()");
+      }
+      this.makePlayerMove(this.selectedShipId, 'forward');
+    } else if (event == "backward") {
+      console.log("Player wants to move ship backwards.")
+      this.makePlayerMove(this.selectedShipId, 'backward');
+    }
+  }
+
+  endGame() {
+    this.won = true;
+    this.stomp.stompClient.disconnect();
+    this.attackResponses = [];
+    this.ships = [];
   }
 
   ngOnDestroy() {
     console.log("called");
     this.stomp.stompClient.disconnect();
-    this.ships = [];
+    this.ships = []; this.attackResponses = [];
   }
 
   markUserGrid(x, y, hit) {
@@ -160,13 +209,29 @@ export class GameWindowComponent implements OnInit {
   renderShips() {
     for (var i = 0; i < this.ships.length; i++) {
       for (var j = 0; j < this.ships[i].spaces.length; j++) {
+        
         let x = this.ships[i].spaces[j].x;
         let y = this.ships[i].spaces[j].y;
         var id = y * this.gridSize + x;
-
         document.getElementById("user_"+id).style.backgroundColor = "red";
       }
     }
+
+    this.renderAllAttackResponsesRecieved();
+  }
+
+  setBoards(numOpponents: number) {
+    if (numOpponents == 1) {
+    } else if (numOpponents == 2) {
+      document.getElementById('e2').style.visibility = 'visible';
+    } else if (numOpponents == 3) {
+      document.getElementById('e2').style.visibility = 'visible';
+      document.getElementById('e3').style.visibility = 'visible';
+    }
+  }
+
+  clearBoard() {
+    this.turnAllShipsColor("lightblue");
   }
 
   ngOnInit() {
@@ -205,35 +270,128 @@ export class GameWindowComponent implements OnInit {
   }
 
   onCellClicked(event: Cell) {
-    if (!this.won) {
-      this.makePlayerAttack(event.col, event.row);
+    console.log(event.id.substring(0, 5));
+    if (!this.won && !this.movingShip) {
+        if (event.id.substring(0, 6) == 'enemy_') {
+          this.makePlayerAttack(event.col, event.row, 0);
+
+        } else if (event.id.substring(0, 6) == 'enemya') {
+          this.makePlayerAttack(event.col, event.row, 1);
+
+        } else if (event.id.substring(0, 6) == 'enemyb') {
+          this.makePlayerAttack(event.col, event.row, 2);
+
+        }
+    } else if (this.movingShip && this.selectedShipId == -1) {
+      var shipId = 0;
+      for (var i = 0; i < this.ships.length; i++) {
+        var s = this.ships[i];
+        if (this.shipContainsPoint(s, event.col, event.row)) {
+          let st = s.spaces[0];
+          let end = s.spaces[s.spaces.length - 1];
+          // chcek to see if the ship is vertical or horizontal
+          this.turnShipColor("yellow", s.identifier);
+
+          if (st.x == end.x) {
+            this.changeCellColor(s.spaces[0].x, s.spaces[0].y, "darkred", "user_");
+            this.changeCellColor(s.spaces[s.numSpaces - 1].x, s.spaces[s.numSpaces - 1].y, "pink", "user_");
+          } else {
+            this.changeCellColor(s.spaces[0].x, s.spaces[0].y, "pink", "user_");
+            this.changeCellColor(s.spaces[s.numSpaces - 1].x, s.spaces[s.numSpaces - 1].y, "darkred", "user_");
+          }
+          this.gameControls.setMessage("Move the selected ship forward or backward. Pink represents the back of the boat, while dark red represents the front of the boat.");
+          this.selectedShipId = s.identifier;
+          break;
+        }
+      }
+
+
+      this.turnShipColor(shipId, "black");
+      this.gameControls.showDirectionalButtons();
+      this.gameControls.hideMoveButton();
+      this.gameControls.hideSurrenderButton();
+
     }
   }
 
-  makePlayerAttack(_x, _y) {
+  makePlayerAttack(_x, _y, _playerPos) {
     this.lastX = _x;
     this.lastY = _y;
     let request : AttackRequest = {
       x : _x,
-      y : _y
+      y : _y,
+      playerPos: _playerPos
     }
 
     let j = JSON.stringify(request);
 
 
-    this.stomp.sendMove(j);
+    this.stomp.sendAttack(j);
 
     console.log(request);
   }
 
-  makePlayerMove(_x, _y, _direction) {
+  makePlayerMove(id, _direction) {
     let request : MoveRequest = {
-      x: _x,
-      y: _y, 
+      shipId: id,
       direction: _direction
     }
+    let j = JSON.stringify(request);
 
-    console.log(request);
+    this.stomp.sendMove(j);
+
+  }
+
+  turnAllShipsColor(color) {
+    for (var i = 0; i < this.ships.length; i++) {
+      this.turnShipColor(color, this.ships[i].identifier);
+    }
+  }
+
+  shipContainsPoint(s: Ship, x: number, y: number) {
+    for (var i = 0; i < s.spaces.length; i++) {
+      let point = s.spaces[i];
+      if (point.x == x && point.y == y) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  turnShipColor(color, id) {
+    for (var i = 0; i < this.ships.length; i++) {
+      if (i == id) {
+        let ship = this.ships[i];
+        for (var j = 0; j < ship.spaces.length; j++) {
+          var x = ship.spaces[j].x;
+          var y = ship.spaces[j].y;
+          var domId = y * this.gridSize + x;
+          document.getElementById("user_"+domId).style.backgroundColor = color;
+        }
+      }
+    }
+
+    this.renderAllAttackResponsesRecieved();
+
+  }
+
+  changeCellColor(x, y, color, prefix) {
+    var id = y * this.gridSize + x;
+    document.getElementById(prefix+id).style.backgroundColor = color;
+
+  }
+
+  renderAllAttackResponsesRecieved() {
+    for (var i = 0; i < this.attackResponses.length; i++) {
+      console.log("iterate");
+      let r = this.attackResponses[i];
+      if (r.theirMove.substring(0,3) == "hit") {
+        //this.markUserGrid(r.x, r.y, true);
+      } else {
+        //this.markUserGrid(r.x, r.y, false);
+      }
+    }
   }
 
   
@@ -244,6 +402,7 @@ interface Cell {
   row: number;
   col: number;
   index: string;
+  id: string;
 }
 
 interface Ship {
@@ -256,15 +415,15 @@ interface AttackResponse {
   yourMove: string,
   theirMove: string,
   message: string,
-  x: number,
-  y: number
+  coors: CoordinateWithInfo[]
 }
 
 interface GameResponse {
-  userId: number,
+  userId: string,
   userName: string,
   victoryMessage: string,
-  ships: Ship[]
+  ships: Ship[],
+  numOpponents: number
 }
 
 interface Coordinate {
@@ -272,15 +431,27 @@ interface Coordinate {
   y: number
 }
 
+interface CoordinateWithInfo {
+  x: number,
+  y: number,
+  playerPos: number,
+  info: string
+}
+
 interface AttackRequest {
   x: number,
-  y: number
+  y: number,
+  playerPos: string
 }
 
 interface MoveRequest {
-  x: number,
-  y: number,
-  direction: number
+  shipId: number,
+  direction: String
+}
+
+interface MoveResponse {
+  shipId: number,
+  spaces: Coordinate[]
 }
 
 interface EndGameResponse {

@@ -1,3 +1,7 @@
+div.row{
+  height: 100%;
+}
+
 div.userGrid {
     background: #999;
     float: left;

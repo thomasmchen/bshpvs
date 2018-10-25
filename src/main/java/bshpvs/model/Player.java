@@ -121,12 +121,15 @@ public class Player implements Playable{
      */
     public void removeShip(CellType ct) {
         // Verify ship exists on Player's board
-        if (ships.containsKey(ct)) {
+        if (!ships.containsKey(ct)) {
             throw new IllegalArgumentException("Ship: " + ct.toString() + " does not exist.");
         }
-
+;
         // Remove Ship coordinates from Player's board
         unsetShip(ct);
+
+        ships.remove(ct);
+
     }
 
     /**
@@ -298,6 +301,7 @@ public class Player implements Playable{
      */
     public Point genRandomTarget(Player opp) {
         Random gen = new Random();
+        System.out.println("Value of target board " + targetBoard.get(opp));
         Point tgt = new Point(gen.nextInt(targetBoard.get(opp).getLength()), gen.nextInt(targetBoard.get(opp).getLength()));
         if (opp.getCell(tgt).isHit()) {
             for (int i = 0; i < opp.getMap().getLength(); i++) {
@@ -317,10 +321,16 @@ public class Player implements Playable{
      * @return the randomly selected Player
      */
     public Player genRandomOpp() {
+        List<Player> alivePlayers = new ArrayList<Player>();
         List<Player> players = new ArrayList<Player>(targetBoard.keySet());
+        for (int i = 0; i < players.size(); i ++) {
+            if (!players.get(i).isDefeated()) {
+                alivePlayers.add(players.get(i));
+            }
+        }
         Random gen = new Random();
-        int index = gen.nextInt(players.size());
-        return players.get(index);
+        int index = gen.nextInt(alivePlayers.size());
+        return alivePlayers.get(index);
     }
 
     /**
@@ -380,6 +390,10 @@ public class Player implements Playable{
      */
     public boolean isMovementValid(Point st, Point end, CellType ct) {
         // Validate that Ship will not overlap with any other Ship
+
+        if (st.x < 0 || st.y < 0) return false;
+        if (st.x > this.getMap().getLength() - 1 || st.y > this.getMap().getLength() - 1) return false;
+
         Ship newShip = new Ship(st, end, ct);
         if (isValidPoint(st, this.getMap()) && isValidPoint(end, this.getMap())) {
             for (CellType s : ships.keySet()) {
@@ -398,8 +412,13 @@ public class Player implements Playable{
      * Move a specific ship forward
      * @param ct the ship to be moved
      */
-    public void moveForward(CellType ct) throws ImmobileShipException{
+    public Ship moveForward(CellType ct) throws ImmobileShipException{
+        System.out.println(ct);
         Ship shipToBeMoved = ships.get(ct);
+
+        for (int i = 0; i < this.ships.keySet().size(); i++) {
+            System.out.println(this.ships.keySet().toArray()[i]);
+        }
 
         if (shipToBeMoved.checkHit(this.getMap())) {
             throw new ImmobileShipException(shipToBeMoved.getType().getText() +
@@ -408,26 +427,33 @@ public class Player implements Playable{
 
         Point newSt = shipToBeMoved.st;
         Point newEnd = shipToBeMoved.end;
+        System.out.println(newSt.toString());
+        System.out.println(newEnd.toString());
 
         if (shipToBeMoved.isVertical()) {
-            newSt.y--;
+            newSt.y++;
             newEnd.y++;
         } else {
             newSt.x++;
-            newEnd.x--;
+            newEnd.x++;
         }
 
         if (isMovementValid(newSt, newEnd, ct)) {
-            ships.remove(ct);
-            this.addShip(new Ship(newSt, newEnd, ct));
+            this.removeShip(ct);
+            Ship s = new Ship(newSt, newEnd, ct);
+            this.addShip(s);
+            return s;
         }
+        System.out.println("Movement was not valid");
+
+        return null;
     }
 
     /**
      * Move a specific ship backward
      * @param ct the ship to be moved
      */
-    public void moveBackward(CellType ct) throws ImmobileShipException {
+    public Ship moveBackward(CellType ct) throws ImmobileShipException {
         Ship shipToBeMoved = ships.get(ct);
         Point newSt = shipToBeMoved.st;
         Point newEnd = shipToBeMoved.end;
@@ -438,17 +464,23 @@ public class Player implements Playable{
         }
 
         if (shipToBeMoved.isVertical()) {
-            newSt.y++;
+            newSt.y--;
             newEnd.y--;
         } else {
             newSt.x--;
-            newEnd.x++;
+            newEnd.x--;
         }
 
         if (isMovementValid(newSt, newEnd, ct)) {
-            ships.remove(ct);
-            this.addShip(new Ship(newSt, newEnd, ct));
+            this.removeShip(ct);
+            Ship s = new Ship(newSt, newEnd, ct);
+            this.addShip(s);
+            return s;
         }
+
+        System.out.println("Movement was not valid");
+
+        return null;
     }
 
 

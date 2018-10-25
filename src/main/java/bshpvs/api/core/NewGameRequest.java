@@ -27,6 +27,10 @@ public class NewGameRequest
 
     private String selectedAI;
 
+    @JsonProperty("numberOfOpponents") 
+    private String numberOfOpponents;
+
+
     public String getUserId ()
     {
         return userId;
@@ -63,6 +67,14 @@ public class NewGameRequest
     public void setShips (UserShip[] ships)
     {
         this._ships = ships;
+    }
+
+    public int getNumOpponents() {
+        return Integer.parseInt(numberOfOpponents);
+    }
+
+    public void setNumOpponents(String numOpponents) {
+        this.numberOfOpponents = numOpponents;
     }
 
     public void convertShips () {
