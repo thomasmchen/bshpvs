@@ -1,2 +1,173 @@
 package bshpvs.model;
 
+import java.awt.Point;
+import java.awt.geom.Line2D;
+
+/**
+ * Ship class
+ */
+public class Ship {
+    public Point st;
+    public Point end;
+    private CellType type;
+    private Point[] points;
+    private boolean isVertical;
+
+    /**
+     * Constructor for Ship Class.
+     * @param start starting coordinate point for ship
+     * @param end ending coordinate point for ship
+     * @param type type of ship
+     */
+    public Ship(Point start, Point end, CellType type) {
+        this.st = start;
+        this.end = end;
+
+        int length = (int) start.distance(end);
+        length++;
+        if (length != type.getValue() || type.getGroup().equals(CellGroup.TERRAIN)) {
+            throw new IllegalArgumentException("Length from " +
+                            start.toString() + " to " + end.toString() + " of " + length +
+                            " does not match length of " + type.toString() + " of " + type.getValue());
+        } else {
+            this.type = type;
+        }
+
+        this.points = calcShipPoints();
+    }
+
+    /**
+     * Calculates the the individual points of the Ship
+     * @return the points of the ship
+     */
+    private Point[] calcShipPoints() {
+        Point[] pts = new Point[type.getValue()];
+
+        int x = this.st.x;
+        int y = this.st.y;
+        int i = 0;
+
+        if (this.st.x == this.end.x) {
+            this.isVertical = true;
+            if (this.st.y < this.end.y) {
+                while (y != (this.end.y + 1)) {
+                    pts[i] = new Point(this.st.x, y);
+                    y++;
+                    i++;
+                }
+            } else {
+                while (y != (this.end.y - 1)) {
+                    pts[i] = new Point(this.st.x, y);
+                    y--;
+                    i++;
+                }
+            }
+        } else {
+            this.isVertical = false;
+            if (this.st.x < this.end.x) {
+                while ((x != this.end.x + 1)) {
+                    pts[i] = new Point(x, this.st.y);
+                    x++;
+                    i++;
+                }
+            } else {
+                while ((x != this.end.x - 1)) {
+                    pts[i] = new Point(x, this.st.y);
+                    x--;
+                    i++;
+                }
+            }
+        }
+        return pts;
+    }
+
+    /**
+     * Returns whether the ship is vertical (all x values of points are identical)
+     * @return isVertical field
+     */
+    public boolean isVertical() {
+        return this.isVertical;
+    }
+
+    /**
+     * Checks if given Ship is sunk on a given board
+     * @param board the board the ship is on
+     * @return whether the Ship is sunk
+     */
+    public boolean checkSunk(Map board) {
+        Cell[][] map = board.getMap();
+        int hitCount = 0;
+        for (Point p : points) {
+            if (map[p.y][p.x].isHit())
+                hitCount++;
+        }
+
+        return (hitCount == points.length);
+    }
+
+    /**
+     * Check if any part of the ship has been hit
+     * @param board the board the ship is on
+     * @return whether any part of the ship is hit
+     */
+    public boolean checkHit(Map board) {
+        Cell[][] map = board.getMap();
+        for (Point p : points) {
+            if (map[p.y][p.x].isHit()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Accessor function for type of Ship object.
+     * @return the type of the ship
+     */
+    public CellType getType() {
+        return this.type;
+    }
+
+    /**
+     * Accessor function for the points of a ship
+     * @return the points of a ship
+     */
+    public Point[] getPoints() {
+        this.calcShipPoints();
+        return this.points;
+    }
+
+    /**
+     * Updates the ship points based on new starting/ending points
+     * @param st new start point
+     * @param end new end point
+     */
+    public void updatePoints(Point st, Point end) {
+        // Validate that new set of Points is equivalent in length to ShipType
+        int length = (int) st.distance(end);
+        if (length != type.getValue()) {
+            throw new IllegalArgumentException("Length from " +
+                    st.toString() + " to " + end.toString() + " of " + length +
+                    " does not match length of " + type.toString() + " of " + type.getValue());
+        }
+
+        // Update Points
+        this.st = st;
+        this.end = end;
+        this.points = calcShipPoints();
+    }
+
+    /**
+     * Checks if two ships overlap
+     * @param ext the ship to compare with
+     * @return whether or not the ships overlap
+     */
+    public boolean doesOverlap(Ship ext) {
+        return Line2D.linesIntersect(
+                st.x, st.y,
+                end.x, end.y,
+                ext.st.x, ext.st.y,
+                ext.end.x, ext.end.y);
+    }
+}

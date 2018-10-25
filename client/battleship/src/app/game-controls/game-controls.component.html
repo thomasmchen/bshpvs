@@ -1,0 +1,20 @@
+<mat-card>
+   <h2>Game Controls</h2> 
+   <div class="row">
+      <button mat-button  id="move" (click)="onMovedPressed()">Move ship</button>
+   </div>
+   <div class="row">
+      <button mat-button id="surrender">Surrender</button>
+   </div>
+
+
+<p id="message">{{message}}</p>
+
+<div class="row">
+    <button id="forward" mat-button (click)="onForwardPressed()" style="visibility: hidden;">Move forward</button>
+ </div>
+ <div class="row">
+    <button id="backward" mat-button (click)="onBackwardPressed()" style="visibility: hidden;">Move backward</button>
+ </div>
+
+</mat-card>
