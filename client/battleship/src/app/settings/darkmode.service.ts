@@ -19,7 +19,7 @@ export class DarkModeService {
     currentTimer = this.timerSource.asObservable();
 
     toggleTimer(timer: boolean) {
-        this.timerSource.next(timer);
+        this.timerSource.next(!timer);
     }
 
     public fsMode: boolean = false;
