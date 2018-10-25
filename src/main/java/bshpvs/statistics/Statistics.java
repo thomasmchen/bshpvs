@@ -31,8 +31,8 @@ public class Statistics {
     }
 
     public void printPlayerStats(String player) {
-        double avgHitPerc = 0;
-        double avgMissPerc = 0;
+        double avgHitPerc = 0.0;
+        double avgMissPerc = 0.0;
         int wins = 0;
         int losses = 0;
         double winlossRatio = 0;
@@ -50,14 +50,14 @@ public class Statistics {
                 avgMissPerc += ps.getMissPerc();
             }
 
+            avgHitPerc = avgHitPerc/(double) playerStats.size();
+            avgMissPerc = avgMissPerc/(double) playerStats.size();
+
             if (gs.getWinner().getPlayerType().equals(player)) {
                 wins++;
             } else {
                 losses++;
             }
-
-            avgHitPerc = avgHitPerc/playerStats.size();
-            avgMissPerc = avgMissPerc/playerStats.size();
         }
 
 

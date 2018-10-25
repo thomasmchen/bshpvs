@@ -129,6 +129,8 @@ public class AIGame {
         for (int i = 0; i < 10000; i++) {
             ArrayList<Player> players = new ArrayList<>();
             players.add(new NaivePlayer());
+            players.add(new NaivePlayer());
+            players.add(new HunterPlayer());
             players.add(new HunterPlayer());
 
             GameStat round = playMultiMatch(players);

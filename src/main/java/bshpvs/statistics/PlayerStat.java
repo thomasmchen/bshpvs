@@ -21,11 +21,11 @@ public class PlayerStat implements Comparable<PlayerStat> {
     }
 
     public double getHitPerc() {
-        return hits/(double) turns;
+        return hits/(double) (hits + misses);
     }
 
     public double getMissPerc() {
-        return misses/(double) turns;
+        return misses/(double) (hits + misses);
     }
 
     public int getTurns() {
