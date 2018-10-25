@@ -39,6 +39,7 @@ public class Game {
         for (int i = 0; i < this.opponents.length; i++) {
             randomPromptShips(this.opponents[i]);
         }
+        this.startTime = System.nanoTime();
     }
 
     public MoveResponse moveTurn(int shipId, String direction) {
