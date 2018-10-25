@@ -54,7 +54,8 @@ export class StatisticsComponent implements OnInit {
 
   ngOnInit() {
     this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
-    const body = document.getElementsByTagName('mat-card')[0];
+    const body = document.getElementById('darkmode-container');
+    console.log(body);
     if(this.darkMode) {
       body.classList.add('darkMode');
     } else {
