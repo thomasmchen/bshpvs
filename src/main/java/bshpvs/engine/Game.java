@@ -13,9 +13,12 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.*;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
+
 
 public class Game {
     public Player firstPlayer;
@@ -117,6 +120,18 @@ public class Game {
 
             if (c.getType().getGroup().equals(CellGroup.SHIP) && opp.isShipSunk(c.getType())) {
                 yourMove = "sunk " + c.getType();
+                EnumMap<CellType, Ship> ships = opp.getShips();
+                for (Entry<CellType, Ship> s : ships.entrySet()) {
+                    if (s.getKey() == c.getType()) {
+                        System.out.println("We found the sunk ship");
+                        Point[] p = s.getValue().getPoints();
+                        for (int j = 0; j < p.length; j++){
+                            CoordinateWithInfo info = new CoordinateWithInfo(p[j].x, p[j].y, playerPos, "sunk");
+                            coors.add(info);
+                        }
+                    }
+                }
+
             }
          } else {
             yourMove = "move";
