@@ -127,6 +127,8 @@ export class GameWindowComponent implements OnInit {
           this.changeCellColor(coor.x, coor.y, "black", prefix);
         } else if (coor.info == "miss") {
           this.changeCellColor(coor.x, coor.y, "yellow", prefix);
+        } else if (coor.info == "sunk") {
+            this.changeCellColor(coor.x, coor.y, "purple", prefix);
         } else if (coor.info == "won") {
           window.alert("Congrats, you won!");
           this.won = true;
@@ -134,7 +136,17 @@ export class GameWindowComponent implements OnInit {
           window.alert("Sorry, you lost!");
           this.won = true;
         }
+
       }
+
+      if (r.yourMove.substring(0, 3) == 'hit') {
+        this.gameControls.setMessage('Your move: '+ r.yourMove);
+      } else if (r.yourMove.substring(0,4) == 'sunk') {
+        this.gameControls.setMessage('Your move: '+ r.yourMove);
+      } else {
+        this.gameControls.setMessage('Your move: missed opponent');
+      }
+
             
     });
     this.stomp.sendGameWindowInit();
