@@ -134,7 +134,17 @@ export class GameWindowComponent implements OnInit {
           window.alert("Sorry, you lost!");
           this.won = true;
         }
+
       }
+
+      if (r.yourMove.substring(0, 3) == 'hit') {
+        this.gameControls.setMessage('Your move: '+ r.yourMove);
+      } else if (r.yourMove.substring(0,4) == 'sunk') {
+        this.gameControls.setMessage('Your move: '+ r.yourMove);
+      } else {
+        this.gameControls.setMessage('Your move: missed opponent');
+      }
+
             
     });
     this.stomp.sendGameWindowInit();
