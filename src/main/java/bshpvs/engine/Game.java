@@ -199,7 +199,7 @@ public class Game {
             
 
             //create game stat object
-            this.gameStat = new GameStat(stats, gameTime / 1000000000, winner);
+            this.gameStat = new GameStat(stats, gameTime, winner);
          }
 
 
