@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { DarkModeService } from '../settings/darkmode.service';
@@ -41,12 +42,24 @@ export class NewGameMenuComponent implements OnInit {
   selectedAI: string = this.availableAI[0];
   numberOfOpponents: string = '1';
 
-  constructor(public snackbar: MatSnackBar, private stomp: WebService, private router: Router, private dm: DarkModeService, private auth: AuthService) { 
+  constructor(public snackbar: MatSnackBar, private stomp: WebService, private router: Router, private dm: DarkModeService, private auth: AuthService, @Inject(DOCUMENT) private document: any) { 
     // initialize connection to backend
     stomp.reinitializeConnection();  
   }
 
   ngOnInit() {
+    if (this.document.exitFullscreen) {
+      this.document.exitFullscreen();
+    } else if (this.document.mozCancelFullScreen) {
+      /* Firefox */
+      this.document.mozCancelFullScreen();
+    } else if (this.document.webkitExitFullscreen) {
+      /* Chrome, Safari and Opera */
+      this.document.webkitExitFullscreen();
+    } else if (this.document.msExitFullscreen) {
+      /* IE/Edge */
+      this.document.msExitFullscreen();
+    }
     this.dm.currentDarkMode.subscribe(darkMode => this.darkMode = darkMode);
     const body = document.getElementsByTagName('mat-card')[0];
     if(this.darkMode) {
