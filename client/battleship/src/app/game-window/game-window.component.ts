@@ -262,11 +262,9 @@ export class GameWindowComponent implements OnInit {
     if(this.darkMode) {
       body.classList.add('darkMode');
       body.getElementsByTagName('app-game-controls')[0].getElementsByTagName('mat-card')[0].classList.remove('mat-card');
-      timerBody.classList.add('darkMode');
     } else {
       body.classList.remove('darkMode');
       body.getElementsByTagName('app-game-controls')[0].getElementsByTagName('mat-card')[0].classList.add('mat-card');
-      timerBody.classList.remove('darkMode');
     }
     if(this.timer) {
       timerContainer.classList.remove('hidden');
