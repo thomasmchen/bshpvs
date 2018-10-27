@@ -13,9 +13,12 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.*;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
+
 
 public class Game {
     public Player firstPlayer;
@@ -39,6 +42,7 @@ public class Game {
         for (int i = 0; i < this.opponents.length; i++) {
             randomPromptShips(this.opponents[i]);
         }
+        this.startTime = System.nanoTime();
     }
 
     public MoveResponse moveTurn(int shipId, String direction) {
@@ -117,6 +121,18 @@ public class Game {
 
             if (c.getType().getGroup().equals(CellGroup.SHIP) && opp.isShipSunk(c.getType())) {
                 yourMove = "sunk " + c.getType();
+                EnumMap<CellType, Ship> ships = opp.getShips();
+                for (Entry<CellType, Ship> s : ships.entrySet()) {
+                    if (s.getKey() == c.getType()) {
+                        System.out.println("We found the sunk ship");
+                        Point[] p = s.getValue().getPoints();
+                        for (int j = 0; j < p.length; j++){
+                            CoordinateWithInfo info = new CoordinateWithInfo(p[j].x, p[j].y, playerPos, "sunk");
+                            coors.add(info);
+                        }
+                    }
+                }
+
             }
          } else {
             yourMove = "move";
@@ -142,6 +158,21 @@ public class Game {
             } else {
                 CoordinateWithInfo info = new CoordinateWithInfo(tgt.x, tgt.y, pos, "miss");
                 coors.add(info);
+            }
+
+            if (a.getType().getGroup().equals(CellGroup.SHIP) && opp.isShipSunk(a.getType())) {
+                EnumMap<CellType, Ship> ships = opp.getShips();
+                for (Entry<CellType, Ship> s : ships.entrySet()) {
+                    if (s.getKey() == a.getType()) {
+                        System.out.println("We found the sunk ship");
+                        Point[] d = s.getValue().getPoints();
+                        for (int j = 0; j < d.length; j++){
+                            CoordinateWithInfo info = new CoordinateWithInfo(d[j].x, d[j].y, pos, "sunk");
+                            coors.add(info);
+                        }
+                    }
+                }
+
             }
          }
 

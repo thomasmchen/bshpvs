@@ -115,6 +115,10 @@ public class Player implements Playable{
         statuses.put(shp.getType(), false);
     }
 
+    public EnumMap<CellType, Ship> getShips() {
+        return ships;
+    }
+
     /**
      * Removes a ship from the board
      * @param ct the ship type to be removed
@@ -315,6 +319,7 @@ public class Player implements Playable{
 
         return tgt;
     }
+    
 
     /**
      * Selects a random Player opponent from targets
