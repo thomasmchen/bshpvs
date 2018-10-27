@@ -2,6 +2,7 @@
     margin: auto;
     width: 80%;
     height: 50%;
+    min-height: 1000px;
 }
 .option-btns-box {
     margin: 2%;
