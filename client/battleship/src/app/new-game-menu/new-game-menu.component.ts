@@ -91,7 +91,7 @@ export class NewGameMenuComponent implements OnInit {
       this.message = "Place your cruiser (3 spaces)";
       this.placementCounter++;
       if (this.placementCounter == this.carrier.numSpaces + this.battleship.numSpaces + this.cruiser.numSpaces) {
-        this.message = "Place your submarine (2 spaces)";
+        this.message = "Place your submarine (3 spaces)";
       }
     } else if (this.placementCounter < total - this.destroyer.numSpaces) {
       if(!this.checkValidMove(event, this.submarine))
