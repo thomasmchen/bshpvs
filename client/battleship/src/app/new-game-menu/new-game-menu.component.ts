@@ -255,7 +255,7 @@ export class NewGameMenuComponent implements OnInit {
         victoryMessage: this.victoryMessage,
         ships: reqs,
         selectedAI: this.selectedAI,
-        numberOfOpponents: this.numberOfOpponents
+        numberOfOpponents: '1'
       };
       //this.router.navigateByUrl('/gameWindow');
 
