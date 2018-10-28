@@ -86,13 +86,13 @@ export class NewGameMenuComponent implements OnInit {
       this.message = "Place your carrier (5 spaces)";
       this.placementCounter++;
       if (this.placementCounter == this.carrier.numSpaces) {
-        this.message = "Place your battleship (4 spaces)";
+        this.message = "Place your battleship (3 spaces)";
       }
     } else if (this.placementCounter < this.battleship.numSpaces + this.carrier.numSpaces) {
       if(!this.checkValidMove(event, this.battleship))
         return;
       this.battleship.spaces.push({x: event.col, y: event.row});
-      this.message = "Place your battleship (4 spaces)";
+      this.message = "Place your battleship (3 spaces)";
       this.placementCounter++;
       if (this.placementCounter == this.carrier.numSpaces + this.battleship.numSpaces) {
         this.message = "Place your cruiser (3 spaces)";
