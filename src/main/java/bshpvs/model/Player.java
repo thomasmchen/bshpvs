@@ -202,8 +202,6 @@ public class Player implements Playable{
         Cell c = player.getHit(pt);
 
         // Update Stats
-        this.getPlayerStat().incrementTurns();
-
         if (c.isShip()) {
             this.getPlayerStat().incrementHits();
         } else {
