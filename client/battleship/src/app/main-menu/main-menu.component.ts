@@ -18,7 +18,7 @@ export class MainMenuComponent implements OnInit {
   darkMode:boolean;
   user_id:String;
 
-  constructor(private router: Router, private dm: DarkModeService, private auth: AuthService, private stomp: WebService) { 
+  constructor(private router: Router, private dm: DarkModeService, private auth: AuthService, private stomp: WebService) {
     stomp.initializeConnection();
 
   }
@@ -66,7 +66,7 @@ export class MainMenuComponent implements OnInit {
     });
 
 
-    this.router.navigateByUrl('/login');
+    //this.router.navigateByUrl('/login');
     //onSignIn(auth2);
   }
 
