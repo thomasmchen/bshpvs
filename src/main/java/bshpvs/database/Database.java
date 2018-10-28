@@ -88,7 +88,7 @@ public class Database {
             insertPreparedStatement.setInt(1, count + 1); // ID
             insertPreparedStatement.setString(2, GoogleID); // User_ID [VITAL]
             insertPreparedStatement.setInt(3, gs.getNumPlayers()); // Num_Players
-            insertPreparedStatement.setDouble(4, (double)(ps.getHitPerc())); // Hit_Perc
+            insertPreparedStatement.setDouble(4, (double)(ps.getMissPerc())); // Hit_Perc
             insertPreparedStatement.setDouble(5, (double)(ps.getMissPerc())); // Miss_Perc
             insertPreparedStatement.setInt(6, gs.getTotalTurns()); // Total_Turns
             insertPreparedStatement.setLong(7, gs.getTime()); // Time
