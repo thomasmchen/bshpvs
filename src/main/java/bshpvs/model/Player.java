@@ -207,12 +207,7 @@ public class Player implements Playable{
         } else {
             this.getPlayerStat().incrementMisses();
         }
-
-        // Update player record of attack
-        this.targetBoard.get(player).setCell(pt, c.getType());
-        this.targetBoard.get(player).getCell(pt).hit();
-        //this.targetBoard.setCell(pt, c.getType());
-        //this.targetBoard.getCell(pt).hit();
+        
         return c;
     }
 
