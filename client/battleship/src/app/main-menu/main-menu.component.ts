@@ -38,7 +38,7 @@ export class MainMenuComponent implements OnInit {
   }
 
   settingsClicked() {
-    this.router.navigateByUrl('/settings');
+    this.router.navigateByUrl('/about');
   }
 
   statisticsClicked() {
