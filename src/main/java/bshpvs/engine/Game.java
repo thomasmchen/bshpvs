@@ -124,7 +124,6 @@ public class Game {
                 EnumMap<CellType, Ship> ships = opp.getShips();
                 for (Entry<CellType, Ship> s : ships.entrySet()) {
                     if (s.getKey() == c.getType()) {
-                        System.out.println("We found the sunk ship");
                         Point[] p = s.getValue().getPoints();
                         for (int j = 0; j < p.length; j++){
                             CoordinateWithInfo info = new CoordinateWithInfo(p[j].x, p[j].y, playerPos, "sunk");
@@ -168,7 +167,7 @@ public class Game {
                         Point[] d = s.getValue().getPoints();
                         for (int j = 0; j < d.length; j++){
                             CoordinateWithInfo info = new CoordinateWithInfo(d[j].x, d[j].y, pos, "sunk");
-                            coors.add(info);
+                            //coors.add(info);
                         }
                     }
                 }
