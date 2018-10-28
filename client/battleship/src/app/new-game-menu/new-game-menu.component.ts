@@ -126,6 +126,11 @@ export class NewGameMenuComponent implements OnInit {
     }
     var tempShip = ship;
     let colinearTest = this.checkShipColinear(ship, {x: event.col, y: event.row});
+    let diagnolTest = this.checkShipDiagnol(ship, {x: event.col, y: event.row});
+
+    if (diagnolTest) {
+      return false;
+    }
     if (!colinearTest && ship.spaces.length >= 2) {
       return false;
     }
@@ -149,6 +154,8 @@ export class NewGameMenuComponent implements OnInit {
     }
     return flag;
   }
+
+  
 
   checkShipColinear(ship: Ship, coordinate: Coordinate) {
     if (ship.spaces.length < 2) {
@@ -185,7 +192,7 @@ export class NewGameMenuComponent implements OnInit {
   }
 
   checkShipDiagnol(ship: Ship, coordinate: Coordinate) {
-    if (ship.spaces.length < 2) {
+    if (ship.spaces.length < 1) {
       return true;
     } else {
       var tempSpaces = new Array<Coordinate>();
@@ -195,8 +202,13 @@ export class NewGameMenuComponent implements OnInit {
         tempSpaces.push(tempSpace);
       }
 
-      tempSpaces.push(coordinate);
+      if (coordinate.x != tempSpaces[tempSpaces.length - 1].x && coordinate.y != tempSpaces[tempSpaces.length - 1].y) {
+        return true;
+      }
+
     }
+
+    return false;
   }
 
 
