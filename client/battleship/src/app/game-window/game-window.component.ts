@@ -262,6 +262,7 @@ export class GameWindowComponent implements OnInit {
     if(this.darkMode) {
       body.classList.add('darkMode');
       body.getElementsByTagName('app-game-controls')[0].getElementsByTagName('mat-card')[0].classList.remove('mat-card');
+      this.dm.toggleDarkMode(!this.darkMode);
     } else {
       body.classList.remove('darkMode');
       body.getElementsByTagName('app-game-controls')[0].getElementsByTagName('mat-card')[0].classList.add('mat-card');
