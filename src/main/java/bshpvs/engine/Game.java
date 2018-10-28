@@ -335,9 +335,9 @@ public class Game {
      * @param pl the player to be populated
      */
     public static void randomPromptShips(Player pl) {
-        for (CellType ct : CellType.values()) {
-            if (ct.getGroup().equals(CellGroup.SHIP)) {
-                genShip(pl.getMap().getLength(), ct, pl);
+        for (int i = 1; i < CellType.values().length; i++) {
+            if (CellType.values()[i].getGroup().equals(CellGroup.SHIP)) {
+                genShip(pl.getMap().getLength(), CellType.values()[i], pl);
             }
         }
     }
