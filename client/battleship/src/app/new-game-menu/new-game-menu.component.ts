@@ -86,13 +86,13 @@ export class NewGameMenuComponent implements OnInit {
       this.message = "Place your carrier (5 spaces)";
       this.placementCounter++;
       if (this.placementCounter == this.carrier.numSpaces) {
-        this.message = "Place your battleship (4 spaces)";
+        this.message = "Place your battleship (3 spaces)";
       }
     } else if (this.placementCounter < this.battleship.numSpaces + this.carrier.numSpaces) {
       if(!this.checkValidMove(event, this.battleship))
         return;
       this.battleship.spaces.push({x: event.col, y: event.row});
-      this.message = "Place your battleship (4 spaces)";
+      this.message = "Place your battleship (3 spaces)";
       this.placementCounter++;
       if (this.placementCounter == this.carrier.numSpaces + this.battleship.numSpaces) {
         this.message = "Place your cruiser (3 spaces)";
@@ -139,6 +139,8 @@ export class NewGameMenuComponent implements OnInit {
     }
     var tempShip = ship;
     let colinearTest = this.checkShipColinear(ship, {x: event.col, y: event.row});
+    let diagnolTest = this.checkShipDiagnol(ship, {x: event.col, y: event.row});
+   
     if (!colinearTest && ship.spaces.length >= 2) {
       return false;
     }
@@ -198,7 +200,7 @@ export class NewGameMenuComponent implements OnInit {
   }
 
   checkShipDiagnol(ship: Ship, coordinate: Coordinate) {
-    if (ship.spaces.length < 2) {
+    if (ship.spaces.length < 1) {
       return true;
     } else {
       var tempSpaces = new Array<Coordinate>();
@@ -208,8 +210,13 @@ export class NewGameMenuComponent implements OnInit {
         tempSpaces.push(tempSpace);
       }
 
-      tempSpaces.push(coordinate);
+      if (coordinate.x != tempSpaces[tempSpaces.length - 1].x && coordinate.y != tempSpaces[tempSpaces.length - 1].y) {
+        return true;
+      }
+
     }
+
+    return false;
   }
 
 
@@ -248,7 +255,7 @@ export class NewGameMenuComponent implements OnInit {
         victoryMessage: this.victoryMessage,
         ships: reqs,
         selectedAI: this.selectedAI,
-        numberOfOpponents: this.numberOfOpponents
+        numberOfOpponents: '1'
       };
       //this.router.navigateByUrl('/gameWindow');
 

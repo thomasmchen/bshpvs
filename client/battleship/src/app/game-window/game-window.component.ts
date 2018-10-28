@@ -253,13 +253,7 @@ export class GameWindowComponent implements OnInit {
     tmr.subscribe(
       function(x) {
         var tst = document.querySelector(".timerContainer");
-        var sec = x%60;
-        var min = Math.floor(x/60);
-        if(sec < 10) {
-          tst.innerHTML = min+":0"+sec;
-        } else {
-          tst.innerHTML = min+":"+sec;
-        }
+        tst.innerHTML = ""+x;
       }
     );
     const body = document.getElementsByTagName('mat-card')[0];
@@ -268,11 +262,10 @@ export class GameWindowComponent implements OnInit {
     if(this.darkMode) {
       body.classList.add('darkMode');
       body.getElementsByTagName('app-game-controls')[0].getElementsByTagName('mat-card')[0].classList.remove('mat-card');
-      timerBody.classList.add('darkMode');
+      this.dm.toggleDarkMode(!this.darkMode);
     } else {
       body.classList.remove('darkMode');
       body.getElementsByTagName('app-game-controls')[0].getElementsByTagName('mat-card')[0].classList.add('mat-card');
-      timerBody.classList.remove('darkMode');
     }
     if(this.timer) {
       timerContainer.classList.remove('hidden');

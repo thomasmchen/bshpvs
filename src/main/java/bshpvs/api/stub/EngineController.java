@@ -149,11 +149,11 @@ public class EngineController {
             if (winCheck.info.equals("won")) {
                 System.out.println("The user won the game");
                 Database db = new Database();
-            db.addGameData(newGameRequest.getUserId(), this.game.gameStat, this.playerOne.getPlayerStat());
+            db.addGameData(newGameRequest.getUserId(), this.game.gameStat, this.game.gameStat.getWinner());
             } else if (winCheck.info.equalsIgnoreCase("lost")) {
                 System.out.println("The user lost the game");
                 Database db = new Database();
-                db.addGameData(newGameRequest.getUserId(), this.game.gameStat, this.playerOne.getPlayerStat()); 
+                db.addGameData(newGameRequest.getUserId(), this.game.gameStat, this.game.gameStat.getWinner()); 
             }
         }
 
