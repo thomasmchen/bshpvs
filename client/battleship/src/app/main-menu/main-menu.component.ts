@@ -38,7 +38,7 @@ export class MainMenuComponent implements OnInit {
   }
 
   settingsClicked() {
-    this.router.navigateByUrl('/about');
+    this.router.navigateByUrl('/statistics');
   }
 
   statisticsClicked() {
@@ -47,7 +47,7 @@ export class MainMenuComponent implements OnInit {
     let sendFormat = "{\"id\":\""+this.user_id+"\"}";
     this.stomp.sendID(sendFormat);
 
-    this.router.navigateByUrl('/statistics');
+    this.router.navigateByUrl('/settings');
 
   }
 
@@ -55,9 +55,9 @@ export class MainMenuComponent implements OnInit {
     this.router.navigateByUrl('/createStrategy');
   }
 
-  aboutClicked() {
+  /*aboutClicked() {
     this.router.navigateByUrl('/settings');
-  }
+  }*/
   logOutClicked() {
     //declare var gapi : any;
     var auth2 = gapi.auth2.getAuthInstance();
