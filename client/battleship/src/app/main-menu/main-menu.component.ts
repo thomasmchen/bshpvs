@@ -38,7 +38,7 @@ export class MainMenuComponent implements OnInit {
   }
 
   settingsClicked() {
-    this.router.navigateByUrl('/settings');
+    this.router.navigateByUrl('/about');
   }
 
   statisticsClicked() {
@@ -56,7 +56,7 @@ export class MainMenuComponent implements OnInit {
   }
 
   aboutClicked() {
-    this.router.navigateByUrl('/about');
+    this.router.navigateByUrl('/settings');
   }
   logOutClicked() {
     //declare var gapi : any;

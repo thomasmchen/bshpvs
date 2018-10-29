@@ -42,9 +42,9 @@ export class NewGameMenuComponent implements OnInit {
   selectedAI: string = this.availableAI[0];
   numberOfOpponents: string = '1';
 
-  constructor(public snackbar: MatSnackBar, private stomp: WebService, private router: Router, private dm: DarkModeService, private auth: AuthService, @Inject(DOCUMENT) private document: any) { 
+  constructor(public snackbar: MatSnackBar, private stomp: WebService, private router: Router, private dm: DarkModeService, private auth: AuthService, @Inject(DOCUMENT) private document: any) {
     // initialize connection to backend
-    stomp.reinitializeConnection();  
+    stomp.reinitializeConnection();
   }
 
   ngOnInit() {
@@ -76,7 +76,7 @@ export class NewGameMenuComponent implements OnInit {
         this.router.navigateByUrl('/gameWindow');
       });
     }
-    
+
 
     var total : number = this.carrier.numSpaces + this.battleship.numSpaces + this.destroyer.numSpaces + this.cruiser.numSpaces + this.submarine.numSpaces;
     if (this.placementCounter < this.carrier.numSpaces) {
@@ -140,11 +140,11 @@ export class NewGameMenuComponent implements OnInit {
     var tempShip = ship;
     let colinearTest = this.checkShipColinear(ship, {x: event.col, y: event.row});
     let diagnolTest = this.checkShipDiagnol(ship, {x: event.col, y: event.row});
-   
+
     if (!colinearTest && ship.spaces.length >= 2) {
       return false;
     }
-    
+
 
     var coordinates = ship.spaces;
     var flag = false;
@@ -222,11 +222,11 @@ export class NewGameMenuComponent implements OnInit {
 
   // Action where view sends information back to the backend
   onSubmit() {
-    if (this.victoryMessage == "" || this.username == "") {
+    /*if (this.victoryMessage == "" || this.username == "") {
       this.snackbar.open("Enter a victory message/username", 'Ok', {
         duration: 2000
       });
-    } else {
+    } else {*/
 
       let reqs = new Array<ShipReq>();
       let ships = new Array<Ship>();
@@ -234,7 +234,7 @@ export class NewGameMenuComponent implements OnInit {
       for (var i = 0; i < ships.length; i++) {
         let ship = ships[i];
         var req : ShipReq = {
-          identifier: ship.identifier, 
+          identifier: ship.identifier,
           numSpaces: ship.numSpaces,
           firstSpace: ship.spaces[0],
           lastSpace: ship.spaces[ship.spaces.length - 1]
@@ -259,11 +259,11 @@ export class NewGameMenuComponent implements OnInit {
       };
       //this.router.navigateByUrl('/gameWindow');
 
-     
+
       let r = JSON.stringify(request);
       this.stomp.sendMessage(r);
       console.log(r);
-    }
+    //}
   }
 
 }
