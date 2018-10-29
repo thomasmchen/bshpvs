@@ -43,7 +43,7 @@ public class Map {
     }
 
     public Cell getCell(Point p) {
-        return grid[p.x][p.y];
+        return grid[p.y][p.x];
     }
 
     public int getLength() {

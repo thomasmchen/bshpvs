@@ -141,7 +141,7 @@ public class EngineController {
     public AttackResponse turn(String json) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         AttackRequest req = objectMapper.readValue(json, AttackRequest.class);
-        Point p = new Point(req.x, req.y);
+        Point p = new Point(req.y, req.x);
         System.out.println("Attack request " + req.playerPos + " x: " + req.x + "y: " + req.y);
         AttackResponse response = this.game.turn(p, req.playerPos);
         CoordinateWithInfo winCheck = checkForWin(response);
