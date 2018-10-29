@@ -72,7 +72,7 @@ public class Game {
               Point p  = new Point(1, 1);
               Point[] points = {p};
             if (direction.equals("forward")) {
-                Ship result = this.firstPlayer.moveForward(type);
+                Ship result = this.firstPlayer.moveBackward(type);
                 firstPlayer.getMap().prettyPrintMap();
                 if (result == null) {
                     return new MoveResponse(-1, points);
@@ -80,7 +80,7 @@ public class Game {
                 Point[] spaces = result.getPoints();
                 return new MoveResponse(shipId, spaces);
             } else {
-                Ship result = this.firstPlayer.moveBackward(type);
+                Ship result = this.firstPlayer.moveForward(type);
                 firstPlayer.getMap().prettyPrintMap();
                 if (result == null) {
                     return new MoveResponse(-1, points);

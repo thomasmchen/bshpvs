@@ -207,7 +207,7 @@ public class Player implements Playable{
         } else {
             this.getPlayerStat().incrementMisses();
         }
-        
+
         return c;
     }
 
@@ -429,11 +429,11 @@ public class Player implements Playable{
         System.out.println(newEnd.toString());
 
         if (shipToBeMoved.isVertical()) {
-            newSt.y--;
-            newEnd.y--;
+            newSt.y++;
+            newEnd.y++;
         } else {
-            newSt.x--;
-            newEnd.x--;
+            newSt.x++;
+            newEnd.x++;
         }
 
         if (isMovementValid(newSt, newEnd, ct)) {
@@ -462,11 +462,11 @@ public class Player implements Playable{
         }
 
         if (shipToBeMoved.isVertical()) {
-            newSt.y++;
-            newEnd.y++;
+            newSt.y--;
+            newEnd.y--;
         } else {
-            newSt.x++;
-            newEnd.x++;
+            newSt.x--;
+            newEnd.x--;
         }
 
         if (isMovementValid(newSt, newEnd, ct)) {
