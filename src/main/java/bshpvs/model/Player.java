@@ -208,6 +208,9 @@ public class Player implements Playable{
             this.getPlayerStat().incrementMisses();
         }
 
+        this.targetBoard.get(player).setCell(pt, c.getType());
+        this.targetBoard.get(player).getCell(pt).hit();
+
         return c;
     }
 
