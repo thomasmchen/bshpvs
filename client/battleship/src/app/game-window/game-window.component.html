@@ -10,10 +10,12 @@
     
 
     <div style="background-color: rgba(255, 0, 0, 0.171)" class="col-lg-4">
+      <p>User Grid</p>
       <app-grid #userGrid [prefix]="'user_'" [numcols]="'10'" (cellClicked)="onCellClicked($event)"></app-grid>
     </div>
 
     <div style="background-color: rgba(0, 0, 255, 0.082)" class="col-lg-4">
+        <p>Enemy Grid 1</p>
         <app-grid  id = "enemyGrid" [prefix]="'enemy_'" [numcols]="'10'"(cellClicked)="onCellClicked($event)"></app-grid>
     </div>
 
@@ -25,10 +27,11 @@
     <div class="col-lg-2">
     </div>
     <div id="e2" style="background-color: rgba(255, 0, 0, 0.171); visibility: hidden;" class="col-lg-4">
+      <p id = "p1">Enemy Grid 2</p>
       <app-grid #userGrid [prefix]="'enemya_'" [numcols]="'10'" (cellClicked)="onCellClicked($event)"></app-grid>
     </div>
-
     <div id="e3" style="background-color: rgba(0, 0, 255, 0.082); visibility: hidden;" class="col-lg-4">
+      <p id = "p2">Enemy Grid 3 </p>
         <app-grid  id = "enemyGrid" [prefix]="'enemyb_'" [numcols]="'10'"(cellClicked)="onCellClicked($event)"></app-grid>
     </div>
   </div>
