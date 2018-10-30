@@ -57,6 +57,10 @@ export class NewGameMenuComponent implements OnInit {
   }
 
   onCellClicked(event: Cell) {
+
+    if (document.getElementById(event.index + '').style.backgroundColor == 'red') {
+      return;
+    }
     if (this.placementCounter == 0) {
       this.stomp.stompClient.subscribe('/topic/confirmPlacement', (res) => {
         this.stomp.setConnected();
@@ -121,6 +125,7 @@ export class NewGameMenuComponent implements OnInit {
   }
 
   checkValidMove(event: Cell, ship: Ship) {
+
     if (ship.spaces.length == 0) {
       return true;
     }
@@ -154,7 +159,7 @@ export class NewGameMenuComponent implements OnInit {
     }
     return flag;
   }
-
+ 
   
 
   checkShipColinear(ship: Ship, coordinate: Coordinate) {
