@@ -53,6 +53,8 @@ export class GameWindowComponent implements OnInit {
   selectedShipId: number = -1;
   attackResponses: AttackResponse[] = [];
 
+  gameResponse: GameResponse;
+
 
   constructor(private http: Http, private dm: DarkModeService, private stomp: WebService, private auth: AuthService, public snackBar: MatSnackBar) { 
     /*this.http.get('http://www.mocky.io/v2/5babd5cb310000550065455a').subscribe((res) => {
@@ -70,6 +72,7 @@ export class GameWindowComponent implements OnInit {
     
     this.stomp.stompClient.subscribe('/topic/windowInitResponse', (res) => {
       let r = JSON.parse(res.body) as GameResponse;
+      this.gameResponse = r;
       console.log(r);
       this.setBoards(r.numOpponents);
       this.loadShips(r);
@@ -130,7 +133,7 @@ export class GameWindowComponent implements OnInit {
         } else if (coor.info == "sunk") {
             this.changeCellColor(coor.x, coor.y, "purple", prefix);
         } else if (coor.info == "won") {
-          window.alert("Congrats, you won!");
+          window.alert('Congrats ' + this.gameResponse.userName + ' you won! Victory Message: ' + this.gameResponse.victoryMessage);
           this.won = true;
         } else if (coor.info == "lost") {
           window.alert("Sorry, you lost!");
