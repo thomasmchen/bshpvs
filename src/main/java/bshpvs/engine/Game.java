@@ -206,19 +206,20 @@ public class Game {
             //get GameStats
             ArrayList<PlayerStat> stats = new ArrayList<PlayerStat>();
             stats.add(firstPlayer.getPlayerStat());
-            PlayerStat winner = this.opponents[0].getPlayerStat();
+//            PlayerStat winner = this.opponents[0].getPlayerStat();
+            PlayerStat winner = this.firstPlayer.getPlayerStat(); //DEFECT 4
             for (int i = 0; i < this.opponents.length; i++) {
                 Player p  = this.opponents[i];
                 stats.add(p.getPlayerStat());
-                if (!p.isDefeated()) {
-                    winner = p.getPlayerStat();
-                }
+                //if (!p.isDefeated()) { PART OF DEFECT 4
+                  //  winner = p.getPlayerStat();
+                //}
             }
             long gameTime = System.nanoTime() - this.startTime;
             
 
             //create game stat object
-            this.gameStat = new GameStat(stats, gameTime / 1000000000, winner);
+            this.gameStat = new GameStat(stats, gameTime, winner);
          }
         
         String message = "You: " + yourMove + "          Them: " + theirMove;

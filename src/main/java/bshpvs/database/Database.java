@@ -93,7 +93,7 @@ public class Database {
             insertPreparedStatement.setInt(6, gs.getTotalTurns()); // Total_Turns
             insertPreparedStatement.setLong(7, gs.getTime()); // Time
             insertPreparedStatement.setString(8, gs.getWinner().getPlayerType()); // Winner
-            insertPreparedStatement.setString(9, gs.getPlayerStats().toString()); // Player_Types
+            insertPreparedStatement.setString(9, parsePlayerTypes(gs)); // Player_Types
 
             insertPreparedStatement.executeUpdate();
             insertPreparedStatement.close();
@@ -111,6 +111,36 @@ public class Database {
         connection.close();
         return true;
     }
+
+
+/**
+     * Parses ArrayList of PlayerTypes into a comma-separated list.
+     * 
+     * "playertype1,playertype2,playertype3,..."
+     * 
+     * Makes it easier to add to GameStat Table
+     * 
+     * @param gs GameStat object of interest
+     * @return comma-separated list in a single string
+     */
+    private String parsePlayerTypes(GameStat gs) {
+        ArrayList<PlayerStat> list = null;
+        try {
+            list = gs.getPlayerStats();
+        } catch (NullPointerException npe) {
+            System.out.println("No Game Stat was given");
+            return null;
+        }
+
+        String parsedList = "";
+        for (int i = 0; i < list.size(); i++) {
+            parsedList += list.get(i).getPlayerType();
+                parsedList += ", ";
+        }
+
+        return parsedList;
+    }
+
 
     public boolean doesUserExist(String GoogleID) {
         Connection connection = getDBConnection(); // connect with H2 DB
