@@ -139,6 +139,9 @@ public class Game {
 
          for (int i = 0; i < opponents.length; i++) {
              Player p = opponents[i];
+             if (p.isDefeated()) {
+                 continue;
+             }
              Player opp = p.genRandomOpp();
              Point tgt = p.attack(opp);
             Cell a = opp.getCell(tgt);
